@@ -1,8 +1,7 @@
-#include "classroom.h"
+#include "ga.h"
 #include <gtest\gtest.h>
 
 int main() {
 
-	getchar();
 	return 0;
 }
