@@ -11,9 +11,9 @@ using namespace std;
 class Course
 {
 public:
+	int course_id_;
 	string course_name_;
-	Course();
-
+	Course(int course_id, string course_name);
 private:
 
 };
