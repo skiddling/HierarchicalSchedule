@@ -115,13 +115,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="classroom.h" />
+    <ClInclude Include="classunit.h" />
     <ClInclude Include="course.h" />
+    <ClInclude Include="ga.h" />
+    <ClInclude Include="pattern.h" />
     <ClInclude Include="student.h" />
+    <ClInclude Include="summarytable.h" />
     <ClInclude Include="teacher.h" />
+    <ClInclude Include="timetable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="classunit.cpp" />
+    <ClCompile Include="course.cpp" />
+    <ClCompile Include="ga.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pattern.cpp" />
+    <ClCompile Include="student.cpp" />
+    <ClCompile Include="summarytable.cpp" />
+    <ClCompile Include="teacher.cpp" />
+    <ClCompile Include="timetable.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

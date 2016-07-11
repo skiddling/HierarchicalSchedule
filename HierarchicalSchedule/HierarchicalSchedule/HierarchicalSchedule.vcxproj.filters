@@ -18,18 +18,54 @@
     <ClInclude Include="course.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="classroom.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="teacher.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="student.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="classunit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ga.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="pattern.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="timetable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="summarytable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="classunit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="course.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ga.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="pattern.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="student.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="teacher.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="timetable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="summarytable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
