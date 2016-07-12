@@ -284,5 +284,5 @@ paket-files/
 *.sln.iml
 
 #self define
-*.vcxproj
-*.filters
+#*.vcxproj
+#*.filters
