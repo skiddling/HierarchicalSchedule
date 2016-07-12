@@ -1,5 +1,5 @@
 #pragma once
-#include "pattern.h"
+#include "summarytable.h"
 
 class GA
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "timetable.h"
+#include "student.h"
 
 class Pattern
 {

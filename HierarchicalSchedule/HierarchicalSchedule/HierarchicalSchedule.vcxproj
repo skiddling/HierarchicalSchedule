@@ -125,6 +125,7 @@
     <ClInclude Include="ga.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="student.h" />
+    <ClInclude Include="summarytable.h" />
     <ClInclude Include="teacher.h" />
     <ClInclude Include="timetable.h" />
   </ItemGroup>
@@ -135,6 +136,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="student.cpp" />
+<<<<<<< HEAD
+=======
+    <ClCompile Include="summarytable.cpp" />
+>>>>>>> origin/master
     <ClCompile Include="teacher.cpp" />
     <ClCompile Include="timetable.cpp" />
   </ItemGroup>

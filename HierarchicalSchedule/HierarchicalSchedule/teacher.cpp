@@ -1,5 +1,5 @@
 #include "teacher.h"
 
-Teacher::Teacher(int teacher_id, string teacher_name, vector<Course> courses, map<Course, vector<int> > course_table) :
-	teacher_id_(teacher_id), teacher_name_(teacher_name), courses_(courses), course_table_(course_table) {
+Teacher::Teacher(string teacher_id, string teacher_name, vector<Course> courses, map<Course, int> courses_num) :
+	teacher_id_(teacher_id), teacher_name_(teacher_name), courses_(courses), courses_num_(courses_num){
 }

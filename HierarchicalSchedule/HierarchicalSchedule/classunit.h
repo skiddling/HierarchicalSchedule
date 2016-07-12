@@ -1,5 +1,5 @@
 #pragma once
-#include "student.h"
+#include "pattern.h"
 
 class ClassUnit
 {

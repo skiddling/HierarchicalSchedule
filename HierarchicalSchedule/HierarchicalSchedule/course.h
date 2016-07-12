@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <fstream>
 #include <ctime>
 #include <cstdlib>
 
@@ -14,7 +15,9 @@ class Course
 public:
 	int course_id_;
 	string course_name_;
+	Course();
 	Course(int course_id, string course_name);
-private:
-
+	bool operator < (const Course a)const {
+		return this->course_name_ < a.course_name_;
+	}
 };
