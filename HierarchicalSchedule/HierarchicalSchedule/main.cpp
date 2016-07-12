@@ -1,6 +1,7 @@
 #include "ga.h"
 #include <gtest\gtest.h>
 
+int rooms, groups;
 map<string, int> coursemap;
 map<string, Course> courses;
 vector<Student> stuque;
@@ -52,29 +53,22 @@ void TeachersIn() {
 	fin.close();
 }
 
+void BasicInput() {
+	ifstream fin("basic.txt");
+	fin >> rooms >> groups;
+	fin.close();
+}
+
 void Input() {
+	BasicInput();
 	StudentsIn();
 	TeachersIn();
 }
 
-void StuOutPut() {
-	ofstream fout("stu.txt");
-	fout.close();
-}
-
-void TeaOutPut() {
-	ofstream fout("tea.txt");
-	fout.close();
-}
-
-void OutPut() {
-	StuOutPut();
-	TeaOutPut();
-}
-
 int main() {
+	srand((unsigned int)time(0));
 	Input();
-	//OutPut();
+	GA ga(rooms, groups, stuque, teacherque, coursemap, courses);
 	system("PAUSE");
 	return 0;
 }
