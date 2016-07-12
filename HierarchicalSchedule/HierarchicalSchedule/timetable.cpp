@@ -13,4 +13,5 @@ void TimeTable::GetRandTable(int rows, int cols) {
 		id = rand() % quelens;
 		if (id != i) swap(randque[id], randque[i]);
 	}
+
 }

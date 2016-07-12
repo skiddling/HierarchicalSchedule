@@ -86,7 +86,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\skidd\Code\googletest\googletest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>C:\Users\skidd\Code\googletest\googletest\msvc\gtest\Release\gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -115,13 +120,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="classroom.h" />
+    <ClInclude Include="classunit.h" />
     <ClInclude Include="course.h" />
+    <ClInclude Include="ga.h" />
+    <ClInclude Include="pattern.h" />
     <ClInclude Include="student.h" />
     <ClInclude Include="teacher.h" />
+    <ClInclude Include="timetable.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="classunit.cpp" />
+    <ClCompile Include="course.cpp" />
+    <ClCompile Include="ga.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pattern.cpp" />
+    <ClCompile Include="student.cpp" />
+    <ClCompile Include="teacher.cpp" />
+    <ClCompile Include="timetable.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
