@@ -23,18 +23,11 @@ void StudentsIn() {
 			fin >> courseque[j];
 			if (coursemap.find(courseque[j]) == coursemap.end()) {
 				coursemap[courseque[j]] = coursemap.size();//学科序号产生
-				cp = new Course(coursemap[courseque[j]], courseque[j]);
-				courses[courseque[j]] = *cp;
-				//free(cp);
+				courses[courseque[j]] = *(new Course(coursemap[courseque[j]], courseque[j])); 
 			}
 			stucourses[j] = courses[courseque[j]];
-			//stucourses.push_back(courses[courseque[j]]);
 		}
-		sp = new Student(stuid, stuname, stucourses);
-		//stuque.push_back(*sp);
-		stuque[i] = *sp;
-		//free(sp);
-		//stuque.end()->student_no = i;
+		stuque[i] = *(new Student(stuid, stuname, stucourses));
 		stuque[i].student_no = i;
 	}
 	fin.close();
@@ -54,7 +47,7 @@ void TeachersIn() {
 			coursestable[courseque[i]] = coursetimes;
 		}
 		teacherque.push_back(*(new Teacher(teacherid, teachername, courseque ,coursestable)));
-		teacherque.end()->teacher_no = k++;
+		(teacherque.end() - 1)->teacher_no = k++;
 	}
 	fin.close();
 }
@@ -82,6 +75,6 @@ void OutPut() {
 int main() {
 	Input();
 	//OutPut();
-	getchar();
+	system("PAUSE");
 	return 0;
 }
