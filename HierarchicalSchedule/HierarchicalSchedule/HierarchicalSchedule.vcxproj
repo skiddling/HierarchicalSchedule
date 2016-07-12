@@ -136,10 +136,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="student.cpp" />
-<<<<<<< HEAD
-=======
-    <ClCompile Include="summarytable.cpp" />
->>>>>>> origin/master
     <ClCompile Include="teacher.cpp" />
     <ClCompile Include="timetable.cpp" />
   </ItemGroup>
