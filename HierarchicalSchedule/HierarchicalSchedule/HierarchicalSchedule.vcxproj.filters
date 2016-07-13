@@ -25,6 +25,9 @@
     <ClCompile Include="timetable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="schedule.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classunit.h">
@@ -42,13 +45,13 @@
     <ClInclude Include="student.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="summarytable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="teacher.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="timetable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="schedule.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-const double RPR = static_cast<double>(RAND_MAX * RAND_MAX);
+const double kRndPluRnd = static_cast<double>(RAND_MAX * RAND_MAX);
 
 class Course
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "student.h"
+#include "timetable.h"
 
 //单独一个模式的定义
 class Pattern
@@ -15,5 +15,8 @@ public:
 			if (this->course_stus_.find(a.course_que_[i]) == this->course_stus_.end())return 0;
 		}
 		return 1;
+	}
+
+	bool operator < (const Pattern &a)const {
 	}
 };

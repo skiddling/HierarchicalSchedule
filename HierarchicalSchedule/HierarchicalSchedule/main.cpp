@@ -69,6 +69,7 @@ int main() {
 	srand((unsigned int)time(0));
 	Input();
 	GA ga(rooms, groups, stuque, teacherque, coursemap, courses);
+	
 	system("PAUSE");
 	return 0;
 }
