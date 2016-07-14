@@ -22,4 +22,7 @@ public:
 	bool operator < (const Course a)const {
 		return this->course_name_ < a.course_name_;
 	}
+	bool operator == (const Course &a)const {
+		return this->course_name_ == a.course_name_;
+	}
 };

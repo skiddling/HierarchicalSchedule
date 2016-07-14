@@ -1,5 +1,4 @@
 #pragma once
-
 #include "timetable.h"
 
 class Schedule

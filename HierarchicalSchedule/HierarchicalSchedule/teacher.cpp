@@ -1,4 +1,5 @@
 #include "teacher.h"
+#include "classunit.h"
 
 Teacher::Teacher() {
 }
@@ -12,11 +13,12 @@ void Teacher::GetCouSort() {
 }
 
 void Teacher::AssignUnits(vector<int> &randgroups, vector<vector<int> > &randrooms, vector<int> &roompos) {
+	//对每一门科目的每一节课都进行分配
 	int g, r;
 	for (int i = 0; i < units_que_.size(); i++) {
 		g = randgroups[i];
 		r = randrooms[g][roompos[g]];
-		//units_que_[i]->unit_time = make_pair(g, r);
-		//units_que_[i]->unit_time_ = make_pair(g, r);
+		units_que_[i]->unit_time_ = make_pair(g, r);
+		roompos[g]++;
 	}
 }

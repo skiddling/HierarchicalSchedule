@@ -1,4 +1,5 @@
 #include "student.h"
+#include "pattern.h"
 
 Student::Student() {
 }

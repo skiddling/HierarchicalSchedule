@@ -1,7 +1,5 @@
 #pragma once
-#include "student.h"
-
-class Pattern;
+#include "pattern.h"
 
 class ClassUnit
 {
@@ -12,8 +10,8 @@ public:
 	Teacher teacher_;//每个上课教室都会有一个老师，没有就是NULL
 	Course course_;//每个上课的教室都会有一个上课的科目，没有就是NULL
 	vector<Student*> students_;//用来保存这个班已经存在的学生
-	map<int, bool> patterns_;//用来存当前班级有多少个patterns
-	map<int, int> patterns_stus_;//每个patterns有多少个学生
+	map<Pattern*, bool> patterns_;//用来存当前班级有多少个patterns
+	map<Pattern*, int> patterns_stus_;//每个patterns有多少个学生
 	ClassUnit(int unit_id);
 	ClassUnit(int unit_id, pair<int, int> unit_time);
 	ClassUnit(Teacher teacher, Course course, int unit_id);
