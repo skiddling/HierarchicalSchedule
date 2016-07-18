@@ -28,6 +28,9 @@
     <ClCompile Include="schedule.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="prefix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classunit.h">
@@ -52,6 +55,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="schedule.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="prefix.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

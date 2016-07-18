@@ -2,6 +2,7 @@
 
 GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, map<string, int> cou_id_map, map<string, Course> cou_name_map) :
 	rooms_(rooms), groups_(groups), stu_que_(stu_que), tea_que_(tea_que), cou_id_map_(cou_id_map), cou_name_map_(cou_name_map){
+	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
 
 	//1.先把每一节课初始化，然后生成课表
@@ -24,12 +25,33 @@ GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, 
 //从所有学生当中获得所有的模式，并且统计出所有的模式各有多少的学生
 void GA::GetStuPat() {
 	for (int i = 0; i < stu_que_.size(); i++) {
-		if (patterns.find(stu_que_[i].courses_) == patterns.end()) {
-			patterns[stu_que_[i].courses_] = *(new Pattern(stu_que_[i].courses_));
+		if (patterns_map_.find(stu_que_[i].courses_) == patterns_map_.end()) {
+			patterns_map_[stu_que_[i].courses_] = *(new Pattern(stu_que_[i].courses_));
+			patterns_.push_back(patterns_map_[stu_que_[i].courses_]);
 		}
-		else patterns[stu_que_[i].courses_].stu_num_++;
-		stu_que_[i].patp = &patterns[stu_que_[i].courses_];
+		else patterns_map_[stu_que_[i].courses_].stu_num_++;
+		stu_que_[i].patp = &patterns_map_[stu_que_[i].courses_];
 	}
+	//对得到的所有的模式进行排序，以便于进行获得前缀的操作
+	sort(patterns_.begin(), patterns_.end());
+}
+
+void GA::GetPrefixes() {
+	for (int i = 0; i < patterns_.size(); i++) {
+		vector<Course> cque;
+		for (int j = 0; j < patterns_[i].course_que_.size(); j++) {
+			cque.push_back(patterns_[i].course_que_[j]);
+			if (prefix_map_.find(cque) == prefix_map_.end()) {
+				prefixes_.push_back(*(new Prefix(cque)));
+				prefix_map_[cque] = prefixes_.size() - 1;
+				if (cque.size() == 1) {
+					prefixes_.back().pre_id_ = 0;
+				}
+			}
+		}
+	}
+	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀
+	cout << "end of get prefix" << endl;
 }
 
 //对学生和老师的科目进行排序
@@ -42,18 +64,16 @@ void GA::InitSort() {
 	}
 }
 
-//检查课表是否符合要求
-bool GA::CheckTabAvl(TimeTable timetable) {
-	
-}
-
 //每个对象都随机生成一个课表
 void GA::GetRandTab() {
+	//
+	GetPrefixes();
+	
 	for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[i].prefixes_ = prefixes_;
+		schedules_[i].prefix_map_ = prefix_map_;
 		int ts = clock(), te, tag = 0;
-		while (1) {
-			schedules_[i].GetRanTab();
-			if(CheckTabAvl(schedules_[i].time_table_))break;
+		while (schedules_[i].GetRanTab()) {
 			te = clock();
 			if (te - ts > kCheckTimeOut) {
 				tag = 1;

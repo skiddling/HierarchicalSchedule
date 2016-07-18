@@ -12,6 +12,6 @@ public:
 	TimeTable(int rows, int cols, vector<Teacher> teachers, vector<ClassUnit> class_units_que);
 
 private:
-	void GetRandTable(int rows, int cols);
+	//void GetRandTable(int rows, int cols);
 
 };

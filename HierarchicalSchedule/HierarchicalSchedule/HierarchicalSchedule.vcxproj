@@ -124,6 +124,7 @@
     <ClInclude Include="course.h" />
     <ClInclude Include="ga.h" />
     <ClInclude Include="pattern.h" />
+    <ClInclude Include="prefix.h" />
     <ClInclude Include="student.h" />
     <ClInclude Include="schedule.h" />
     <ClInclude Include="teacher.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="ga.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pattern.cpp" />
+    <ClCompile Include="prefix.cpp" />
     <ClCompile Include="student.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="teacher.cpp" />

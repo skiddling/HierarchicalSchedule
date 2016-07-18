@@ -1,4 +1,6 @@
 #include "course.h"
+#include "prefix.h"
+#include "classunit.h"
 
 Course::Course() {
 }

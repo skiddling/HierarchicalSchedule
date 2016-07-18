@@ -1,6 +1,5 @@
 #pragma once
-#include "course.h"
-//#include "classunit.h"
+#include "prefix.h"
 
 class ClassUnit;
 
