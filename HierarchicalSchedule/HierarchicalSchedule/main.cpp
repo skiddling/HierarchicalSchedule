@@ -49,9 +49,12 @@ void TeachersIn() {
 
 void BasicInput() {
 	ifstream fin("basic.txt");
-	fin >> rooms >> groups;
+	int cnum;
+	fin >> rooms >> groups >> cnum;
 	string cname;
-	while (cin >> cname) {
+	while (cnum--)
+	{
+		fin >> cname;
 		courses[cname] = *(new Course(cname));
 	}
 	map<string, Course>::iterator it = courses.begin();
