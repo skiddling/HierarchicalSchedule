@@ -2,8 +2,10 @@
 #include <gtest\gtest.h>
 
 int rooms, groups;
-map<string, int> coursemap;
+map<string, bool> coursemap;
 map<string, Course> courses;
+//set<Course> courseset;
+vector<Course> couque;
 vector<Student> stuque;
 vector<Teacher> teacherque;
 
@@ -23,8 +25,11 @@ void StudentsIn() {
 		for (int j = 0; j < cnum; j++) {
 			fin >> courseque[j];
 			if (coursemap.find(courseque[j]) == coursemap.end()) {
-				coursemap[courseque[j]] = coursemap.size();//学科序号产生
-				courses[courseque[j]] = *(new Course(coursemap[courseque[j]], courseque[j])); 
+				coursemap[courseque[j]] = 1;//学科序号产生
+				//courses[courseque[j]] = *(new Course(coursemap[courseque[j]], courseque[j])); 
+				cp = new Course(courseque[j]);
+				courses[courseque[j]] = *(cp); 
+				courseset.insert(*(cp));
 			}
 			stucourses[j] = courses[courseque[j]];
 		}
@@ -59,16 +64,24 @@ void BasicInput() {
 	fin.close();
 }
 
+void GetCouSet() {
+	map<string, Course>::iterator it = courses.begin();
+	for (int i = 0; it != courses.end(); it++, i++) {
+		it->second.course_id_ = i;
+	}
+}
+
 void Input() {
 	BasicInput();
 	StudentsIn();
 	TeachersIn();
+	GetCouSet();//根据科目排序情况分配科目的id号
 }
 
 int main() {
 	srand((unsigned int)time(0));
 	Input();
-	GA ga(rooms, groups, stuque, teacherque, coursemap, courses);
+	GA ga(rooms, groups, stuque, teacherque, couque);
 	
 	system("PAUSE");
 	return 0;

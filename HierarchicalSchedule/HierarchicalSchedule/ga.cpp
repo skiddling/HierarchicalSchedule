@@ -1,13 +1,14 @@
 #include "ga.h"
 
-GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, map<string, int> cou_id_map, map<string, Course> cou_name_map) :
-	rooms_(rooms), groups_(groups), stu_que_(stu_que), tea_que_(tea_que), cou_id_map_(cou_id_map), cou_name_map_(cou_name_map){
+GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
+	rooms_(rooms), groups_(groups), stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
+
 	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
 
 	//1.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
-	result_ = *(new Schedule(rooms_, groups_, cou_id_map_, cou_name_map_, stu_que_, tea_que_));
+	result_ = *(new Schedule(rooms_, groups_, cou_que_, stu_que_, tea_que_));
 	schedules_ = vector<Schedule>(kScheduleSize_, result_);
 	result_.GetTeaCls();
 	for (int i = 0; i < kScheduleSize_; i++) {
@@ -39,7 +40,8 @@ void GA::GetStuPat() {
 void GA::GetPrefixes() {
 	for (int i = 0; i < patterns_.size(); i++) {
 		vector<Course> cque;
-		for (int j = 0; j < patterns_[i].course_que_.size(); j++) {
+		int len = patterns_[i].course_que_.size(), iid, oid;
+		for (int j = 0; j < len; j++) {
 			cque.push_back(patterns_[i].course_que_[j]);
 			if (prefix_map_.find(cque) == prefix_map_.end()) {
 				prefixes_.push_back(*(new Prefix(cque)));
@@ -48,6 +50,11 @@ void GA::GetPrefixes() {
 					prefixes_.back().pre_id_ = 0;
 				}
 			}
+		}
+		for (int j = 1; j < len; j++) {
+			cque[j - 1].course_id_ = iid;
+			cque[j].course_id_ = oid;
+			cou_que_[oid].pre_node_.push_back(&cou_que_[iid]);
 		}
 	}
 	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀

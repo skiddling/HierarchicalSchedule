@@ -19,13 +19,16 @@ class ClassUnit;
 class Course
 {
 public:
-	int course_id_;
+	bool visited_;//用于拓扑排序时候用的，每一个科目相当于是一个结点
+	int course_id_;//将在被全部创建完科目之后才会生成相应的id
 	string course_name_;
-	vector<Prefix* > prefixes_;//该科目的前缀序列
+	vector<Course* > pre_node_;//也是一样用于进行拓扑排序的，标注了该科目前的所有的前面一个科目
+	vector<Prefix* > prefixes_;//该科目的所有的前缀序列
 	vector<ClassUnit* > units_;//该科目下的所有的的课次
 
 	Course();
-	Course(int course_id, string course_name);
+	Course(string course_name, bool visited = 0);
+	//Course(int course_id, string course_name);
 	bool operator < (const Course a)const {
 		return this->course_name_ < a.course_name_;
 	}

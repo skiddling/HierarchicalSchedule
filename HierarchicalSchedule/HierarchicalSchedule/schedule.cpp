@@ -3,9 +3,8 @@
 Schedule::Schedule() {
 }
 
-Schedule::Schedule(int rooms, int groups, map<string, int> cou_id_map, map<string, Course> cou_name_map,
-	vector<Student> stu_que, vector<Teacher> tea_que):
-	rooms_(rooms), groups_(groups), cou_id_map_(cou_id_map), cou_name_map_(cou_name_map){
+Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que):
+	rooms_(rooms), groups_(groups), cou_que_(cou_que){
 }
 
 //对每个老师的每一节课都进行创建
