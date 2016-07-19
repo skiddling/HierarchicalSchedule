@@ -26,10 +26,9 @@ void StudentsIn() {
 			fin >> courseque[j];
 			if (coursemap.find(courseque[j]) == coursemap.end()) {
 				coursemap[courseque[j]] = 1;//学科序号产生
-				//courses[courseque[j]] = *(new Course(coursemap[courseque[j]], courseque[j])); 
-				cp = new Course(courseque[j]);
-				courses[courseque[j]] = *(cp); 
-				courseset.insert(*(cp));
+				courses[courseque[j]] = *(new Course(coursemap[courseque[j]], courseque[j])); 
+				/*cp = new Course(courseque[j]);
+				courses[courseque[j]] = *(cp); */
 			}
 			stucourses[j] = courses[courseque[j]];
 		}
