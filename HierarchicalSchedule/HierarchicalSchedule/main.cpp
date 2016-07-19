@@ -26,7 +26,7 @@ void StudentsIn() {
 			fin >> courseque[j];
 			if (coursemap.find(courseque[j]) == coursemap.end()) {
 				coursemap[courseque[j]] = 1;//学科序号产生
-				courses[courseque[j]] = *(new Course(coursemap[courseque[j]], courseque[j])); 
+				courses[courseque[j]] = *(new Course(courseque[j])); 
 				/*cp = new Course(courseque[j]);
 				courses[courseque[j]] = *(cp); */
 			}
@@ -67,6 +67,7 @@ void GetCouSet() {
 	map<string, Course>::iterator it = courses.begin();
 	for (int i = 0; it != courses.end(); it++, i++) {
 		it->second.course_id_ = i;
+		couque.push_back(it->second);
 	}
 }
 
