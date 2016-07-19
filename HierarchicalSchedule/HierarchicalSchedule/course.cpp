@@ -5,8 +5,9 @@
 Course::Course() {
 }
 
-Course::Course(string course_name, bool visited):
+Course::Course(string course_name, int cnum, bool visited):
 	course_name_(course_name), visited_(visited){
+	pre_node_ = vector<bool>(cnum, 0);
 }
 
 //Course::Course(int course_id, string course_name):

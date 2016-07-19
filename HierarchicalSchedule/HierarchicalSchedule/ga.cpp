@@ -55,7 +55,10 @@ void GA::GetPrefixes() {
 			iid = cque[j - 1].course_id_;
 			oid = cque[j].course_id_;
 			cout << iid << ' ' << oid << endl;
-			cou_que_[oid].pre_node_.push_back(&cou_que_[iid]);
+			if (!cou_que_[oid].pre_node_[iid]) {
+				cou_que_[oid].pre_node_[iid] = 1;
+				cou_que_[oid].pre_node_que_.push_back(&cou_que_[iid]);
+			}
 		}
 	}
 	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀

@@ -52,10 +52,9 @@ void BasicInput() {
 	int cnum;
 	fin >> rooms >> groups >> cnum;
 	string cname;
-	while (cnum--)
-	{
+	while (cnum--) {
 		fin >> cname;
-		courses[cname] = *(new Course(cname));
+		courses[cname] = *(new Course(cname, cnum));
 	}
 	map<string, Course>::iterator it = courses.begin();
 	for (int i = 0; it != courses.end(); it++, i++) {
