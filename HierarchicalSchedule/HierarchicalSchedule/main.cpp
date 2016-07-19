@@ -78,6 +78,7 @@ void Input() {
 void OutPut() {
 	ofstream fout("temp.txt");
 	for (int i = 0; i < stuque.size(); i++) {
+		fout << stuque[i].student_name_ << "\t";
 		for (int j = 0; j < stuque[i].courses_.size(); j++)
 			fout << stuque[i].courses_[j].course_name_ << "\t";
 		fout << endl;

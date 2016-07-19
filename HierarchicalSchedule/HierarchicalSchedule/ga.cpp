@@ -54,7 +54,13 @@ void GA::GetPrefixes() {
 		for (int j = 1; j < len; j++) {
 			iid = cque[j - 1].course_id_;
 			oid = cque[j].course_id_;
-			cout << iid << ' ' << oid << endl;
+			//cout << iid << ' ' << oid << endl;
+			/*if (iid == 3 && oid == 4) {
+				for (int k = 0; k < patterns_[i].course_que_.size(); k++) {
+					cout << patterns_[i].course_que_[k].course_name_ << "\t";
+				}
+				cout << endl;
+			}*/
 			if (!cou_que_[oid].pre_node_[iid]) {
 				cou_que_[oid].pre_node_[iid] = 1;
 				cou_que_[oid].pre_node_que_.push_back(&cou_que_[iid]);
