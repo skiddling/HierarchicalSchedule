@@ -2,9 +2,7 @@
 #include <gtest\gtest.h>
 
 int rooms, groups;
-map<string, bool> coursemap;
 map<string, Course> courses;
-//set<Course> courseset;
 vector<Course> couque;
 vector<Student> stuque;
 vector<Teacher> teacherque;
@@ -16,20 +14,12 @@ void StudentsIn() {
 	stuque = vector<Student>(stunum);
 	string stuname, stuid;
 	int cnum;
-	Course *cp = NULL;
-	Student *sp = NULL;
 	for (int i = 0; i < stunum; i++) {
 		fin >> stuname >> stuid >> cnum;
 		vector<string> courseque = vector<string>(cnum);
 		vector<Course> stucourses = vector<Course>(cnum);
 		for (int j = 0; j < cnum; j++) {
 			fin >> courseque[j];
-			if (coursemap.find(courseque[j]) == coursemap.end()) {
-				coursemap[courseque[j]] = 1;//学科序号产生
-				courses[courseque[j]] = *(new Course(courseque[j])); 
-				/*cp = new Course(courseque[j]);
-				courses[courseque[j]] = *(cp); */
-			}
 			stucourses[j] = courses[courseque[j]];
 		}
 		stuque[i] = *(new Student(stuid, stuname, stucourses));
@@ -60,22 +50,22 @@ void TeachersIn() {
 void BasicInput() {
 	ifstream fin("basic.txt");
 	fin >> rooms >> groups;
-	fin.close();
-}
-
-void GetCouSet() {
+	string cname;
+	while (cin >> cname) {
+		courses[cname] = *(new Course(cname));
+	}
 	map<string, Course>::iterator it = courses.begin();
 	for (int i = 0; it != courses.end(); it++, i++) {
 		it->second.course_id_ = i;
 		couque.push_back(it->second);
 	}
+	fin.close();
 }
 
 void Input() {
 	BasicInput();
 	StudentsIn();
 	TeachersIn();
-	GetCouSet();//根据科目排序情况分配科目的id号
 }
 
 int main() {
