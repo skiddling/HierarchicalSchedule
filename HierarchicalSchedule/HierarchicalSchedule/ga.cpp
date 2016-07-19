@@ -79,7 +79,7 @@ void GA::InitSort() {
 void GA::GetRandTab() {
 	//
 	GetPrefixes();
-	
+		
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[i].prefixes_ = prefixes_;
 		schedules_[i].prefix_map_ = prefix_map_;

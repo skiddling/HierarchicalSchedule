@@ -52,7 +52,7 @@ void BasicInput() {
 	int cnum;
 	fin >> rooms >> groups >> cnum;
 	string cname;
-	while (cnum--) {
+	for(int i = 0; i < cnum; i++){
 		fin >> cname;
 		courses[cname] = *(new Course(cname, cnum));
 	}
@@ -68,11 +68,28 @@ void Input() {
 	BasicInput();
 	StudentsIn();
 	TeachersIn();
+	for (int i = 0; i < stuque.size(); i++)
+		sort(stuque[i].courses_.begin(), stuque[i].courses_.end());
+	for (int i = 0; i < teacherque.size(); i++) {
+		sort(teacherque[i].courses_.begin(), teacherque[i].courses_.end());
+	}
+}
+
+void OutPut() {
+	ofstream fout("temp.txt");
+	for (int i = 0; i < stuque.size(); i++) {
+		for (int j = 0; j < stuque[i].courses_.size(); j++)
+			fout << stuque[i].courses_[j].course_name_ << "\t";
+		fout << endl;
+	}
+	fout.close();
 }
 
 int main() {
 	srand((unsigned int)time(0));
 	Input();
+	//OutPut();
+	//return 0;
 	GA ga(rooms, groups, stuque, teacherque, couque);
 	
 	system("PAUSE");
