@@ -52,8 +52,8 @@ void GA::GetPrefixes() {
 			}
 		}
 		for (int j = 1; j < len; j++) {
-			cque[j - 1].course_id_ = iid;
-			cque[j].course_id_ = oid;
+			iid = cque[j - 1].course_id_;
+			oid = cque[j].course_id_;
 			cou_que_[oid].pre_node_.push_back(&cou_que_[iid]);
 		}
 	}
