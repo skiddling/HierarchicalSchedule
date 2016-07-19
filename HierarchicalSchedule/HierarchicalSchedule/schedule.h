@@ -19,7 +19,9 @@ public:
 	vector<Prefix> prefixes_;//所有的前缀模式
 
 	Schedule();
-	Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que);
+	Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que, 
+		vector<Teacher> tea_que, map<Pattern, int> pattern_map, vector<Pattern> pattern_que, 
+		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes);
 	void GetTeaCls();//构造老师的课程指针
 	bool GetRanTab();
 

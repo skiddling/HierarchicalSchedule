@@ -6,7 +6,7 @@ class GA
 public:
 	const int kScheduleSize_ = 50;//定义种群数量
 	const int kCheckTimeOut = 1000000;//生成一张具有可行性的课表的时间限制
-	int rooms_, groups_;
+	int rooms_, groups_, cnt_;//cnt用于拓扑排序
 	//map<string, Course> cou_name_map_;//用于存放所有的科目
 	//set<Course> cou_set_;//所有的科目的存放
 	vector<Course> cou_que_;//用于存放所有的科目
@@ -18,7 +18,7 @@ public:
 	vector<Pattern> patterns_;//所有的选课模式序列，需要进行排序
 	map<vector<Course>, int> prefix_map_;//用于和prefix_联用
 	vector<Prefix> prefixes_;//所有的前缀模式
-	vector<Course> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序
+	vector<int> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序
 
 	GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_);
 	void Generate();//生成课表
@@ -28,4 +28,6 @@ private:
 	void GetStuPat();//获得当前所有学生的模式情况
 	void GetPrefixes();
 	void GetRandTab();//每个个体都随机生成一个总表
+	void DFS(int k);//拓扑排序当中的一部分
+	void TopoSort();//对所有的科目进行拓扑排序
 };

@@ -3,7 +3,9 @@
 Schedule::Schedule() {
 }
 
-Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que):
+Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que,
+	vector<Teacher> tea_que, map<Pattern, int> pattern_map, vector<Pattern> pattern_que,
+	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes):
 	rooms_(rooms), groups_(groups), cou_que_(cou_que){
 }
 

@@ -3,20 +3,23 @@
 GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
 	rooms_(rooms), groups_(groups), stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
 
+	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
 
-	//1.先把每一节课初始化，然后生成课表
+	//1.获得所有学生的模式类型
+	GetStuPat();
+	GetPrefixes();
+	TopoSort();
+
+	//2.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
-	result_ = *(new Schedule(rooms_, groups_, cou_que_, stu_que_, tea_que_));
+	result_ = *(new Schedule(rooms_, groups_, cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_));
 	schedules_ = vector<Schedule>(kScheduleSize_, result_);
 	result_.GetTeaCls();
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[i].GetTeaCls();
 	}
-
-	//2.获得所有学生的模式类型
-	GetStuPat();
 
 	//3.对每个对象都随机产生一个课表
 	GetRandTab();
@@ -68,7 +71,7 @@ void GA::GetPrefixes() {
 		}
 	}
 	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀
-	cout << "end of get prefix" << endl;
+	//cout << "end of get prefix" << endl;
 }
 
 //对学生和老师的科目进行排序
@@ -83,9 +86,7 @@ void GA::InitSort() {
 
 //每个对象都随机生成一个课表
 void GA::GetRandTab() {
-	//
-	GetPrefixes();
-		
+
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[i].prefixes_ = prefixes_;
 		schedules_[i].prefix_map_ = prefix_map_;
@@ -101,6 +102,27 @@ void GA::GetRandTab() {
 			
 		}
 	}
+}
+
+void GA::DFS(int k) {
+	cou_que_[k].visited_ = 1;
+	for (int i = 0; i < cou_que_[k].pre_node_que_.size(); i++) {
+		if (!cou_que_[k].pre_node_que_[i]->visited_)
+			DFS(cou_que_[k].pre_node_que_[i]->course_id_);
+	}
+	topo_sorted_[cnt_++] = k;
+}
+
+void GA::TopoSort() {
+	for (int i = 0; i < cou_que_.size(); i++) {
+		if (!cou_que_[i].visited_) {
+			DFS(i);
+		}
+	}
+	/*for (int i = 0; i < topo_sorted_.size(); i++) {
+		cout << topo_sorted_[i] << " ";
+	}
+	cout << endl;*/
 }
 
 void GA::Generate() {
