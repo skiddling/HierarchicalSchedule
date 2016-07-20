@@ -13,8 +13,8 @@ using namespace std;
 
 const double kRndPluRnd = static_cast<double>(RAND_MAX * RAND_MAX);
 
-class Prefix;
-class ClassUnit;
+//class Prefix;
+//class ClassUnit;
 
 class Course
 {
@@ -24,8 +24,11 @@ public:
 	string course_name_;
 	vector<Course* > pre_node_que_;//也是一样用于进行拓扑排序的，标注了该科目前的所有的前面一个科目
 	vector<bool> pre_node_;//用来标记哪些科目是前缀，用于拓扑排序，并且防止重复
-	vector<Prefix* > prefixes_;//该科目的所有的前缀序列
-	vector<ClassUnit* > units_;//该科目下的所有的的课次
+
+	set<int> prefix_set_;//用来判断该前缀是否已经存在了
+	vector<int> prefixes_;//该科目的所有的前缀序列
+	//vector<ClassUnit* > units_;//该科目下的所有的的课次
+	vector<int> units_;//该科目下的所有的课的节次
 
 	Course();
 	Course(string course_name, int cnum, bool visited = 0);

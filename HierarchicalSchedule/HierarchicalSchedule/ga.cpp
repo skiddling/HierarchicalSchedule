@@ -30,11 +30,13 @@ GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, 
 void GA::GetStuPat() {
 	for (int i = 0; i < stu_que_.size(); i++) {
 		if (patterns_map_.find(stu_que_[i].courses_) == patterns_map_.end()) {
-			patterns_map_[stu_que_[i].courses_] = *(new Pattern(stu_que_[i].courses_));
-			patterns_.push_back(patterns_map_[stu_que_[i].courses_]);
+			//patterns_map_[stu_que_[i].courses_] = *(new Pattern(stu_que_[i].courses_));
+			//patterns_.push_back(patterns_map_[stu_que_[i].courses_]);
+			patterns_.push_back(*(new Pattern(stu_que_[i].courses_)));
+			patterns_map_[stu_que_[i].courses_] = patterns_.size() - 1;
 		}
-		else patterns_map_[stu_que_[i].courses_].stu_num_++;
-		stu_que_[i].patp = &patterns_map_[stu_que_[i].courses_];
+		else patterns_[patterns_map_[stu_que_[i].courses_]].stu_num_++;
+		stu_que_[i].patp_ = patterns_map_[stu_que_[i].courses_];
 	}
 	//对得到的所有的模式进行排序，以便于进行获得前缀的操作
 	sort(patterns_.begin(), patterns_.end());
@@ -43,9 +45,10 @@ void GA::GetStuPat() {
 void GA::GetPrefixes() {
 	for (int i = 0; i < patterns_.size(); i++) {
 		vector<Course> cque;
-		int len = patterns_[i].course_que_.size(), iid, oid;
-		for (int j = 0; j < len; j++) {
+		int len = patterns_[i].course_que_.size(), iid, oid, cid;
+		for (int j = 0; j < len - 1; j++) {
 			cque.push_back(patterns_[i].course_que_[j]);
+			cid = patterns_[i].course_que_[j + 1].course_id_;
 			if (prefix_map_.find(cque) == prefix_map_.end()) {
 				prefixes_.push_back(*(new Prefix(cque)));
 				prefix_map_[cque] = prefixes_.size() - 1;
@@ -53,10 +56,17 @@ void GA::GetPrefixes() {
 					prefixes_.back().pre_id_ = 0;
 				}
 			}
+			//获得每个科目的所有前缀
+			if (cou_que_[cid].prefix_set_.find(prefix_map_[cque]) == cou_que_[cid].prefix_set_.end()) {
+				cou_que_[cid].prefixes_.push_back(prefix_map_[cque]);
+				cou_que_[cid].prefix_set_.insert(prefix_map_[cque]);
+			}
 		}
 		for (int j = 1; j < len; j++) {
-			iid = cque[j - 1].course_id_;
-			oid = cque[j].course_id_;
+			//iid = cque[j - 1].course_id_;
+			//oid = cque[j].course_id_;
+			iid = patterns_[i].course_que_[j - 1].course_id_;
+			oid = patterns_[i].course_que_[j].course_id_;
 			//cout << iid << ' ' << oid << endl;
 			/*if (iid == 3 && oid == 4) {
 				for (int k = 0; k < patterns_[i].course_que_.size(); k++) {
@@ -71,7 +81,7 @@ void GA::GetPrefixes() {
 		}
 	}
 	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀
-	//cout << "end of get prefix" << endl;
+	cout << "end of get prefix" << endl;
 }
 
 //对学生和老师的科目进行排序

@@ -14,10 +14,15 @@ public:
 	vector<Teacher> tea_que_;
 	Schedule result_;//最后结果
 	vector<Schedule> schedules_;//每个schedule代表一个个体
-	map<vector<Course>, Pattern> patterns_map_;//所有模式的总表，用于模式查询
+
+	map<vector<Course>, int> patterns_map_;//所有模式的总表，用于模式查询
 	vector<Pattern> patterns_;//所有的选课模式序列，需要进行排序
-	map<vector<Course>, int> prefix_map_;//用于和prefix_联用
+
+	map<vector<Course>, int> prefix_map_;//用于和prefix_联用,数字指向vector<Prefix>下标
 	vector<Prefix> prefixes_;//所有的前缀模式
+
+	vector<ClassUnit> cls_units_;//所有的课
+
 	vector<int> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序
 
 	GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_);

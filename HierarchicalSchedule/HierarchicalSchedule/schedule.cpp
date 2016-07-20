@@ -4,9 +4,10 @@ Schedule::Schedule() {
 }
 
 Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que,
-	vector<Teacher> tea_que, map<Pattern, int> pattern_map, vector<Pattern> pattern_que,
+	vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que,
 	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes):
-	rooms_(rooms), groups_(groups), cou_que_(cou_que){
+	rooms_(rooms), groups_(groups), cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que),
+	pattern_map_(pattern_map), pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes){
 }
 
 //对每个老师的每一节课都进行创建
