@@ -41,7 +41,7 @@ void TeachersIn() {
 			courseque[i] = courses[coursename];
 			coursestable[courseque[i]] = coursetimes;
 		}
-		teacherque.push_back(*(new Teacher(teacherid, teachername, courseque ,coursestable)));
+		teacherque.push_back(*(new Teacher(groups, teacherid, teachername, courseque ,coursestable)));
 		(teacherque.end() - 1)->teacher_no = k++;
 	}
 	fin.close();
@@ -49,13 +49,14 @@ void TeachersIn() {
 
 void BasicInput() {
 	ifstream fin("basic.txt");
-	int cnum;
+	int cnum, cls;
 	fin >> rooms >> groups >> cnum;
 	string cname;
 	for(int i = 0; i < cnum; i++){
-		fin >> cname;
-		courses[cname] = *(new Course(cname, cnum));
+		fin >> cname >> cls;
+		courses[cname] = *(new Course(cname, cls, cnum));
 	}
+	//确定了每门课的序号
 	map<string, Course>::iterator it = courses.begin();
 	for (int i = 0; it != courses.end(); it++, i++) {
 		it->second.course_id_ = i;

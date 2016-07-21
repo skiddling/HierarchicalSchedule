@@ -5,21 +5,35 @@ Schedule::Schedule() {
 
 Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que,
 	vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que,
-	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes):
-	rooms_(rooms), groups_(groups), cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que),
-	pattern_map_(pattern_map), pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes){
+	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted):
+	rooms_(rooms), groups_(groups), cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que), pattern_map_(pattern_map), 
+	pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes), topo_sorted_(topo_sorted){
+}
+
+//对每个课表都进行相应的初始化工作，重点就是生成课表
+void Schedule::Init() {
+	//1.现生成每一节课
+	GetTeaCls();
+	//2.产生课表，也就是将老师的所有的课都分配到课表当中去
+	GetRanTab();
 }
 
 //对每个老师的每一节课都进行创建
 void Schedule::GetTeaCls() {
 	map<Course, int> ::iterator it;
+	int cid;
+	ClassUnit *cp;
 	for (int i = 0; i < tea_que_.size(); i++) {
 		it = tea_que_[i].courses_num_.begin();
 		while (it != tea_que_[i].courses_num_.end()) {
 			//单独一门课所有的班级都产生
+			cid = it->first.course_id_;
 			for (int j = 0; j < it->second; j++) {
-				cls_nuit_que_.push_back(*(new ClassUnit(tea_que_[i], it->first, cls_nuit_que_.size())));
-				tea_que_[i].units_que_.push_back(&(*(cls_nuit_que_.end() - 1)));
+				//产生新的课，并放好位置
+				cp = new ClassUnit(tea_que_[i], it->first, cls_nuit_que_.size());
+				cls_nuit_que_.push_back(*cp);
+				tea_que_[i].units_que_.push_back(cp);
+				cou_que_[cid].units_.push_back(cp);
 			}
 			//进行下一门科目的课的产生
 			it++;
@@ -43,17 +57,34 @@ void Schedule::MakeTabRand(vector<vector<int> > &table) {
 	}
 }
 
-bool Schedule::GetRanTab() {
-	vector<vector<int> > randgroups = vector<vector<int> >(tea_que_.size(), vector<int>(groups_));
-	MakeTabRand(randgroups);
-	vector<vector<int> > randrooms = vector<vector<int> >(groups_, vector<int>(rooms_));
-	MakeTabRand(randrooms);
-	vector<int> roompos = vector<int> (groups_, 0);
-
-	//将老师的每节课都进行分配
-	for (int i = 0; i < tea_que_.size(); i++) {
-		tea_que_[i].AssignUnits(randgroups[i], randrooms, roompos);
+vector<vector<int> > Schedule::GetAvlTime(int cid) {
+	int pid;
+	//0这行表示总的和，1表示除了已经满足之外的和
+	vector<vector<int> > avl = vector<vector<int> >(2, vector<int>(groups_, 0));
+	for (int i = 0; i < cou_que_[cid].prefixes_.size(); i++) {
+		pid = cou_que_[cid].prefixes_[i];
+		for (int j = 0; j < groups_; j++) {
+			avl[0][j] += prefixes_[pid].avl_time_[j];
+			if (!cou_que_[cid].satisfied[i])
+				avl[1][j] += prefixes_[pid].avl_time_[j];
+		}
 	}
-	
+	return avl;
+}
+
+int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
+		
+	return 0;
+}
+
+bool Schedule::GetRanTab() {
+	vector<vector<int> > avl;
+	for (int i = 0; i < cou_que_.size(); i++){
+		for (int j = 0; j < cou_que_[i].units_.size(); j++) {
+			//遍历该科目的所有的前缀，并获得所有时间
+			avl = GetAvlTime(i);
+			GetUnitTime(i, j, avl);
+		}
+	}
 	return 0;
 }

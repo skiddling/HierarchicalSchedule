@@ -13,8 +13,10 @@ public:
 	map<Course, int> courses_num_;//每一个科目上多少个班
 	vector<ClassUnit *> units_que_;//具体每个老师上的班级
 	vector<int> units_pos_;//用于指向unit在队列当中的位置
+	vector<bool> avl_time_;//老师能用的时间，1表示可以用，0表示已经用掉了
+
 	Teacher();
-	Teacher(string teacher_id, string teacher_name, vector<Course> courses, map<Course, int> courses_num);
+	Teacher(int groups, string teacher_id, string teacher_name, vector<Course> courses, map<Course, int> courses_num);
 	void GetCouSort();
 	void AssignUnits(vector<int> &randgroups, vector<vector<int> > &randrooms, vector<int> &roompos);//将每一个课都进行分配
 

@@ -21,13 +21,21 @@ public:
 	map<vector<Course>, int> prefix_map_;//用于和prefix_联用
 	vector<Prefix> prefixes_;//所有的前缀模式
 
+	vector<int> topo_sorted_;//科目的拓扑排序表
+
 	Schedule();
 	Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que, 
 		vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, 
-		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes);
-	void GetTeaCls();//构造老师的课程指针
-	bool GetRanTab();
+		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted);
+	void Init();//生成课表
 
 private:
+	void GetTeaCls();//构造老师的课程指针
+	//产生课表
+	bool GetRanTab();
+	//产生随机序列表
 	void MakeTabRand(vector<vector<int> > &table);
+	//获得某个科目的可安排时间
+	vector<vector<int> > GetAvlTime(int cid);
+	int GetUnitTime(int cid, int uid, vector<vector<int> > avl);
 };

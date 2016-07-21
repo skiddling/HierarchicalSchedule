@@ -10,20 +10,18 @@ GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, 
 	//1.获得所有学生的模式类型
 	GetStuPat();
 	GetPrefixes();
-	TopoSort();
+	//因为已经对科目排序过了，所以不需要再用拓扑排序进行排序
+	//TopoSort();
 
+	//公共的内容已经完成，剩下就是对每个schedule进行生成
 	//2.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
-	result_ = *(new Schedule(rooms_, groups_, cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_));
+	result_ = *(new Schedule(rooms_, groups_, cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
 	schedules_ = vector<Schedule>(kScheduleSize_, result_);
-	result_.GetTeaCls();
+	result_.Init();
 	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[i].GetTeaCls();
+		schedules_[i].Init();
 	}
-
-	//3.对每个对象都随机产生一个课表
-	GetRandTab();
-
 }
 
 //从所有学生当中获得所有的模式，并且统计出所有的模式各有多少的学生
@@ -80,6 +78,14 @@ void GA::GetPrefixes() {
 			}
 		}
 	}
+	for (int i = 0; i < cou_que_.size(); i++) {
+		if (!cou_que_[i].prefixes_.size()) {
+			cou_que_[i].prefixes_.push_back(0);
+		}
+		else {
+			cou_que_[i].satisfied = vector<bool>(cou_que_[i].prefixes_.size(), 0);
+		}
+	}
 	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀
 	cout << "end of get prefix" << endl;
 }
@@ -91,26 +97,6 @@ void GA::InitSort() {
 	}
 	for (int i = 0; i < stu_que_.size(); i++) {
 		stu_que_[i].GetCouSort();
-	}
-}
-
-//每个对象都随机生成一个课表
-void GA::GetRandTab() {
-
-	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[i].prefixes_ = prefixes_;
-		schedules_[i].prefix_map_ = prefix_map_;
-		int ts = clock(), te, tag = 0;
-		while (schedules_[i].GetRanTab()) {
-			te = clock();
-			if (te - ts > kCheckTimeOut) {
-				tag = 1;
-				break;
-			}
-		}
-		if (tag) {
-			
-		}
 	}
 }
 

@@ -21,7 +21,7 @@ public:
 	map<vector<Course>, int> prefix_map_;//用于和prefix_联用,数字指向vector<Prefix>下标
 	vector<Prefix> prefixes_;//所有的前缀模式
 
-	vector<ClassUnit> cls_units_;//所有的课
+	//vector<ClassUnit> cls_units_;//所有的课
 
 	vector<int> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序
 
