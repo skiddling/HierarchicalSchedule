@@ -8,6 +8,7 @@ Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student
 	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted):
 	rooms_(rooms), groups_(groups), cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que), pattern_map_(pattern_map), 
 	pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes), topo_sorted_(topo_sorted){
+	table_ = vector<Group>(groups_, *(new Group(rooms_, rooms_)));
 }
 
 //对每个课表都进行相应的初始化工作，重点就是生成课表
@@ -73,17 +74,46 @@ vector<vector<int> > Schedule::GetAvlTime(int cid) {
 }
 
 int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
-		
-	return 0;
+	//先将空余组和老师空余时间相与，得出一个可安排时间列表	
+	//avl是该课程需要被安排的时间,trtimes是老师和该组有能力提供的时间
+	vector<bool> trtimes = vector<bool>(groups_);
+	int tid = cou_que_[cid].units_[uid]->teacher_.teacher_id_;
+	for (int i = 0; i < groups_; i++) {
+		trtimes[i] = tea_que_[tid].avl_time_[i] && table_[i].avl;
+	}
+
+	int tpos;//表示最后选中哪个时间段
+	int tag = cou_que_[cid].satis_num_ != cou_que_[cid].prefixes_.size() ? 1 : 0;
+	//key表示数量级，存在多少个前缀需要满足，vector<int>表示在具体哪些时间段
+	map<GroupUnit, vector<int> > timelist;
+	map<GroupUnit, vector<int> >::iterator it;
+	GroupUnit tgu;
+	vector<int> tque;
+	//先判是否存在不满足的前缀
+	//前缀存在不满足tag = 1, 满足就tag = 0
+	for (int i = 0; i < groups_; i++) {
+		if (avl[1][i] && trtimes[i]) {
+			tgu.leave_ = table_[i].leave_;
+			if(tag) tgu.times_ = avl[1][i];
+			else tgu.times_ = 1;
+			timelist[tgu].push_back(i);
+		}
+	}
+	it = timelist.end();
+	tque = (it--)->second;
+	tpos = tque[rand() % tque.size()];
+	return tpos;
 }
 
 bool Schedule::GetRanTab() {
 	vector<vector<int> > avl;
+	int pos;
 	for (int i = 0; i < cou_que_.size(); i++){
 		for (int j = 0; j < cou_que_[i].units_.size(); j++) {
 			//遍历该科目的所有的前缀，并获得所有时间
 			avl = GetAvlTime(i);
-			GetUnitTime(i, j, avl);
+			//获得该节课应该在哪个时间段group被放置
+			pos = GetUnitTime(i, j, avl);
 		}
 	}
 	return 0;

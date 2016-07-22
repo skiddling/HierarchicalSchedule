@@ -13,6 +13,24 @@ using namespace std;
 
 const double kRndPluRnd = static_cast<double>(RAND_MAX * RAND_MAX);
 
+class GroupUnit {
+public:
+	int times_;
+	int leave_;
+	GroupUnit(int times = 0, int leave = 0) : times_(times), leave_(leave) {
+	}
+	bool operator < (const GroupUnit &a) const {
+		if (times_ != a.times_)return times_ > a.times_;
+		else return leave_ > a.leave_;
+	}
+	
+	bool operator == (const GroupUnit &a) const {
+		if (times_ == a.times_ && leave_ == a.leave_)return 1;
+		return 0;
+	}
+
+};
+
 //class Prefix;
 class ClassUnit;
 

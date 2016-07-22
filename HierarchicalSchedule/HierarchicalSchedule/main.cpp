@@ -42,7 +42,7 @@ void TeachersIn() {
 			coursestable[courseque[i]] = coursetimes;
 		}
 		teacherque.push_back(*(new Teacher(groups, teacherid, teachername, courseque ,coursestable)));
-		(teacherque.end() - 1)->teacher_no = k++;
+		(teacherque.end() - 1)->teacher_id_ = k++;
 	}
 	fin.close();
 }

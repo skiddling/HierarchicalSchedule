@@ -1,5 +1,5 @@
 #pragma once
-#include "timetable.h"
+#include "group.h"
 
 class Schedule
 {
@@ -16,7 +16,7 @@ public:
 	vector<Pattern> pattern_que_;
 
 	vector<ClassUnit> cls_nuit_que_;//当前所有课形成的队列
-	TimeTable time_table_;//当前由clsunitque形成的课表
+	vector<Group> table_;//课表
 
 	map<vector<Course>, int> prefix_map_;//用于和prefix_联用
 	vector<Prefix> prefixes_;//所有的前缀模式
