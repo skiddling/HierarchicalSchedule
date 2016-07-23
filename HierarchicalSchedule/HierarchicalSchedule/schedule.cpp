@@ -16,7 +16,16 @@ void Schedule::Init() {
 	//1.现生成每一节课
 	GetTeaCls();
 	//2.产生课表，也就是将老师的所有的课都分配到课表当中去
-	GetRanTab();
+	int t1 = clock(), t2;
+	while (GetRanTab()) {
+		t2 = clock();
+		if (t2 - t1 > kTableTimeOut) {
+			success_falg_ = 0;
+			return;
+		}
+	}
+	success_falg_ = 1;
+	return;
 }
 
 //对每个老师的每一节课都进行创建
@@ -82,7 +91,7 @@ int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
 		trtimes[i] = tea_que_[tid].avl_time_[i] && table_[i].avl;
 	}
 
-	int tpos;//表示最后选中哪个时间段
+	int flag = 1, tpos;//表示最后选中哪个时间段
 	int tag = cou_que_[cid].satis_num_ != cou_que_[cid].prefixes_.size() ? 1 : 0;
 	//key表示数量级，存在多少个前缀需要满足，vector<int>表示在具体哪些时间段
 	map<GroupUnit, vector<int> > timelist;
@@ -93,16 +102,61 @@ int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
 	//前缀存在不满足tag = 1, 满足就tag = 0
 	for (int i = 0; i < groups_; i++) {
 		if (avl[1][i] && trtimes[i]) {
+			flag = 0;
 			tgu.leave_ = table_[i].leave_;
 			if(tag) tgu.times_ = avl[1][i];
 			else tgu.times_ = 1;
 			timelist[tgu].push_back(i);
 		}
 	}
-	it = timelist.end();
-	tque = (it--)->second;
+	if (flag)return -1;
+	//it = timelist.end();
+	tque = timelist.begin()->second;
+	//tque = (it--)->second;
 	tpos = tque[rand() % tque.size()];
 	return tpos;
+}
+
+void Schedule::AssignUnit(int gid, ClassUnit *cup) {
+	//更新该组的信息
+	int cpos = table_[gid].cpos_;
+	table_[gid].group[cpos] = cup;
+	table_[gid].cpos_++;
+	table_[gid].leave_--;
+	//对该科目的前缀进行更新操作
+	Course cou = cup->course_;
+	vector<Course> temppat;
+	int pid, npid;
+	map<vector<int>, bool>::iterator ita;
+	Prefix tp;
+	vector<int> temptime;
+	for (int i = 0; i < cou.prefixes_.size(); i++) {
+		pid = cou.prefixes_[pid];
+		tp = prefixes_[pid];
+		for (ita = tp.avl_tab_.begin(); ita != tp.avl_tab_.end(); ita++) {
+			//该序列该时间段有空，那么就把这个时间段用掉
+			if((ita->first)[gid] == 1){
+				temppat = prefixes_[pid].pattern_;
+				temppat.push_back(cou);//形成新的后缀					
+				if (prefix_map_.find(temppat) != prefix_map_.end()) {
+					//获得下一个前缀的序号
+					npid = prefix_map_[temppat];
+				}
+				temptime = ita->first;
+				//将该时间段用掉
+				temptime[gid] = 0;
+				if (prefixes_[npid].avl_tab_.find(temptime) == prefixes_[npid].avl_tab_.end()) {
+					prefixes_[npid].avl_tab_[temptime] = 1;
+					for (int k = 0; k < groups_; k++) {
+						if (temptime[k] == 1)
+							prefixes_[npid].avl_time_[k] = 1;
+					}
+				}
+			}
+		}
+	}
+	//更新老师信息
+	cup->teacher_.avl_time_[gid] = 0;
 }
 
 bool Schedule::GetRanTab() {
@@ -114,6 +168,8 @@ bool Schedule::GetRanTab() {
 			avl = GetAvlTime(i);
 			//获得该节课应该在哪个时间段group被放置
 			pos = GetUnitTime(i, j, avl);
+			if (pos < 0)return 1;
+			AssignUnit(pos, cou_que_[i].units_[j]);
 		}
 	}
 	return 0;

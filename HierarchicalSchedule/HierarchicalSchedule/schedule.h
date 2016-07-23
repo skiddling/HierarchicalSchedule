@@ -4,6 +4,8 @@
 class Schedule
 {
 public:
+	int success_falg_;
+	int kTableTimeOut = 1000000;//生成一张具有可行性的课表的时间限制
 	int rooms_, groups_;
 	//map<string, bool> cou_id_map_;
 	//map<string, Course> cou_name_map_;
@@ -38,4 +40,5 @@ private:
 	//获得某个科目的可安排时间
 	vector<vector<int> > GetAvlTime(int cid);
 	int GetUnitTime(int cid, int uid, vector<vector<int> > avl);
+	void AssignUnit(int gid, ClassUnit *cup);
 };

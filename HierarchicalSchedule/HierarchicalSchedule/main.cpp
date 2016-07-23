@@ -93,7 +93,10 @@ int main() {
 	//OutPut();
 	//return 0;
 	GA ga(rooms, groups, stuque, teacherque, couque);
-	
+	if (ga.Generate()) {
+		cout << "failed to create table" << endl;
+		return 0;
+	}
 	system("PAUSE");
 	return 0;
 }

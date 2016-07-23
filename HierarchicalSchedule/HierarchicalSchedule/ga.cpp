@@ -121,6 +121,12 @@ void GA::TopoSort() {
 	cout << endl;*/
 }
 
-void GA::Generate() {
-	
+bool GA::Generate() {
+	int errors = 0;
+	for (int i = 0; i < kScheduleSize_; i++) {
+		errors += schedules_[i].success_falg_;
+	}
+	if (errors == kScheduleSize_)return 1;
+	//开始正式分配学生
+	return 0;
 }
