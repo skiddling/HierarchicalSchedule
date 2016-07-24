@@ -32,7 +32,7 @@ public:
 private:
 	void GetStuPat();//获得当前所有学生的模式情况
 	void GetPrefixes();
-	void GetRandTab();//每个个体都随机生成一个总表
 	void DFS(int k);//拓扑排序当中的一部分
 	void TopoSort();//对所有的科目进行拓扑排序
+	void OutPutTable();
 };

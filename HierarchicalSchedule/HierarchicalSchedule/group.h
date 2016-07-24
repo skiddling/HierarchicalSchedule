@@ -11,7 +11,8 @@ public:
 	bool avl;//该组是否仍然还有空余的教室能够用来安排课程
 	vector<ClassUnit *> group;
 	Group();
-	Group(int rooms, int leave);
+	Group(int rooms, int leave, bool avl = 1);
+	void AddUnit(ClassUnit *up);
 
 private:
 	//void GetRandTable(int rows, int cols);

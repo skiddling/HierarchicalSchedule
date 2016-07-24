@@ -22,6 +22,8 @@ GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, 
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[i].Init();
 	}
+	cout << "end of the get rand table" << endl;
+	OutPutTable();
 }
 
 //从所有学生当中获得所有的模式，并且统计出所有的模式各有多少的学生
@@ -48,11 +50,11 @@ void GA::GetPrefixes() {
 			cque.push_back(patterns_[i].course_que_[j]);
 			cid = patterns_[i].course_que_[j + 1].course_id_;
 			if (prefix_map_.find(cque) == prefix_map_.end()) {
-				prefixes_.push_back(*(new Prefix(cque)));
+				prefixes_.push_back(*(new Prefix(cque, prefixes_.size(), groups_)));
 				prefix_map_[cque] = prefixes_.size() - 1;
-				if (cque.size() == 1) {
+				/*if (cque.size() == 1) {
 					prefixes_.back().pre_id_ = 0;
-				}
+				}*/
 			}
 			//获得每个科目的所有前缀
 			if (cou_que_[cid].prefix_set_.find(prefix_map_[cque]) == cou_que_[cid].prefix_set_.end()) {
@@ -82,8 +84,14 @@ void GA::GetPrefixes() {
 		if (!cou_que_[i].prefixes_.size()) {
 			cou_que_[i].prefixes_.push_back(0);
 		}
-		else {
-			cou_que_[i].satisfied = vector<bool>(cou_que_[i].prefixes_.size(), 0);
+		cou_que_[i].satisfied = vector<bool>(cou_que_[i].prefixes_.size(), 0);
+	}
+	//将这些科目的信息都更新到每个老师当中去
+	int cid;
+	for (int i = 0; i < tea_que_.size(); i++) {
+		for (int j = 0; j < tea_que_[i].courses_.size(); j++) {
+			cid = tea_que_[i].courses_[j].course_id_;
+			tea_que_[i].courses_[j] = cou_que_[cid];
 		}
 	}
 	//还要对所有前缀根据各自的前缀长度进行排序，也就是科目的前缀
@@ -92,6 +100,7 @@ void GA::GetPrefixes() {
 
 //对学生和老师的科目进行排序
 void GA::InitSort() {
+	//sort(cou_que_.begin(), cou_que_.end());
 	for (int i = 0; i < tea_que_.size(); i++) {
 		tea_que_[i].GetCouSort();
 	}
@@ -119,6 +128,20 @@ void GA::TopoSort() {
 		cout << topo_sorted_[i] << " ";
 	}
 	cout << endl;*/
+}
+
+void GA::OutPutTable() {
+	ofstream fout("randtable.txt");
+	for (int k = 0; k < kScheduleSize_; k++) {
+		for (int i = 0; i < groups_; i++) {
+			for (int j = 0; j < rooms_; j++) {
+				fout << schedules_[k].table_[i].group[j]->course_.course_name_ << "  " << schedules_[k].table_[i].group[j]->teacher_.teacher_name_<< "     ";
+			}
+			fout << endl;
+		}
+		fout << endl << endl << endl;
+	}
+	fout.close();
 }
 
 bool GA::Generate() {

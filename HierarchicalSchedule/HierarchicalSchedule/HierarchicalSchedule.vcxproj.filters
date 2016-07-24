@@ -22,13 +22,13 @@
     <ClCompile Include="teacher.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="timetable.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="schedule.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="prefix.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="group.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,13 +51,13 @@
     <ClInclude Include="teacher.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="timetable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="schedule.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="prefix.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="group.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

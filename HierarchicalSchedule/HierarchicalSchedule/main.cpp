@@ -54,13 +54,14 @@ void BasicInput() {
 	string cname;
 	for(int i = 0; i < cnum; i++){
 		fin >> cname >> cls;
-		courses[cname] = *(new Course(cname, cls, cnum));
+		couque.push_back(*(new Course(cname, cls, cnum)));
+		//courses[cname] = *(new Course(cname, cls, cnum));
 	}
 	//确定了每门课的序号
-	map<string, Course>::iterator it = courses.begin();
-	for (int i = 0; it != courses.end(); it++, i++) {
-		it->second.course_id_ = i;
-		couque.push_back(it->second);
+	sort(couque.begin(), couque.end());
+	for (int i = 0; i < couque.size(); i++) {
+		couque[i].course_id_ = i;
+		courses[couque[i].course_name_] = couque[i];
 	}
 	fin.close();
 }
@@ -93,10 +94,10 @@ int main() {
 	//OutPut();
 	//return 0;
 	GA ga(rooms, groups, stuque, teacherque, couque);
-	if (ga.Generate()) {
+	/*if (ga.Generate()) {
 		cout << "failed to create table" << endl;
 		return 0;
-	}
+	}*/
 	system("PAUSE");
 	return 0;
 }
