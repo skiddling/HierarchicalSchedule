@@ -2,6 +2,7 @@
 #include "student.h"
 
 class ClassUnit;
+class Group;
 
 //单独一个模式的定义
 //是进行学生分配的主题对象，要进行分学生的遗传算法的交叉变异等操作
@@ -16,9 +17,11 @@ public:
 	map<ClassUnit*, vector<int> > not_in_unit_table_;//不放在某个课的所有其他可能的课的序列
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
 	map<int, int> stu_num_in_que_;//每种序列当中有多少人
+	vector<vector<pair<int, int> > > path_;//在课表当中能够实现该模式的所有的路径
 
 	Pattern();
 	Pattern(vector<Course> course_que, int stu_num = 1);
+	void GetAllPath(vector<Group> Table);
 
 	bool operator == (const Pattern &a)const {
 		return course_que_ == a.course_que_;
@@ -27,4 +30,7 @@ public:
 	bool operator < (const Pattern &a)const {
 		return course_que_ < a.course_que_;
 	}
+
+private:
+	void DFS();
 };

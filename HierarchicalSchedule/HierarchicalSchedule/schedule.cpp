@@ -214,4 +214,10 @@ bool Schedule::GetRanTab() {
 
 void Schedule::GetAllPath() {
 	//此处的重点是对每个pattern进行操作
+	for (int i = 0; i < groups_; i++) {
+		table_[i].GetCouSet();
+	}
+	for (int i = 0; i < pattern_que_.size(); i++) {
+		pattern_que_[i].GetAllPath(table_);
+	}
 }
