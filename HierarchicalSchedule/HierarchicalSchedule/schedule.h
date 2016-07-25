@@ -41,4 +41,6 @@ private:
 	vector<vector<int> > GetAvlTime(int cid);
 	int GetUnitTime(int cid, int uid, vector<vector<int> > avl);
 	void AssignUnit(int gid, ClassUnit *cup);
+	bool GetTimeList(int tag, map<GroupUnit, vector<int> > &timelist, vector<vector<int> > avl, vector<bool> trtimes);
+	bool CheckPrefix(int cid);
 };

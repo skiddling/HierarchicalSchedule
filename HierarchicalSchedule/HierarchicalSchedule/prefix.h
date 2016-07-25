@@ -5,6 +5,7 @@ class Prefix
 {
 public:
 	int pre_id_;//该前缀的编号，从1开始
+	bool satisfied_;//该序列是否被满足
 	vector<Course> pattern_;//该前缀的模式
 	//后续模式所有可以继续用的时间段，是一个只有0和1的数字串，1表示可以用，0表示不能用
 	vector<int> avl_time_;

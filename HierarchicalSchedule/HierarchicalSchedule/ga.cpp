@@ -84,7 +84,7 @@ void GA::GetPrefixes() {
 		if (!cou_que_[i].prefixes_.size()) {
 			cou_que_[i].prefixes_.push_back(0);
 		}
-		cou_que_[i].satisfied = vector<bool>(cou_que_[i].prefixes_.size(), 0);
+		//cou_que_[i].satisfied = vector<bool>(cou_que_[i].prefixes_.size(), 0);
 	}
 	//将这些科目的信息都更新到每个老师当中去
 	int cid;

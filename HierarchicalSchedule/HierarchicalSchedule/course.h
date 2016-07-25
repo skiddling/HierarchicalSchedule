@@ -45,7 +45,6 @@ public:
 	vector<bool> pre_node_;//用来标记哪些科目是前缀，用于拓扑排序，并且防止重复
 
 	int satis_num_;//满足的前缀数量
-	vector<bool> satisfied;//表示哪些前缀已经被满足了
 	set<int> prefix_set_;//用来判断该前缀是否已经存在了
 	vector<int> prefixes_;//该科目的所有的前缀序列
 	vector<ClassUnit* > units_;//该科目下的所有的的课次
