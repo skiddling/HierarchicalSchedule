@@ -30,13 +30,12 @@ public:
 		vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, 
 		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted);
 	void Init();//生成课表
+	void GetAllPath();//获得所有模式的上课路径
 
 private:
 	void GetTeaCls();//构造老师的课程指针
 	//产生课表
 	bool GetRanTab();
-	//产生随机序列表
-	void MakeTabRand(vector<vector<int> > &table);
 	//获得某个科目的可安排时间
 	vector<vector<int> > GetAvlTime(int cid);
 	int GetUnitTime(int cid, int uid, vector<vector<int> > avl);

@@ -84,7 +84,7 @@ void GA::GetPrefixes() {
 		if (!cou_que_[i].prefixes_.size()) {
 			cou_que_[i].prefixes_.push_back(0);
 		}
-		//cou_que_[i].satisfied = vector<bool>(cou_que_[i].prefixes_.size(), 0);
+		cou_que_[i].satisfied_ = vector<bool>(cou_que_[i].prefixes_.size(), 0);
 	}
 	//将这些科目的信息都更新到每个老师当中去
 	int cid;
@@ -124,18 +124,21 @@ void GA::TopoSort() {
 			DFS(i);
 		}
 	}
-	/*for (int i = 0; i < topo_sorted_.size(); i++) {
-		cout << topo_sorted_[i] << " ";
-	}
-	cout << endl;*/
 }
 
 void GA::OutPutTable() {
 	ofstream fout("randtable.txt");
+	string cname, tname;
 	for (int k = 0; k < kScheduleSize_; k++) {
 		for (int i = 0; i < groups_; i++) {
 			for (int j = 0; j < rooms_; j++) {
-				fout << schedules_[k].table_[i].group[j]->course_.course_name_ << "  " << schedules_[k].table_[i].group[j]->teacher_.teacher_name_<< "     ";
+				cname = schedules_[k].table_[i].group[j]->course_.course_name_;
+				fout << cname << string(11 - cname.length(), ' ');
+			}
+			fout << endl;
+			for (int j = 0; j < rooms_; j++) {
+				tname = schedules_[k].table_[i].group[j]->teacher_.teacher_name_;
+				fout << tname << string(11 -  tname.length(), ' ');
 			}
 			fout << endl;
 		}
@@ -145,11 +148,16 @@ void GA::OutPutTable() {
 }
 
 bool GA::Generate() {
-	int errors = 0;
+	int successnum = 0;
 	for (int i = 0; i < kScheduleSize_; i++) {
-		errors += schedules_[i].success_falg_;
+		successnum += schedules_[i].success_falg_;
 	}
-	if (errors == kScheduleSize_)return 1;
+	if (successnum == 0)return 1;
 	//开始正式分配学生
+	for (int i = 0; i < kScheduleSize_; i++) {
+		if (schedules_[i].success_falg_) {
+			schedules_[i].GetAllPath();
+		}
+	}
 	return 0;
 }

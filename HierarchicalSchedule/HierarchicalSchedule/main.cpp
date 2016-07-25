@@ -98,6 +98,7 @@ int main() {
 		cout << "failed to create table" << endl;
 		return 0;
 	}*/
+	//ga.Generate();
 	system("PAUSE");
 	return 0;
 }

@@ -20,7 +20,7 @@ void Schedule::Init() {
 	//2.产生课表，也就是将老师的所有的课都分配到课表当中去
 	int t1 = clock(), t2;
 	while (1) {
-		Schedule temps = *this;
+		Schedule temps(*this);
 		if (!temps.GetRanTab()) {
 			*this = temps;
 			break;
@@ -32,7 +32,6 @@ void Schedule::Init() {
 		}
 	}
 	success_falg_ = 1;
-	return;
 }
 
 //对每个老师的每一节课都进行创建
@@ -61,23 +60,7 @@ void Schedule::GetTeaCls() {
 		tea_que_[tid].units_que_.push_back(&cls_nuit_que_[i]);
 		cou_que_[cid].units_.push_back(&cls_nuit_que_[i]);
 	}
-	cout << "end of get units" << endl;
-}
-
-void Schedule::MakeTabRand(vector<vector<int> > &table) {
-	for (int i = 0; i < table.size(); i++) {
-		for (int j = 0; j < table[i].size(); j++) {
-			table[i][j] = j;
-		}
-	}
-	int t;
-	for (int i = 0; i < table.size(); i++) {
-		for (int j = 0; j < table[i].size(); j++) {
-			t = rand() % table[i].size();
-			if (t != j)
-				swap(table[i][j], table[i][t]);
-		}
-	}
+	//cout << "end of get units" << endl;
 }
 
 vector<vector<int> > Schedule::GetAvlTime(int cid) {
@@ -90,12 +73,13 @@ vector<vector<int> > Schedule::GetAvlTime(int cid) {
 			if (prefixes_[pid].avl_time_[j]) {
 				avl[0][j] = 1;
 			}
-			//if (!cou_que_[cid].satisfied[i])
-			if(!prefixes_[pid].satisfied_)
+			if (!cou_que_[cid].satisfied_[i])
+			//if(!prefixes_[pid].satisfied_)
 				//如果存在不满足那么1这列才会出现数字，否则就是0
 				avl[1][j] += prefixes_[pid].avl_time_[j];
 		}
 	}
+	//cout << "end of get avl time" << endl;
 	return avl;
 }
 
@@ -128,8 +112,9 @@ int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
 	//先对为满足的课进行满足，如果因为老师和空余组的关系无法找到时间，那么就再考虑满足老师和组的情况
 	int k = 0, pid;
 	for (int i = 0; i < cou_que_[cid].prefixes_.size(); i++) {
-		pid = cou_que_[cid].prefixes_[i];
-		if (prefixes_[pid].satisfied_)k++;
+		//pid = cou_que_[cid].prefixes_[i];
+		//if (prefixes_[pid].satisfied_)k++;
+		if (cou_que_[cid].satisfied_[i])k++;
 	}
 	cou_que_[cid].satis_num_ = k;
 	int tag = k != cou_que_[cid].prefixes_.size() ? 1 : 0;
@@ -142,6 +127,7 @@ int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
 	if (flag && tag == 1) GetTimeList(0, timelist, avl, trtimes);
 	if (flag)return -1;
 	tque = timelist.begin()->second;
+	//cout << "end of get unit time" << endl;
 	return tque[rand() % tque.size()];
 }
 
@@ -164,10 +150,10 @@ void Schedule::AssignUnit(int gid, ClassUnit *cup) {
 		pid = cou.prefixes_[i];
 		tp = prefixes_[pid];
 		//该前缀能被满足
-		//if (tp.avl_time_[gid] && cou_que_[cid].satisfied[i] == 0) {
-		if (tp.avl_time_[gid] && tp.satisfied_ == 0){
-			//cou_que_[cid].satisfied[i] = 1;
-			prefixes_[pid].satisfied_ = 1;
+		if (tp.avl_time_[gid] && cou_que_[cid].satisfied_[i] == 0) {
+		//if (tp.avl_time_[gid] && tp.satisfied_ == 0){
+			cou_que_[cid].satisfied_[i] = 1;
+			//prefixes_[pid].satisfied_ = 1;
 			cou_que_[cid].satis_num_++;
 		}
 		for (ita = tp.avl_tab_.begin(); ita != tp.avl_tab_.end(); ita++) {
@@ -194,13 +180,15 @@ void Schedule::AssignUnit(int gid, ClassUnit *cup) {
 			}
 		}
 	}
+	//cout << "end of assign time" << endl;
 }
 
 bool Schedule::CheckPrefix(int cid) {
 	int pid;
 	for (int i = 0; i < cou_que_[cid].prefixes_.size(); i++) {
-		pid = cou_que_[cid].prefixes_[i];
-		if (!prefixes_[pid].satisfied_)return true;
+		//pid = cou_que_[cid].prefixes_[i];
+		//if (!prefixes_[pid].satisfied_)return true;
+		if (!cou_que_[cid].satisfied_[i])return true;
 	}
 	return false;
 }
@@ -218,7 +206,12 @@ bool Schedule::GetRanTab() {
 			AssignUnit(pos, cou_que_[i].units_[j]);
 		}
 		if (CheckPrefix(i))return 1;
+		cout << "course  " << i << endl;
 	}
 	cout << "end of the rand table" << endl;
 	return 0;
+}
+
+void Schedule::GetAllPath() {
+	//此处的重点是对每个pattern进行操作
 }
