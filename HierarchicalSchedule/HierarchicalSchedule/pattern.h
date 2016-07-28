@@ -18,10 +18,13 @@ public:
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
 	map<int, int> stu_num_in_que_;//每种序列当中有多少人
 	vector<vector<pair<int, int> > > path_;//在课表当中能够实现该模式的所有的路径
+	set<pair<int, int> > unit_set_;//记录所有可能经历过的教室
+	map<pair<int, int>, vector<int> > not_in_table_;//没有经历过的路径形成的表
 
 	Pattern();
 	Pattern(vector<Course> course_que, int stu_num = 1);
 	void GetAllPath(vector<Group> Table);
+	void GetNotInTable();
 
 	bool operator == (const Pattern &a)const {
 		return course_que_ == a.course_que_;
@@ -32,5 +35,5 @@ public:
 	}
 
 private:
-	void DFS();
+	void DFS(int gid, vector<bool> visited, vector<pair<int, int> > path, vector<Group> table);
 };

@@ -219,5 +219,6 @@ void Schedule::GetAllPath() {
 	}
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		pattern_que_[i].GetAllPath(table_);
+		pattern_que_[i].GetNotInTable();
 	}
 }
