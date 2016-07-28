@@ -5,11 +5,12 @@
 Schedule::Schedule() {
 }
 
-Schedule::Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que,
+Schedule::Schedule(int rooms, int groups, int stu_upper, vector<Course> cou_que, vector<Student> stu_que,
 	vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que,
 	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted):
-	rooms_(rooms), groups_(groups), cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que), pattern_map_(pattern_map), 
-	pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes), topo_sorted_(topo_sorted){
+	rooms_(rooms), groups_(groups), stu_upper_(stu_upper), cou_que_(cou_que), stu_que_(stu_que), 
+	tea_que_(tea_que), pattern_map_(pattern_map), pattern_que_(pattern_que), prefix_map_(prefix_map), 
+	prefixes_(prefixes), topo_sorted_(topo_sorted){
 	table_ = vector<Group>(groups_, *(new Group(rooms_, rooms_)));
 }
 
@@ -134,7 +135,7 @@ int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
 void Schedule::AssignUnit(int gid, ClassUnit *cup) {
 	//更新该组和该节课的信息
 	int cpos = table_[gid].cpos_;
-	cup->unit_time_ = make_pair(gid, cpos);
+	//cup->unit_time_ = make_pair(gid, cpos);
 	table_[gid].AddUnit(cup);
 	//更新老师信息
 	//cup->teacher_.avl_time_[gid] = 0;
@@ -206,7 +207,7 @@ bool Schedule::GetRanTab() {
 			AssignUnit(pos, cou_que_[i].units_[j]);
 		}
 		if (CheckPrefix(i))return 1;
-		cout << "course  " << i << endl;
+		//cout << "course  " << i << endl;
 	}
 	cout << "end of the rand table" << endl;
 	return 0;
@@ -215,10 +216,23 @@ bool Schedule::GetRanTab() {
 void Schedule::GetAllPath() {
 	//此处的重点是对每个pattern进行操作
 	for (int i = 0; i < groups_; i++) {
-		table_[i].GetCouSet();
+		table_[i].GetCouSet(i);
 	}
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		pattern_que_[i].GetAllPath(table_);
 		pattern_que_[i].GetNotInTable();
+	}
+	//cout << "end of get not in table" << endl;
+}
+
+void Schedule::StuAssign() {
+	for (int i = 0; i < pattern_que_.size(); i++) {
+		pattern_que_[i].StuAssign();
+	}
+}
+
+void Schedule::CalCrash() {
+	for (int i = 0; i < cls_nuit_que_.size(); i++) {
+		crash_ += (cls_nuit_que_[i].stu_num_ - stu_upper_);
 	}
 }

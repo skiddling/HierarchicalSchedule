@@ -1,7 +1,7 @@
 #include "ga.h"
 
-GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
-	rooms_(rooms), groups_(groups), stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
+GA::GA(int rooms, int groups, int stu_upper, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
+	rooms_(rooms), groups_(groups), stu_upper_(stu_upper), stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
 
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
@@ -16,14 +16,14 @@ GA::GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, 
 	//公共的内容已经完成，剩下就是对每个schedule进行生成
 	//2.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
-	result_ = *(new Schedule(rooms_, groups_, cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
+	result_ = *(new Schedule(rooms_, groups_, stu_upper_, cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
 	schedules_ = vector<Schedule>(kScheduleSize_, result_);
 	result_.Init();
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[i].Init();
 	}
 	cout << "end of the get rand table" << endl;
-	OutPutTable();
+	//OutPutTable();
 }
 
 //从所有学生当中获得所有的模式，并且统计出所有的模式各有多少的学生
@@ -154,10 +154,17 @@ bool GA::Generate() {
 	}
 	if (successnum == 0)return 1;
 	//开始正式分配学生
+	//cout << successnum << endl;
 	for (int i = 0; i < kScheduleSize_; i++) {
 		if (schedules_[i].success_falg_) {
 			schedules_[i].GetAllPath();
+			cout << "end of get all path" << endl;
+			schedules_[i].StuAssign();
+			schedules_[i].CalCrash();
+			//cout << i << endl;
 		}
 	}
+	//准备工作完成，开始遗传算法主体部分
+	cout << "start for GA" << endl;
 	return 0;
 }

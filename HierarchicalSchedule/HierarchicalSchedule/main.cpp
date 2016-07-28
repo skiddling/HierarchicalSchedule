@@ -1,7 +1,7 @@
 #include "ga.h"
 #include <gtest\gtest.h>
 
-int rooms, groups;
+int rooms, groups, stuupper, stulower;
 map<string, Course> courses;
 vector<Course> couque;
 vector<Student> stuque;
@@ -50,7 +50,7 @@ void TeachersIn() {
 void BasicInput() {
 	ifstream fin("basic.txt");
 	int cnum, cls;
-	fin >> rooms >> groups >> cnum;
+	fin >> rooms >> groups >> cnum >> stuupper;
 	string cname;
 	for(int i = 0; i < cnum; i++){
 		fin >> cname >> cls;
@@ -93,12 +93,12 @@ int main() {
 	Input();
 	//OutPut();
 	//return 0;
-	GA ga(rooms, groups, stuque, teacherque, couque);
+	GA ga(rooms, groups, stuupper, stuque, teacherque, couque);
 	/*if (ga.Generate()) {
 		cout << "failed to create table" << endl;
 		return 0;
 	}*/
-	//ga.Generate();
+	ga.Generate();
 	system("PAUSE");
 	return 0;
 }

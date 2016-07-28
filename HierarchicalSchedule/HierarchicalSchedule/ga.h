@@ -4,9 +4,10 @@
 class GA
 {
 public:
-	const int kScheduleSize_ = 50;//定义种群数量
+	const int kScheduleSize_ = 1;//定义种群数量
 	//const int kCheckTimeOut = 1000000;//生成一张具有可行性的课表的时间限制
 	int rooms_, groups_, cnt_;//cnt用于拓扑排序
+	int stu_upper_, stu_lower_;//一个班级的学生人数的上限
 	//map<string, Course> cou_name_map_;//用于存放所有的科目
 	//set<Course> cou_set_;//所有的科目的存放
 	vector<Course> cou_que_;//用于存放所有的科目
@@ -25,7 +26,7 @@ public:
 
 	vector<int> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序
 
-	GA(int rooms, int groups, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_);
+	GA(int rooms, int groups, int stu_upper, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_);
 	bool Generate();//生成课表
 	void InitSort();//给老师和学生的科目进行排序
 

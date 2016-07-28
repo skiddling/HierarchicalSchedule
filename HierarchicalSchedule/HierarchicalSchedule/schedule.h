@@ -4,6 +4,9 @@
 class Schedule
 {
 public:
+	double fitness;//适应值
+	int stu_upper_, stu_lower_;//学生班级人数上限
+	int crash_;//冲突值，用来进行评分
 	int success_falg_;
 	int kTableTimeOut = 1000000;//生成一张具有可行性的课表的时间限制
 	int rooms_, groups_;
@@ -26,11 +29,13 @@ public:
 	vector<int> topo_sorted_;//科目的拓扑排序表
 
 	Schedule();
-	Schedule(int rooms, int groups, vector<Course> cou_que, vector<Student> stu_que, 
+	Schedule(int rooms, int groups, int stu_upper, vector<Course> cou_que, vector<Student> stu_que, 
 		vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, 
 		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted);
 	void Init();//生成课表
 	void GetAllPath();//获得所有模式的上课路径
+	void StuAssign();//初始化分配学生人数
+	void CalCrash();//计算冲突值
 
 private:
 	void GetTeaCls();//构造老师的课程指针
