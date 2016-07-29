@@ -50,7 +50,7 @@ void TeachersIn() {
 void BasicInput() {
 	ifstream fin("basic.txt");
 	int cnum, cls;
-	fin >> rooms >> groups >> cnum >> stuupper;
+	fin >> rooms >> groups >> cnum >> stuupper >> stulower;
 	string cname;
 	for(int i = 0; i < cnum; i++){
 		fin >> cname >> cls;
@@ -88,17 +88,30 @@ void OutPut() {
 	fout.close();
 }
 
+void SetRunTime() {
+	GA::rooms_ = rooms;
+	GA::groups_ = groups;
+	GA::stu_lower_ = stulower;
+	GA::stu_upper_ = stuupper;
+	Schedule::rooms_ = rooms;
+	Schedule::groups_ = groups;
+	Schedule::stu_lower_ = stulower;
+	Schedule::stu_upper_ = stuupper;
+	ClassUnit::stu_lower_ = stulower;
+	ClassUnit::stu_upper_ = stuupper;
+}
+
 int main() {
 	srand((unsigned int)time(0));
 	Input();
+	SetRunTime();
 	//OutPut();
 	//return 0;
-	GA ga(rooms, groups, stuupper, stuque, teacherque, couque);
-	/*if (ga.Generate()) {
-		cout << "failed to create table" << endl;
-		return 0;
-	}*/
-	ga.Generate();
+	GA ga(stuque, teacherque, couque);
+	if (ga.Generate()) {
+		ga.OutPutResult();
+	}
+	else cout << "failed gernerate table" << endl;
 	system("PAUSE");
 	return 0;
 }

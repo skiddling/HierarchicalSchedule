@@ -1,16 +1,34 @@
 #include "schedule.h"
 
 //在schedule层面上做的操作都是对schedule直接的属性进行更新修改
+const double kMXMP = 0.1;
+const double kMXMPG = 0.2;
+const double kMXCP = .035;
+const double kSTEP = 1.3;
+
+int Schedule::stu_lower_ = 0;
+int Schedule::stu_upper_ = 0;
+int Schedule::rooms_ = 0;
+int Schedule::groups_ = 0;
+double Schedule::po_cross_ = 0.2;
+double Schedule::po_mutate_gene_ = 0.1;
+double Schedule::po_mutate_ = 0.01;
+
+const double Schedule::mx_pmutate_ = 0.05;
+const double Schedule::mx_pmutate_gene_ = 0.1;
+const double Schedule::con_pcross_ = 0.2;
+const double Schedule::con_pmutate = 0.01;
+const double Schedule::con_pmutate_gene_ = 0.1;
+const int Schedule::kTableTimeOut = 1000000;
 
 Schedule::Schedule() {
 }
 
-Schedule::Schedule(int rooms, int groups, int stu_upper, vector<Course> cou_que, vector<Student> stu_que,
-	vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que,
-	map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted):
-	rooms_(rooms), groups_(groups), stu_upper_(stu_upper), cou_que_(cou_que), stu_que_(stu_que), 
-	tea_que_(tea_que), pattern_map_(pattern_map), pattern_que_(pattern_que), prefix_map_(prefix_map), 
-	prefixes_(prefixes), topo_sorted_(topo_sorted){
+Schedule::Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que,
+	map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, map<vector<Course>, int> prefix_map,
+	vector<Prefix> prefixes, vector<int> topo_sorted):
+	cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que), pattern_map_(pattern_map),
+	pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes), topo_sorted_(topo_sorted){
 	table_ = vector<Group>(groups_, *(new Group(rooms_, rooms_)));
 }
 

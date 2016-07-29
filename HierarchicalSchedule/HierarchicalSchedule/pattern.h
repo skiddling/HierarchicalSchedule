@@ -12,6 +12,7 @@ public:
 	int pattern_id_;//该模式的id
 	int stu_num_;//该模式下所有的学生人数
 	vector<Course> course_que_;
+	vector<int> stu_que_;//该模式下的所有学生
 	vector<vector<ClassUnit*> > avl_units_que_;//该课表下的所有的可以放该模式的班级序列
 	//map<ClassUnit*, bool> units_map_;//所有能存放课的表
 	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列

@@ -1,5 +1,8 @@
 #include "classunit.h"
 
+int ClassUnit::stu_lower_ = 0;
+int ClassUnit::stu_upper_ = 0;
+
 ClassUnit::ClassUnit(int unit_id, int stu_num) : unit_id_(unit_id), stu_num_(stu_num){
 	alterable_ = 1;
 }

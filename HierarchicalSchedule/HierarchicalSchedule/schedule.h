@@ -4,15 +4,22 @@
 class Schedule
 {
 public:
+	static const double mx_pmutate_;
+	static const double mx_pmutate_gene_;
+	static const double con_pmutate ;
+	static const double con_pmutate_gene_;
+	static const double con_pcross_;
+	static const int kTableTimeOut;//生成一张具有可行性的课表的时间限制
+
 	double fitness;//适应值
-	int stu_upper_, stu_lower_;//学生班级人数上限
+	static double po_mutate_;//具体运行时候的变异概率
+	static double po_mutate_gene_;//具体运行时基因变异概率
+	static double po_cross_;//具体运行时候的交叉概率
+	static int stu_upper_, stu_lower_;//学生班级人数上限
 	int crash_;//冲突值，用来进行评分
 	int success_falg_;
-	int kTableTimeOut = 1000000;//生成一张具有可行性的课表的时间限制
-	int rooms_, groups_;
-	//map<string, bool> cou_id_map_;
-	//map<string, Course> cou_name_map_;
-	//set<Course> cou_set_;//用于存放所有的科目的情况
+	static int rooms_, groups_;
+
 	vector<Course> cou_que_;//用于存放所有的科目
 	vector<Student> stu_que_;
 	vector<Teacher> tea_que_;
@@ -29,8 +36,8 @@ public:
 	vector<int> topo_sorted_;//科目的拓扑排序表
 
 	Schedule();
-	Schedule(int rooms, int groups, int stu_upper, vector<Course> cou_que, vector<Student> stu_que, 
-		vector<Teacher> tea_que, map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, 
+	Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que, 
+		map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, 
 		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted);
 	void Init();//生成课表
 	void GetAllPath();//获得所有模式的上课路径

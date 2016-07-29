@@ -1,7 +1,17 @@
 #include "ga.h"
 
-GA::GA(int rooms, int groups, int stu_upper, vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
-	rooms_(rooms), groups_(groups), stu_upper_(stu_upper), stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
+const int kTimeOut = 3650000;
+const int kOnceTimeOut = 1800000;
+const int kLocTimeOut = 180000;
+
+int GA::rooms_ = 0;
+int GA::groups_ = 0;
+int GA::stu_lower_ = 0;
+int GA::stu_upper_ = 0;
+double GA::step = 1.3;
+
+GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
+	stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
 
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
@@ -12,31 +22,18 @@ GA::GA(int rooms, int groups, int stu_upper, vector<Student> stu_que, vector<Tea
 	GetPrefixes();
 	//因为已经对科目排序过了，所以不需要再用拓扑排序进行排序
 	//TopoSort();
-
-	//公共的内容已经完成，剩下就是对每个schedule进行生成
-	//2.先把每一节课初始化，然后生成课表
-	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
-	result_ = *(new Schedule(rooms_, groups_, stu_upper_, cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
-	schedules_ = vector<Schedule>(kScheduleSize_, result_);
-	result_.Init();
-	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[i].Init();
-	}
-	cout << "end of the get rand table" << endl;
-	//OutPutTable();
 }
 
 //从所有学生当中获得所有的模式，并且统计出所有的模式各有多少的学生
 void GA::GetStuPat() {
 	for (int i = 0; i < stu_que_.size(); i++) {
 		if (patterns_map_.find(stu_que_[i].courses_) == patterns_map_.end()) {
-			//patterns_map_[stu_que_[i].courses_] = *(new Pattern(stu_que_[i].courses_));
-			//patterns_.push_back(patterns_map_[stu_que_[i].courses_]);
 			patterns_.push_back(*(new Pattern(stu_que_[i].courses_)));
 			patterns_map_[stu_que_[i].courses_] = patterns_.size() - 1;
 		}
 		else patterns_[patterns_map_[stu_que_[i].courses_]].stu_num_++;
 		stu_que_[i].patp_ = patterns_map_[stu_que_[i].courses_];
+		patterns_[patterns_map_[stu_que_[i].courses_]].stu_que_.push_back(stu_que_[i].student_no);
 	}
 	//对得到的所有的模式进行排序，以便于进行获得前缀的操作
 	sort(patterns_.begin(), patterns_.end());
@@ -52,9 +49,6 @@ void GA::GetPrefixes() {
 			if (prefix_map_.find(cque) == prefix_map_.end()) {
 				prefixes_.push_back(*(new Prefix(cque, prefixes_.size(), groups_)));
 				prefix_map_[cque] = prefixes_.size() - 1;
-				/*if (cque.size() == 1) {
-					prefixes_.back().pre_id_ = 0;
-				}*/
 			}
 			//获得每个科目的所有前缀
 			if (cou_que_[cid].prefix_set_.find(prefix_map_[cque]) == cou_que_[cid].prefix_set_.end()) {
@@ -63,17 +57,8 @@ void GA::GetPrefixes() {
 			}
 		}
 		for (int j = 1; j < len; j++) {
-			//iid = cque[j - 1].course_id_;
-			//oid = cque[j].course_id_;
 			iid = patterns_[i].course_que_[j - 1].course_id_;
 			oid = patterns_[i].course_que_[j].course_id_;
-			//cout << iid << ' ' << oid << endl;
-			/*if (iid == 3 && oid == 4) {
-				for (int k = 0; k < patterns_[i].course_que_.size(); k++) {
-					cout << patterns_[i].course_que_[k].course_name_ << "\t";
-				}
-				cout << endl;
-			}*/
 			if (!cou_que_[oid].pre_node_[iid]) {
 				cou_que_[oid].pre_node_[iid] = 1;
 				cou_que_[oid].pre_node_que_.push_back(&cou_que_[iid]);
@@ -132,12 +117,12 @@ void GA::OutPutTable() {
 	for (int k = 0; k < kScheduleSize_; k++) {
 		for (int i = 0; i < groups_; i++) {
 			for (int j = 0; j < rooms_; j++) {
-				cname = schedules_[k].table_[i].group[j]->course_.course_name_;
+				cname = schedules_[0][k].table_[i].group[j]->course_.course_name_;
 				fout << cname << string(11 - cname.length(), ' ');
 			}
 			fout << endl;
 			for (int j = 0; j < rooms_; j++) {
-				tname = schedules_[k].table_[i].group[j]->teacher_.teacher_name_;
+				tname = schedules_[0][k].table_[i].group[j]->teacher_.teacher_name_;
 				fout << tname << string(11 -  tname.length(), ' ');
 			}
 			fout << endl;
@@ -147,24 +132,106 @@ void GA::OutPutTable() {
 	fout.close();
 }
 
-bool GA::Generate() {
+void GA::Mutate() {
+
+}
+
+void GA::Cross() {
+
+}
+
+void GA::Modify() {
+
+}
+
+void GA::Select() {
+
+}
+
+void GA::CalCrash() {
+}
+
+bool GA::Init() {
+	//公共的内容已经完成，剩下就是对每个schedule进行生成
+	//2.先把每一节课初始化，然后生成课表
+	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
+	result_ = *(new Schedule(cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
+	schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
+	schedules_[1] = schedules_[0];
+	result_.Init();
+	for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[0][i].Init();
+	}
+	cout << "end of the get rand table" << endl;
+	//OutPutTable();
 	int successnum = 0;
 	for (int i = 0; i < kScheduleSize_; i++) {
-		successnum += schedules_[i].success_falg_;
+		successnum += schedules_[0][i].success_falg_;
 	}
-	if (successnum == 0)return 1;
+	if (successnum == 0)return true;
 	//开始正式分配学生
 	//cout << successnum << endl;
 	for (int i = 0; i < kScheduleSize_; i++) {
-		if (schedules_[i].success_falg_) {
-			schedules_[i].GetAllPath();
+		if (schedules_[0][i].success_falg_) {
+			schedules_[0][i].GetAllPath();
 			cout << "end of get all path" << endl;
-			schedules_[i].StuAssign();
-			schedules_[i].CalCrash();
+			schedules_[0][i].StuAssign();
+			schedules_[0][i].CalCrash();
 			//cout << i << endl;
 		}
 	}
 	//准备工作完成，开始遗传算法主体部分
 	cout << "start for GA" << endl;
-	return 0;
+	result_.crash_ = INT_MAX;
+}
+
+bool GA::Generate() {
+	if (Init()) {
+		cout << "failed to create table" << endl;
+		return false;
+	}
+	//t1表示最开始时间，t2表示当前时间，t3表示上次进展的时间,oncestart是上次一轮的时间
+	int t1 = clock(), t2 = t1, t3 = t1, oncestart = t1;
+	int mxoff = kOnceTimeOut;
+	int precrash = INT_MAX;
+	while (t2 - t1 < kTimeOut) {
+		Mutate();
+		Cross();
+		//Modify();
+		CalCrash();
+		Select();
+		//得到解
+		if (result_.crash_ == 0)break;
+		t2 = clock();
+		//运行时间超规定
+		if (t2 - t1 > kTimeOut)break;
+		//有进一步获得进展，重置概率
+		if (precrash != result_.crash_) {
+			precrash = result_.crash_;
+			Schedule::po_mutate_ = Schedule::con_pmutate;
+			Schedule::po_mutate_gene_ = Schedule::con_pmutate_gene_;
+			t3 = clock();
+		}
+		//陷入局部最优解
+		if (t2 - t3 > kLocTimeOut) {
+			Schedule::po_mutate_ *= GA::step;
+			Schedule::po_mutate_gene_ *= GA::step;
+			Schedule::po_mutate_ = min(Schedule::mx_pmutate_, Schedule::po_mutate_);
+			Schedule::po_mutate_gene_ = min(Schedule::mx_pmutate_gene_, Schedule::po_mutate_gene_);
+			t3 = clock();
+		}
+		//解太糟糕或者超过该轮运行时间，重新生成种群
+		if (t2 - oncestart > kOnceTimeOut) {
+			if (Init()) {
+				cout << "failed to create table" << endl;
+				return false;
+			}
+			oncestart = clock();
+			t3 = oncestart;
+		}
+	}
+	return true;
+}
+
+void GA::OutPutResult() {
 }
