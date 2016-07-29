@@ -249,8 +249,11 @@ void Schedule::StuAssign() {
 	}
 }
 
-void Schedule::CalCrash() {
+void Schedule::CalCrashFitness() {
+	crash_ = 0;
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
-		crash_ += (cls_nuit_que_[i].stu_num_ - stu_upper_);
+		if (cls_nuit_que_[i].stu_num_ > stu_upper_)crash_ += cls_nuit_que_[i].stu_num_ - stu_upper_;
+		else if (cls_nuit_que_[i].stu_num_ < stu_lower_)crash_ += stu_lower_ - cls_nuit_que_[i].stu_num_;
 	}
+	fitness = 1.0 / static_cast<double>(1 + crash_);
 }

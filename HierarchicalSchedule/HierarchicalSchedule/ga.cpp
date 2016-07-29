@@ -145,10 +145,15 @@ void GA::Modify() {
 }
 
 void GA::Select() {
+	for (int i = 0; i < kScheduleSize_; i++) {
 
+	}
 }
 
 void GA::CalCrash() {
+	for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[0][i].CalCrashFitness();
+	}
 }
 
 bool GA::Init() {
@@ -176,7 +181,7 @@ bool GA::Init() {
 			schedules_[0][i].GetAllPath();
 			cout << "end of get all path" << endl;
 			schedules_[0][i].StuAssign();
-			schedules_[0][i].CalCrash();
+			schedules_[0][i].CalCrashFitness();
 			//cout << i << endl;
 		}
 	}
