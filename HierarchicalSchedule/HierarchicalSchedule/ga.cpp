@@ -13,6 +13,7 @@ double GA::step = 1.3;
 GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
 	stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
 
+	fits = vector<double>(kScheduleSize_, 0.0);
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
@@ -133,21 +134,41 @@ void GA::OutPutTable() {
 }
 
 void GA::Mutate() {
-
+	for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[0][i].Mutate(mxfit_);
+	}
 }
 
 void GA::Cross() {
-
+	for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[0][i].Cross(mxfit_);
+	}
 }
 
 void GA::Modify() {
-
+	for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[0][i].Modify();
+	}
 }
 
 void GA::Select() {
-	for (int i = 0; i < kScheduleSize_; i++) {
-
+	mxfit_ = 0.0;
+	fits[0] = schedules_[0][0].fitness;
+	for (int i = 1; i < kScheduleSize_; i++) {
+		fits[i] += schedules_[0][i].fitness + fits[i - 1];
+		if (mxfit_ < schedules_[0][i].fitness)mxfit_ = schedules_[0][i].fitness;
 	}
+	for (int i = 0; i < kScheduleSize_; i++) {
+		fits[i] /= fits.back();
+	}
+	double r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+	int id;
+	for (int i = 0; i < kScheduleSize_; i++) {
+		r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+		id = lower_bound(fits.begin(), fits.end(), r) - fits.begin();
+		schedules_[1][i] = schedules_[0][id];
+	}
+	schedules_[0] = schedules_[1];
 }
 
 void GA::CalCrash() {
@@ -163,7 +184,7 @@ bool GA::Init() {
 	result_ = *(new Schedule(cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
 	schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
 	schedules_[1] = schedules_[0];
-	result_.Init();
+	//result_.Init();
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[0][i].Init();
 	}

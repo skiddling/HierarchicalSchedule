@@ -13,7 +13,6 @@ int Schedule::groups_ = 0;
 double Schedule::po_cross_ = 0.2;
 double Schedule::po_mutate_gene_ = 0.1;
 double Schedule::po_mutate_ = 0.01;
-
 const double Schedule::mx_pmutate_ = 0.05;
 const double Schedule::mx_pmutate_gene_ = 0.1;
 const double Schedule::con_pcross_ = 0.2;
@@ -256,4 +255,38 @@ void Schedule::CalCrashFitness() {
 		else if (cls_nuit_que_[i].stu_num_ < stu_lower_)crash_ += stu_lower_ - cls_nuit_que_[i].stu_num_;
 	}
 	fitness = 1.0 / static_cast<double>(1 + crash_);
+}
+
+void Schedule::Mutate(double mxfit) {
+	//对于每个pattern进行操作
+	double r, mp;
+	int psize = pattern_que_.size();
+	for (int i = 0; i < psize; i++) {
+		r = static_cast<double> (rand() * rand()) / kRndPluRnd;
+		mp = po_mutate_ * mxfit / fitness;
+		mp = min(mp, mx_pmutate_);
+		if (r < mp) {
+			mp = po_mutate_gene_ * mxfit / fitness;
+			mp = min(mp, mx_pmutate_gene_);
+			pattern_que_[i].Mutate(mp);
+		}
+	}
+}
+
+void Schedule::Cross(double mxfit) {
+	//对于每个pattern进行操作
+	double r, cp;
+	int psize = pattern_que_.size();
+	for (int i = 0; i < psize; i++) {
+		r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+		cp = po_cross_ * mxfit / fitness;
+		cp = min(cp, kMXCP);
+		if (r < cp) {
+			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+			pattern_que_[i].Cross();
+		}
+	}
+}
+
+void Schedule::Modify() {
 }

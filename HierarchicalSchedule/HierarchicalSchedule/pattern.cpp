@@ -79,15 +79,68 @@ void Pattern::GetNotInTable() {
 	}
 }
 
-void Pattern::StuAssign() {
-	int stusum = stu_num_, temp;
-	for (int i = 0; i < path_.size(); i++) {
-		if(i != path_.size() - 1)temp = rand() % stusum;
-		else temp = stusum;
-		for (int j = 0; j < path_[i].size(); j++) {
-			path_[i][j]->stu_num_ += temp;
-		}
-		stusum -= temp;
-		if (stusum == 0)break;
+void Pattern::GetRandTab(vector<int>& ary) {
+	int id, asz = ary.size();
+	for (int i = 0; i < asz; i++) {
+		id = rand() % asz;
+		if (id != i)swap(ary[i], ary[id]);
 	}
 }
+
+void Pattern::StuAssign() {
+	//有一个延迟操作的概念，只有当modify的时候才会进行把学生分配到各个班级当中
+	//mutate和cross操作都不会去涉及classunit的操作
+	int stuleft = stu_num_, temp, id, psz = path_.size() - 1;
+	vector<int> ary = vector<int>(path_.size());
+	for (int i = 0; i < ary.size(); i++) {
+		ary[i] = i;
+	}
+	GetRandTab(ary);
+	chosen_path_tab_ = vector<bool>(path_.size(), false);
+	for (int i = 0; i < psz; i++) {
+		id = ary[i];
+		temp = rand() % stuleft;
+		if (temp != 0) {
+			stu_num_in_que_[id] = temp;
+			stuleft -= temp;
+			chosen_path_tab_[id] = true;
+			if (!stuleft)return;
+		}
+	}
+	stu_num_in_que_[psz] = stuleft;
+	chosen_path_tab_[psz] = true;
+}
+
+void Pattern::Mutate(double mp) {
+	//对于当前模式下的所有的路径进行变化人数
+	int psz = path_.size() - 1, temp, id;
+	if (!psz)return;
+	double r;
+	for (int i = 0; i < psz; i++) {
+		if (chosen_path_tab_[i]) {
+			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+			if (r < mp) {
+				temp = rand() % stu_num_in_que_[i];
+				id = GetRandId(i, psz + 1);
+				Update(i, id, temp);
+			}
+		}
+	}
+}
+
+void Pattern::Cross() {
+	if (path_.size() == 1)return;
+	vector<int> stuin;
+	for (int i = 0; i < path_.size(); i++) {
+		if (chosen_path_tab_[i])stuin.push_back(i);
+	}
+	int id;
+	GetRandTab(stuin);
+	for (int i = 0; i < stuin.size(); i++) {
+		id = stuin[i];
+		if (chosen_path_tab_[id]) {
+			
+		}
+	}
+}
+

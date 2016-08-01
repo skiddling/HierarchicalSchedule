@@ -9,6 +9,7 @@ public:
 	static int rooms_, groups_;
 	static double step;
 	int cnt_;//cnt用于拓扑排序
+	double mxfit_;//存一轮当中最大的适应度
 	static int stu_upper_, stu_lower_;//一个班级的学生人数的上限
 	vector<Course> cou_que_;//用于存放所有的科目
 	vector<Student> stu_que_;
@@ -22,6 +23,7 @@ public:
 	map<vector<Course>, int> prefix_map_;//用于和prefix_联用,数字指向vector<Prefix>下标
 	vector<Prefix> prefixes_;//所有的前缀模式
 
+	vector<double> fits;
 	//vector<ClassUnit> cls_units_;//所有的课
 
 	vector<int> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序

@@ -4,6 +4,7 @@
 class Schedule
 {
 public:
+	static const double mx_pcross_;
 	static const double mx_pmutate_;
 	static const double mx_pmutate_gene_;
 	static const double con_pmutate ;
@@ -43,6 +44,9 @@ public:
 	void GetAllPath();//获得所有模式的上课路径
 	void StuAssign();//初始化分配学生人数
 	void CalCrashFitness();//计算冲突值
+	void Mutate(double mxfit);
+	void Cross(double mxfit);
+	void Modify();
 
 private:
 	void GetTeaCls();//构造老师的课程指针
