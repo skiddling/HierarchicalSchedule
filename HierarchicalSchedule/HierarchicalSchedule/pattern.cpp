@@ -2,6 +2,9 @@
 #include "classunit.h"
 #include "group.h"
 
+int Pattern::stu_lower_ = 0;
+int Pattern::stu_upper_ = 0;
+
 Pattern::Pattern() {
 }
 
@@ -121,7 +124,7 @@ void Pattern::Mutate(double mp) {
 			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 			if (r < mp) {
 				temp = rand() % stu_num_in_que_[i];
-				id = GetRandId(i, psz + 1);
+				id = GetRandId(i);
 				Update(i, id, temp);
 			}
 		}
@@ -139,8 +142,88 @@ void Pattern::Cross() {
 	for (int i = 0; i < stuin.size(); i++) {
 		id = stuin[i];
 		if (chosen_path_tab_[id]) {
-			
+			SwapStu(id);
 		}
 	}
 }
 
+void Pattern::SwapStu(int oid) {
+	int iid = GetRandId(oid), temp[2];
+	temp[0] = rand() % stu_num_in_que_[oid];
+	if (stu_num_in_que_[iid])temp[1] = rand() % stu_num_in_que_[iid];
+	else temp[1] = 0;
+	stu_num_in_que_[oid] = stu_num_in_que_[oid] - temp[0] + temp[1];
+	stu_num_in_que_[iid] = stu_num_in_que_[iid] - temp[1] + temp[0];
+	if (!stu_num_in_que_[oid])chosen_path_tab_[oid] = 0;
+	if (stu_num_in_que_[iid])chosen_path_tab_[iid] = 1;
+	else stu_num_in_que_[iid] = 0;
+}
+
+void Pattern::PutStuDown2Cls() {
+	for (int i = 0; i < path_.size(); i++) {
+		if (chosen_path_tab_[i]) {
+			for (int j = 0; j < path_[i].size(); j++) {
+				path_[i][j]->stu_num_ += stu_num_in_que_[i];
+			}
+		}
+	}
+}
+
+int Pattern::GetAvlStuNum(ClassUnit* cp, bool tag) {
+	//tag=0表示要查找人数多于最小人数限额的班级
+	//1表示相反
+	//如果是要得到最多的，通过该路径分配的人数和该路径当中每个班级能提供的数量来进行得到最后的结果
+	avl_num_each_path_ = vector<int>(path_.size(), 0);
+	avl_sum_ = 0;
+	int pid, temp;
+	for (int i = 0; i < not_in_table_[cp].size(); i++) {
+		pid = not_in_table_[cp][i];
+		temp = 0;
+		for (int j = 0; j < path_[pid].size(); j++) {
+			if (!tag) {
+				//如果是求最多能提供多少人数，就是当前人数-人数下限
+				if(path_[pid][j]->stu_num_ > stu_lower_)
+					temp = max(temp, path_[pid][j]->stu_num_ - stu_lower_);
+			}
+			else {
+				if (path_[pid][j]->stu_num_ < stu_upper_)
+					temp = max(temp, stu_upper_ - path_[pid][j]->stu_num_);
+			}
+		}
+		temp = min(stu_num_in_que_[pid], temp);
+		avl_num_each_path_[i] = temp;
+		avl_sum_ += temp;
+	}
+	if (avl_sum_ == 0)avl_num_each_path_.clear();
+	return avl_sum_;
+}
+
+
+void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
+	vector<int> usednum = vector<int>(path_.size(), 0);
+	int i = 0, temp;
+	if (avl_sum_ > neednum) {
+		while (neednum) {
+			if (avl_num_each_path_[i]) {
+				temp = rand() % avl_num_each_path_[i];
+				avl_num_each_path_[i] -= temp;
+				neednum += temp;
+			}
+			i++;
+			if (i == path_.size())i = 0;
+		}
+	}
+	else {
+		for (; i < path_.size(); i++) {
+			usednum[i] = avl_num_each_path_[i];
+		}
+	}
+	//进行修改人数
+	for (i = 0; i < path_.size(); i++) {
+		for (int j = 0; i < path_[i].size(); j++) {
+			if (tag)path_[i][j]->stu_num_ += usednum[i];
+			else path_[i][j]->stu_num_ -= usednum[i];
+		}
+	}
+	avl_num_each_path_.clear();
+}

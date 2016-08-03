@@ -58,4 +58,5 @@ private:
 	void AssignUnit(int gid, ClassUnit *cup);
 	bool GetTimeList(int tag, map<GroupUnit, vector<int> > &timelist, vector<vector<int> > avl, vector<bool> trtimes);
 	bool CheckPrefix(int cid);
+	void GetStuNum();
 };

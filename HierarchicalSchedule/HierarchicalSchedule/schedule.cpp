@@ -289,4 +289,19 @@ void Schedule::Cross(double mxfit) {
 }
 
 void Schedule::Modify() {
+	GetStuNum();
+	int snum;
+	for (int i = 0; i < cls_nuit_que_.size(); i++) {
+		snum = cls_nuit_que_[i].stu_num_;
+		if (snum < stu_lower_)cls_nuit_que_[i].Modify(0);
+		if (snum > stu_upper_)cls_nuit_que_[i].Modify(1);
+	}
 }
+
+void Schedule::GetStuNum() {
+	for (int i = 0; i < pattern_que_.size(); i++) {
+		pattern_que_[i].PutStuDown2Cls();
+	}
+}
+
+

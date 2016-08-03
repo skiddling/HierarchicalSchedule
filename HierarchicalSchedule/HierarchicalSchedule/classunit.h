@@ -19,9 +19,14 @@ public:
 	ClassUnit(int unit_id, pair<int, int> unit_time, int stu_num = 0);
 	ClassUnit(Teacher teacher, Course course, int unit_id, int stu_num = 0);
 	void init();
+	void Modify(bool tag);
 	inline int GetCrash();
 
 private:
 
 };
 
+inline int ClassUnit::GetCrash() {
+	if (stu_num_ < stu_lower_)return stu_lower_ - stu_num_;
+	if (stu_num_ > stu_upper_)return stu_num_ - stu_upper_;
+}

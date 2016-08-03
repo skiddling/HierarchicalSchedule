@@ -99,6 +99,8 @@ void SetRunTime() {
 	Schedule::stu_upper_ = stuupper;
 	ClassUnit::stu_lower_ = stulower;
 	ClassUnit::stu_upper_ = stuupper;
+	Pattern::stu_lower_ = stulower;
+	Pattern::stu_upper_ = stuupper;
 }
 
 int main() {

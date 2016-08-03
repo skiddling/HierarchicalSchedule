@@ -11,6 +11,7 @@ class Pattern
 public:
 	int pattern_id_;//该模式的id
 	int stu_num_;//该模式下所有的学生人数
+	static int stu_upper_, stu_lower_;
 	vector<Course> course_que_;
 	vector<int> stu_que_;//该模式下每个学生
 	vector<vector<ClassUnit*> > avl_units_que_;//该课表下的所有的可以放该模式的班级序列
@@ -22,6 +23,8 @@ public:
 	vector<vector<ClassUnit* > > path_;//在课表当中能够实现该模式的所有的路径
 	vector<bool> chosen_path_tab_;//表示有哪些路径被选中了
 	set<ClassUnit* > unit_set_;//记录所有可能经历过的教室
+	vector<int> avl_num_each_path_;
+	int avl_sum_;
 	//map<pair<int, int>, vector<int> > not_in_table_;//没有经历过的路径形成的表
 
 	Pattern();
@@ -31,6 +34,9 @@ public:
 	void StuAssign();
 	void Mutate(double mp);
 	void Cross();
+	void PutStuDown2Cls();
+	int GetAvlStuNum(ClassUnit* cp, bool tag);
+	void ModifyStuNum(bool tag, ClassUnit* cp, int neednum);
 
 	bool operator == (const Pattern &a)const {
 		return course_que_ == a.course_que_;
@@ -39,16 +45,21 @@ public:
 	bool operator < (const Pattern &a)const {
 		return course_que_ < a.course_que_;
 	}
+	
+	bool operator != (const Pattern &a)const {
+		return course_que_ != a.course_que_;
+	}
 
 private:
 	void DFS(int gid, vector<bool> visited, vector<ClassUnit* > path, vector<Group> table);
 	void GetRandTab(vector<int> &ary);
-	inline int GetRandId(int pos, int sz);
+	inline int GetRandId(int pos);
 	inline void Update(int oid, int iid, int num);
+	void SwapStu(int oid);
 };
 
-inline int Pattern::GetRandId(int pos, int sz) {
-	int id;
+inline int Pattern::GetRandId(int pos) {
+	int id, sz = path_.size();
 	do {
 		id = rand() % sz;
 	} while (id == pos);
