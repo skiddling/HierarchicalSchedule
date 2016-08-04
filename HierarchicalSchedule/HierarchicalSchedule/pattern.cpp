@@ -94,6 +94,7 @@ void Pattern::StuAssign() {
 	//有一个延迟操作的概念，只有当modify的时候才会进行把学生分配到各个班级当中
 	//mutate和cross操作都不会去涉及classunit的操作
 	int stuleft = stu_num_, temp, id, psz = path_.size() - 1;
+	stu_num_in_que_ = vector<int>(psz + 1, 0);
 	vector<int> ary = vector<int>(path_.size());
 	for (int i = 0; i < ary.size(); i++) {
 		ary[i] = i;
@@ -110,20 +111,22 @@ void Pattern::StuAssign() {
 			if (!stuleft)return;
 		}
 	}
-	stu_num_in_que_[psz] = stuleft;
-	chosen_path_tab_[psz] = true;
+	stu_num_in_que_[ary[psz]] = stuleft;
+	chosen_path_tab_[ary[psz]] = true;
 }
 
 void Pattern::Mutate(double mp) {
 	//对于当前模式下的所有的路径进行变化人数
-	int psz = path_.size() - 1, temp, id;
-	if (!psz)return;
+	int psz = path_.size(), temp, id;
+	if (psz == 1)return;
 	double r;
 	for (int i = 0; i < psz; i++) {
 		if (chosen_path_tab_[i]) {
 			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+			//r = 0;
 			if (r < mp) {
 				temp = rand() % stu_num_in_que_[i];
+				if (!temp)break;
 				id = GetRandId(i);
 				Update(i, id, temp);
 			}
@@ -148,8 +151,11 @@ void Pattern::Cross() {
 }
 
 void Pattern::SwapStu(int oid) {
+	//0表示的要出去的，1表示进入的
 	int iid = GetRandId(oid), temp[2];
-	temp[0] = rand() % stu_num_in_que_[oid];
+	do {
+		temp[0] = rand() % stu_num_in_que_[oid];
+	} while (!temp[0]);
 	if (stu_num_in_que_[iid])temp[1] = rand() % stu_num_in_que_[iid];
 	else temp[1] = 0;
 	stu_num_in_que_[oid] = stu_num_in_que_[oid] - temp[0] + temp[1];
@@ -228,7 +234,7 @@ void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
 	avl_num_each_path_.clear();
 }
 
-void Pattern::PutStuDown2Cls() {
+void Pattern::AssignStuDown2Cls() {
 	int sp = 0;
 	for (int i = 0; i < path_.size(); i++) {
 		for (int k = 0; k < stu_num_in_que_[i]; k++) {

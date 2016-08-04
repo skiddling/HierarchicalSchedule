@@ -246,6 +246,7 @@ void Schedule::StuAssign() {
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		pattern_que_[i].StuAssign();
 	}
+
 }
 
 void Schedule::CalCrashFitness() {
@@ -265,6 +266,7 @@ void Schedule::Mutate(double mxfit) {
 		r = static_cast<double> (rand() * rand()) / kRndPluRnd;
 		mp = po_mutate_ * mxfit / fitness;
 		mp = min(mp, mx_pmutate_);
+		//r = 0;
 		if (r < mp) {
 			mp = po_mutate_gene_ * mxfit / fitness;
 			mp = min(mp, mx_pmutate_gene_);
@@ -281,8 +283,9 @@ void Schedule::Cross(double mxfit) {
 		r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 		cp = po_cross_ * mxfit / fitness;
 		cp = min(cp, kMXCP);
+		r = 0;
 		if (r < cp) {
-			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
+			//r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 			pattern_que_[i].Cross();
 		}
 	}
@@ -307,7 +310,7 @@ void Schedule::GetStuNum() {
 void Schedule::GetResult() {
 	//让每个pattern当中的学生分配到每个班级当中
 	for (int i = 0; i < pattern_que_.size(); i++) {
-		pattern_que_[i].PutStuDown2Cls();
+		pattern_que_[i].AssignStuDown2Cls();
 	}
 }
 

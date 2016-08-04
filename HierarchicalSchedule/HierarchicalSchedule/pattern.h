@@ -38,7 +38,7 @@ public:
 	void PutStuDown2Cls();
 	int GetAvlStuNum(ClassUnit* cp, bool tag);
 	void ModifyStuNum(bool tag, ClassUnit* cp, int neednum);
-	void PutStuDown2Cls();
+	void AssignStuDown2Cls();
 
 	bool operator == (const Pattern &a)const {
 		return course_que_ == a.course_que_;

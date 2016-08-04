@@ -13,6 +13,7 @@ double GA::step = 1.3;
 GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
 	stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
 
+	mxfit_ = 0.0;
 	fits = vector<double>(kScheduleSize_, 0.0);
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
@@ -156,8 +157,9 @@ void GA::Select() {
 	mxfit_ = 0.0;
 	fits[0] = schedules_[0][0].fitness;
 	for (int i = 1; i < kScheduleSize_; i++) {
-		fits[i] += schedules_[0][i].fitness + fits[i - 1];
+		fits[i] = schedules_[0][i].fitness + fits[i - 1];
 		if (mxfit_ < schedules_[0][i].fitness)mxfit_ = schedules_[0][i].fitness;
+		if (schedules_[0][i].crash_ < result_.crash_)result_ = schedules_[0][i];
 	}
 	for (int i = 0; i < kScheduleSize_; i++) {
 		fits[i] /= fits.back();
@@ -204,12 +206,14 @@ bool GA::Init() {
 			cout << "end of get all path" << endl;
 			schedules_[0][i].StuAssign();
 			schedules_[0][i].CalCrashFitness();
+			if (schedules_[0][i].fitness > mxfit_)mxfit_ = schedules_[0][i].fitness;
 			//cout << i << endl;
 		}
 	}
 	//准备工作完成，开始遗传算法主体部分
 	cout << "start for GA" << endl;
 	result_.crash_ = INT_MAX;
+	return false;
 }
 
 bool GA::Generate() {
@@ -224,7 +228,7 @@ bool GA::Generate() {
 	while (t2 - t1 < kTimeOut) {
 		Mutate();
 		Cross();
-		//Modify();
+		Modify();
 		CalCrash();
 		Select();
 		//得到解
