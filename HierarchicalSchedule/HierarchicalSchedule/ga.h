@@ -31,6 +31,7 @@ public:
 	GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_);
 	bool Generate();//生成课表
 	void OutPutResult();
+	void GetResult();
 
 private:
 	void InitSort();//给老师和学生的科目进行排序

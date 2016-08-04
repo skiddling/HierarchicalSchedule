@@ -47,6 +47,8 @@ public:
 	void Mutate(double mxfit);
 	void Cross(double mxfit);
 	void Modify();
+	void GetResult();
+	void OutPutResult();
 
 private:
 	void GetTeaCls();//构造老师的课程指针

@@ -21,6 +21,7 @@ public:
 	void init();
 	void Modify(bool tag);
 	inline int GetCrash();
+	void OutPutStu(ofstream &fout);
 
 private:
 

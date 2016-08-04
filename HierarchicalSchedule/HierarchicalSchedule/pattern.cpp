@@ -173,6 +173,7 @@ int Pattern::GetAvlStuNum(ClassUnit* cp, bool tag) {
 	//tag=0表示要查找人数多于最小人数限额的班级
 	//1表示相反
 	//如果是要得到最多的，通过该路径分配的人数和该路径当中每个班级能提供的数量来进行得到最后的结果
+	//每次进行修正的时候才会用到avl_num_each_path
 	avl_num_each_path_ = vector<int>(path_.size(), 0);
 	avl_sum_ = 0;
 	int pid, temp;
@@ -194,10 +195,9 @@ int Pattern::GetAvlStuNum(ClassUnit* cp, bool tag) {
 		avl_num_each_path_[i] = temp;
 		avl_sum_ += temp;
 	}
-	if (avl_sum_ == 0)avl_num_each_path_.clear();
+	//if (avl_sum_ == 0)avl_num_each_path_.clear();
 	return avl_sum_;
 }
-
 
 void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
 	vector<int> usednum = vector<int>(path_.size(), 0);
@@ -226,4 +226,16 @@ void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
 		}
 	}
 	avl_num_each_path_.clear();
+}
+
+void Pattern::PutStuDown2Cls() {
+	int sp = 0;
+	for (int i = 0; i < path_.size(); i++) {
+		for (int k = 0; k < stu_num_in_que_[i]; k++) {
+			for (int j = 0; j < path_[i].size(); j++) {
+				path_[i][j]->students_.push_back(stu_que_[sp + k]);
+			}
+			sp += k;
+		}
+	}
 }

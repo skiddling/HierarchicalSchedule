@@ -111,6 +111,7 @@ int main() {
 	//return 0;
 	GA ga(stuque, teacherque, couque);
 	if (ga.Generate()) {
+		ga.GetResult();
 		ga.OutPutResult();
 	}
 	else cout << "failed gernerate table" << endl;

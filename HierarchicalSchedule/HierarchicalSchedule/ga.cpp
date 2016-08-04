@@ -34,7 +34,8 @@ void GA::GetStuPat() {
 		}
 		else patterns_[patterns_map_[stu_que_[i].courses_]].stu_num_++;
 		stu_que_[i].patp_ = patterns_map_[stu_que_[i].courses_];
-		patterns_[patterns_map_[stu_que_[i].courses_]].stu_que_.push_back(stu_que_[i].student_no);
+		//patterns_[patterns_map_[stu_que_[i].courses_]].stu_que_.push_back(stu_que_[i].student_no);
+		patterns_[patterns_map_[stu_que_[i].courses_]].stu_que_.push_back(&stu_que_[i]);
 	}
 	//对得到的所有的模式进行排序，以便于进行获得前缀的操作
 	sort(patterns_.begin(), patterns_.end());
@@ -260,4 +261,11 @@ bool GA::Generate() {
 }
 
 void GA::OutPutResult() {
+	//将每个班的学生都输出出来？
+	result_.OutPutResult();
+}
+
+void GA::GetResult() {
+	//此处仅仅对res进行操作
+	result_.GetResult();
 }

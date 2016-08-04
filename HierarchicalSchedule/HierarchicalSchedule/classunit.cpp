@@ -70,3 +70,12 @@ void ClassUnit::Modify(bool tag) {
 		}
 	}
 }
+
+void ClassUnit::OutPutStu(ofstream &fout) {
+	fout << course_.course_name_ << string(' ', 11 - course_.course_name_.length()) << teacher_.teacher_name_ << endl;
+	fout << unit_time_.first << "  " << unit_time_.second << endl;
+	for (int i = 0; i < students_.size(); i++) {
+		fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << "  " << students_[i]->student_id_ << endl;
+	}
+	fout << endl << endl;
+}

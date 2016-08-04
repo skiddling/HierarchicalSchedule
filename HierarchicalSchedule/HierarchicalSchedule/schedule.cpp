@@ -304,4 +304,17 @@ void Schedule::GetStuNum() {
 	}
 }
 
+void Schedule::GetResult() {
+	//让每个pattern当中的学生分配到每个班级当中
+	for (int i = 0; i < pattern_que_.size(); i++) {
+		pattern_que_[i].PutStuDown2Cls();
+	}
+}
 
+void Schedule::OutPutResult() {
+	ofstream fout("result.txt");
+	for (int i = 0; i < cls_nuit_que_.size(); i++) {
+		cls_nuit_que_[i].OutPutStu(fout);
+	}
+	fout.close();
+}
