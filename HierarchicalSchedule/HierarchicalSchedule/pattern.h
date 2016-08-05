@@ -64,7 +64,9 @@ inline int Pattern::GetRandId(int pos) {
 	int id, sz = path_.size();
 	do {
 		id = rand() % sz;
+		cout << pattern_id_ << "  " << id << ' ' << sz << endl;
 	} while (id == pos);
+	cout << "end of get rand id" << endl;
 	return id;
 }
 

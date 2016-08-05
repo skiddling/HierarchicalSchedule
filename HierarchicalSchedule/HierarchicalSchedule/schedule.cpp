@@ -283,8 +283,10 @@ void Schedule::Cross(double mxfit) {
 		r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 		cp = po_cross_ * mxfit / fitness;
 		cp = min(cp, kMXCP);
-		r = 0;
+		//r = 0;
+		cout << i << endl;
 		if (r < cp) {
+			cout << "cross " << i << " pattern" << endl;
 			//r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 			pattern_que_[i].Cross();
 		}
@@ -293,11 +295,17 @@ void Schedule::Cross(double mxfit) {
 
 void Schedule::Modify() {
 	GetStuNum();
-	int snum;
+	int snum = 0;
+	for (int i = 0; i < cls_nuit_que_.size(); i++) {
+		snum += cls_nuit_que_[i].stu_num_;
+	}
+	cout << snum << endl;
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
 		snum = cls_nuit_que_[i].stu_num_;
 		if (snum < stu_lower_)cls_nuit_que_[i].Modify(0);
 		if (snum > stu_upper_)cls_nuit_que_[i].Modify(1);
+		/*if (snum < stu_lower_)cls_nuit_que_[i].IncreaseStuNum();
+		if (snum > stu_upper_)cls_nuit_que_[i].DecreaseStuNum();*/
 	}
 }
 

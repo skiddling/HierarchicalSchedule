@@ -40,6 +40,9 @@ void GA::GetStuPat() {
 	}
 	//对得到的所有的模式进行排序，以便于进行获得前缀的操作
 	sort(patterns_.begin(), patterns_.end());
+	for (int i = 0; i < patterns_.size(); i++) {
+		patterns_[i].pattern_id_ = i;
+	}
 }
 
 void GA::GetPrefixes() {
@@ -226,9 +229,9 @@ bool GA::Generate() {
 	int mxoff = kOnceTimeOut;
 	int precrash = INT_MAX;
 	while (t2 - t1 < kTimeOut) {
-		Mutate();
-		Cross();
-		Modify();
+		Mutate(), cout << "end of mutate" << endl;
+		Cross(), cout << "end of cross" << endl;
+		Modify(), cout << "end of modify" << endl;
 		CalCrash();
 		Select();
 		//得到解

@@ -24,7 +24,9 @@ public:
 	void OutPutStu(ofstream &fout);
 
 private:
-
+	void GetAvlPatQue(vector<Pattern* > &avlpatque);
+	void IncreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
+	void DecreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
 };
 
 inline int ClassUnit::GetCrash() {

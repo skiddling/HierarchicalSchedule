@@ -15,7 +15,7 @@ Pattern::Pattern(vector<Course> course_que, int stu_num) :
 void Pattern::GetAllPath(vector<Group> table) {
 	//dfs搜索得到所有的路径
 	//一次排查每个科目
-	int rid;
+	//int rid;
 	vector<bool> visited = vector<bool>(table.size(), false);
 	//vector<pair<int, int> > path = vector<pair<int, int> >(course_que_.size());
 	vector<ClassUnit* > path = vector<ClassUnit* >(course_que_.size());
@@ -34,6 +34,12 @@ void Pattern::DFS(int gid, vector<bool> visited, vector<ClassUnit* > path, vecto
 		}
 	}
 	if (unvisit.size() == 0) {
+		//把模式加入到班级当中去
+		for (int i = 0; i < path.size(); i++) {
+			if (path[i]->patterns_.find(this) == path[i]->patterns_.end()) {
+				path[i]->patterns_[this] = true;
+			}
+		}
 		path_.push_back(path);
 		return;
 	}
@@ -53,7 +59,13 @@ void Pattern::DFS(int gid, vector<bool> visited, vector<ClassUnit* > path, vecto
 			}
 		}
 	}
-	DFS(gid + 1, visited, path, table);
+	//计算剩下还有多少课
+	int coursenumleft = 0;
+	for (int i = 0; i < visited.size(); i++) {
+		if (!visited[i])coursenumleft++;
+	}
+	//gid是当前的层次号，从0开始，而size是整个的数量，比如4-0 = 4，只有当前还剩下3个的时候才能继续去排，所以小于号
+	if(coursenumleft < table.size() - gid)DFS(gid + 1, visited, path, table);
 }
 
 void Pattern::GetNotInTable() {
@@ -103,7 +115,7 @@ void Pattern::StuAssign() {
 	chosen_path_tab_ = vector<bool>(path_.size(), false);
 	for (int i = 0; i < psz; i++) {
 		id = ary[i];
-		temp = rand() % stuleft;
+		temp = rand() % (stuleft + 1);
 		if (temp != 0) {
 			stu_num_in_que_[id] = temp;
 			stuleft -= temp;
@@ -125,7 +137,7 @@ void Pattern::Mutate(double mp) {
 			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 			//r = 0;
 			if (r < mp) {
-				temp = rand() % stu_num_in_que_[i];
+				temp = rand() % (stu_num_in_que_[i] + 1);
 				if (!temp)break;
 				id = GetRandId(i);
 				Update(i, id, temp);
@@ -154,9 +166,10 @@ void Pattern::SwapStu(int oid) {
 	//0表示的要出去的，1表示进入的
 	int iid = GetRandId(oid), temp[2];
 	do {
-		temp[0] = rand() % stu_num_in_que_[oid];
+		temp[0] = rand() % (stu_num_in_que_[oid] + 1);
+		//cout << temp[0] <<  " " << stu_num_in_que_[oid] << endl;
 	} while (!temp[0]);
-	if (stu_num_in_que_[iid])temp[1] = rand() % stu_num_in_que_[iid];
+	if (stu_num_in_que_[iid] > 0)temp[1] = rand() % (stu_num_in_que_[iid] + 1);
 	else temp[1] = 0;
 	stu_num_in_que_[oid] = stu_num_in_que_[oid] - temp[0] + temp[1];
 	stu_num_in_que_[iid] = stu_num_in_que_[iid] - temp[1] + temp[0];
@@ -185,35 +198,51 @@ int Pattern::GetAvlStuNum(ClassUnit* cp, bool tag) {
 	int pid, temp;
 	for (int i = 0; i < not_in_table_[cp].size(); i++) {
 		pid = not_in_table_[cp][i];
-		temp = 0;
+		temp = INT_MAX;
 		for (int j = 0; j < path_[pid].size(); j++) {
 			if (!tag) {
 				//如果是求最多能提供多少人数，就是当前人数-人数下限
 				if(path_[pid][j]->stu_num_ > stu_lower_)
-					temp = max(temp, path_[pid][j]->stu_num_ - stu_lower_);
+					temp = min(temp, path_[pid][j]->stu_num_ - stu_lower_);
+				else {
+					temp = 0;
+					break;
+				}
 			}
 			else {
+				//能给出多少空的位置
 				if (path_[pid][j]->stu_num_ < stu_upper_)
-					temp = max(temp, stu_upper_ - path_[pid][j]->stu_num_);
+					temp = min(temp, stu_upper_ - path_[pid][j]->stu_num_);
+				else {
+					temp = 0;
+					break;
+				}
 			}
 		}
-		temp = min(stu_num_in_que_[pid], temp);
+		//只有当需要拿出来的时候才会
+		//如果需要减少人数，那么最多就是把该路径当中的人数都搬走
+		if(!tag) temp = min(stu_num_in_que_[pid], temp);
 		avl_num_each_path_[i] = temp;
 		avl_sum_ += temp;
 	}
 	//if (avl_sum_ == 0)avl_num_each_path_.clear();
+	//如果需要增加人数，那么最多就是把cp当中所有该pat的学生都搬走
+	if (tag)avl_sum_ = min(avl_sum_, cp->patterns_stus_[this]);
 	return avl_sum_;
 }
 
 void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
+	//tag=0表示要拿出neednum这些学生到cp当中去
+	//tag=1表示cp要拿出neednum这些学生到当前pat当中来
 	vector<int> usednum = vector<int>(path_.size(), 0);
-	int i = 0, temp;
+	int i = 0, temp, recode = neednum;
 	if (avl_sum_ > neednum) {
 		while (neednum) {
 			if (avl_num_each_path_[i]) {
-				temp = rand() % avl_num_each_path_[i];
+				temp = rand() % (avl_num_each_path_[i] + 1);
 				avl_num_each_path_[i] -= temp;
-				neednum += temp;
+				neednum -= temp;
+				usednum[i] += temp;
 			}
 			i++;
 			if (i == path_.size())i = 0;
@@ -229,6 +258,24 @@ void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
 		for (int j = 0; i < path_[i].size(); j++) {
 			if (tag)path_[i][j]->stu_num_ += usednum[i];
 			else path_[i][j]->stu_num_ -= usednum[i];
+		}
+	}
+	while (recode) {
+		for (int i = 0; i < in_unit_table_[cp].size(); i++) {
+			int pid = in_unit_table_[cp][i];
+			temp = rand() % (recode + 1);
+			recode -= temp;
+			if (!temp)continue;
+			if (tag) {
+				for (int j = 0; j < path_[pid].size(); j++) {
+					path_[pid][j]->stu_num_ -= temp;
+				}
+			}
+			else {
+				for (int j = 0; j < path_[pid].size(); j++) {
+					path_[pid][j]->stu_num_ += temp;
+				}
+			}
 		}
 	}
 	avl_num_each_path_.clear();
