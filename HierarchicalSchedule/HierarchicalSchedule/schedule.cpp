@@ -237,9 +237,15 @@ void Schedule::GetAllPath() {
 	}
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		pattern_que_[i].GetAllPath(table_);
-		pattern_que_[i].GetNotInTable();
 	}
-	//cout << "end of get not in table" << endl;
+	map<ClassUnit*, vector<vector<int> > > ::iterator it;
+	for (int i = 0; i < pattern_que_.size(); i++) {
+		it = pattern_que_[i].notin_path_combos_.begin();
+		for (int j = 0; j < it->second.size(); j++) {
+			if (it->second[j].size() > 1)cout << i << " " << j << endl;
+		}
+	}
+	cout << "end of get not in table" << endl;
 }
 
 void Schedule::StuAssign() {

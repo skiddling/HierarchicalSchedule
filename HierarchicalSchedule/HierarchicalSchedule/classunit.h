@@ -4,7 +4,7 @@
 class ClassUnit
 {
 public:
-	int crash_;//该班级的冲突值
+	//int crash_;//该班级的冲突值
 	int stu_num_;//该班级学生数量
 	int unit_id_;
 	static int stu_upper_, stu_lower_;
@@ -13,8 +13,10 @@ public:
 	Teacher teacher_;//每个上课教室都会有一个老师，没有就是NULL
 	Course course_;//每个上课的教室都会有一个上课的科目，没有就是NULL
 	vector<Student*> students_;//用来保存这个班已经存在的学生
-	map<Pattern*, bool> patterns_;//用来存当前班级有多少个patterns
+	map<Pattern*, bool> patterns_;//用来存当前班级有多少个patterns，在getallpath的过程中采集到信息
 	map<Pattern*, int> patterns_stus_;//每个patterns有多少个学生
+	map<Pattern*, map<int, int> > pat_path_stus_num_;//每个pat当中的每个路径下各有多少的学生，也就是记录了具体每个学生的来源于哪个pat的哪个路径当中
+	map<Pattern*, map<int, int> > selected_stus_;//当需要将学生分出去的时候用来放选中的学生
 	ClassUnit(int unit_id, int stu_num = 0);
 	ClassUnit(int unit_id, pair<int, int> unit_time, int stu_num = 0);
 	ClassUnit(Teacher teacher, Course course, int unit_id, int stu_num = 0);
@@ -27,6 +29,7 @@ private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
 	void IncreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
 	void DecreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
+	void GetSelectedStus(int neednum);
 };
 
 inline int ClassUnit::GetCrash() {

@@ -17,8 +17,9 @@ public:
 	vector<Student* >stu_que_;
 	vector<vector<ClassUnit*> > avl_units_que_;//该课表下的所有的可以放该模式的班级序列
 	//map<ClassUnit*, bool> units_map_;//所有能存放课的表
-	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
+	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列
+	map<ClassUnit*, vector<vector<int> > > notin_path_combos_;//每个combo当中组合的路径，也就是路径当中没有重复的班级的路径之和
 	//map<int, int> stu_num_in_que_;//每种序列当中有多少人
 	vector<int> stu_num_in_que_;
 	vector<vector<ClassUnit* > > path_;//在课表当中能够实现该模式的所有的路径
@@ -31,7 +32,6 @@ public:
 	Pattern();
 	Pattern(vector<Course> course_que, int stu_num = 1);
 	void GetAllPath(vector<Group> table);
-	void GetNotInTable();
 	void StuAssign();
 	void Mutate(double mp);
 	void Cross();
@@ -58,6 +58,11 @@ private:
 	inline int GetRandId(int pos);
 	inline void Update(int oid, int iid, int num);
 	void SwapStu(int oid);
+	void GetNotInTable();
+	void GetPathCombination();
+	void GetEachCombo(ClassUnit* cp, set<ClassUnit* > units, int pos, vector<int> que);
+	bool GetIsIn(ClassUnit *cp, set<ClassUnit* > units, int pid);
+	int GetMaxAvlStus(ClassUnit *cp);
 };
 
 inline int Pattern::GetRandId(int pos) {

@@ -22,56 +22,82 @@ void ClassUnit::Modify(bool tag) {
 	//0表示人数不够，需要从当前包含的模式当中抽取一定数量的学生来平衡这个班级的人数
 	//1表示人数过多，需要把当前的学生数量放一部分到其他的班级当中
 	//对于每个模式而言，都有一个不在当前的班级的表，只有当该班级在这些模式当中存在可以替换的班级列表才能将这个模式选中
+	cout << unit_id_ << " " << tag << " " << stu_num_ << endl;
 	int neednum = tag ? (stu_num_ - stu_upper_) : (stu_lower_ - stu_num_);
 	vector<Pattern* > avlpatque;
+	map<Pattern*, int> avlinpat;
 	map<Pattern*, bool>::iterator it = patterns_.begin();
-	map<int, int> pid2id;
 	for (; it != patterns_.end(); it++) {
 		if (it->first->not_in_table_.find(this) != it->first->not_in_table_.end()) {
 			avlpatque.push_back(it->first);
 		}
 	}
 	//根据具体的是人数不够还是超过来进行分类讨论
-	//map<Pattern*, int> avlstunum;
-	vector<int> avlnumpat = vector<int>(avlpatque.size(), 0);
+	vector<int> recodeavl;
 	int temp, avlstusum = 0;
 	for (int i = 0; i < avlpatque.size(); i++) {
 		temp = avlpatque[i]->GetAvlStuNum(this, tag);
 		if (temp) {
-			//avlstunum[avlpatque[i]] = temp;
-			avlnumpat[i] = temp;
+			avlinpat[avlpatque[i]] = temp;
 			avlstusum += temp;
 		}
 	}
+	cout << "end of get avl stu num" << endl;
+	cout << avlstusum << "                      " << neednum << endl;
 	//如果供应人数多那么就随机选择需求数量，如果不够就全部都用来满足需求
 	/*if (tag)DecreaseStuNum(neednum, avlstusum, avlstunum, avlnumpat);
 	else IncreaseStuNum(neednum, avlstusum, avlstunum, avlnumpat);*/
 	int i = 0;
 	vector<int> needused = vector<int>(avlpatque.size(), 0);
+	map<Pattern*, int>::iterator ita = avlinpat.begin();
+	map<Pattern*, int> patused;
 	if (avlstusum > neednum) {
+		if (tag)GetSelectedStus(neednum);
 		while (neednum) {
-			if (avlnumpat[i]) {
-				temp = rand() % (avlnumpat[i] + 1);
-				avlnumpat[i] -= temp;
-				needused[i] = temp;
+			if (ita->second) {
+				temp = rand() % (ita->second + 1);
+				ita->second -= temp;
+				patused[ita->first] += temp;
 				neednum -= temp;
 			}
-			i++;
-			if (i == avlpatque.size()) i = 0;
+			ita++;
+			if (ita == avlinpat.end())ita = avlinpat.begin();
 		}
 	}
 	else {
-		for (; i < avlpatque.size(); i++) {
-			needused[i] = avlnumpat[i];
+		if (tag)GetSelectedStus(avlstusum);
+		for (; ita != avlinpat.end(); ita++) {
+			patused[ita->first] = ita->second;
 		}
 	}
-	
+	cout << "end of get needused" << endl;
 	//对每个模式进行人员的分配
-	it = patterns_.begin();
-	for (i = 0; i < avlpatque.size(); i++, it++) {
-		if (needused[i]) {
-			it->first->ModifyStuNum(tag, this, needused[i]);
-		}
+	map<Pattern*, int>::iterator itp = patused.begin();
+	for (; itp != patused.end(); itp++) {
+		itp->first->ModifyStuNum(tag, this, itp->second);
+	}
+	cout << "end of motify stu num" << endl;
+}
+
+void ClassUnit::GetSelectedStus(int neednum) {
+	//随机选择需要删除的学生选中
+	selected_stus_.clear();
+	map<Pattern*, map<int, int> > ppsn = pat_path_stus_num_;
+	map<Pattern*, map<int, int> >::iterator itp = ppsn.begin();
+	int temp;
+	while (neednum) {
+		map<int, int>::iterator itm = itp->second.begin();
+		while (itm != itp->second.end() && neednum) {
+			if (itm->second) {
+				temp = rand() % (itm->second + 1);
+				neednum -= temp;
+				ppsn[itp->first][itm->second] -= temp;
+			}
+			itm++;
+		}	
+		if (!neednum)break;
+		itp++;
+		if (itp == ppsn.end())itp = ppsn.begin();
 	}
 }
 
