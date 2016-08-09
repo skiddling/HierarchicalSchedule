@@ -14,9 +14,12 @@ public:
 	Course course_;//每个上课的教室都会有一个上课的科目，没有就是NULL
 	vector<Student*> students_;//用来保存这个班已经存在的学生
 	map<Pattern*, bool> patterns_;//用来存当前班级有多少个patterns，在getallpath的过程中采集到信息
+
+	//以下三个数据是需要在modify之后被清空的，还有顶上的那个stunum
 	map<Pattern*, int> patterns_stus_;//每个patterns有多少个学生
 	map<Pattern*, map<int, int> > pat_path_stus_num_;//每个pat当中的每个路径下各有多少的学生，也就是记录了具体每个学生的来源于哪个pat的哪个路径当中
 	map<Pattern*, map<int, int> > selected_stus_;//当需要将学生分出去的时候用来放选中的学生
+
 	ClassUnit(int unit_id, int stu_num = 0);
 	ClassUnit(int unit_id, pair<int, int> unit_time, int stu_num = 0);
 	ClassUnit(Teacher teacher, Course course, int unit_id, int stu_num = 0);
@@ -25,6 +28,7 @@ public:
 	inline int GetCrash();
 	void OutPutStu(ofstream &fout);
 	void GetPatStusNum();
+	void ResetStuData();
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);

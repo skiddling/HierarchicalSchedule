@@ -1,5 +1,4 @@
 #include "ga.h"
-#include <gtest\gtest.h>
 
 int rooms, groups, stuupper, stulower;
 map<string, Course> courses;

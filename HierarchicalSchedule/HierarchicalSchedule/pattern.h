@@ -13,15 +13,15 @@ public:
 	int stu_num_;//该模式下所有的学生人数
 	static int stu_upper_, stu_lower_;
 	vector<Course> course_que_;
-	//vector<int> stu_que_;//该模式下每个学生
 	vector<Student* >stu_que_;
-	//vector<vector<ClassUnit*> > avl_units_que_;//该课表下的所有的可以放该模式的班级序列
-	//map<ClassUnit*, bool> units_map_;//所有能存放课的表
+
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
 	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列
 	map<ClassUnit*, vector<vector<int> > > notin_path_combos_;//每个combo当中组合的路径，也就是路径当中没有重复的班级的路径之和
-	//map<int, int> stu_num_in_que_;//每种序列当中有多少人
-	vector<int> stu_num_in_que_;
+
+	vector<int> stu_num_in_que_;//记载了每条路径当中学生人数,mutate和corss只会修改这个值
+	//modify修改完之后其实也就是修改了这个值，而且cls有延迟操作，每次都还要重这里重新读取数据
+
 	vector<vector<ClassUnit* > > path_;//在课表当中能够实现该模式的所有的路径
 	vector<bool> chosen_path_tab_;//表示有哪些路径被选中了
 	set<ClassUnit* > unit_set_;//记录所有可能经历过的教室

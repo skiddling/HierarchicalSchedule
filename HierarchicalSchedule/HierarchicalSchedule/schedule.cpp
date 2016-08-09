@@ -316,6 +316,7 @@ void Schedule::Modify() {
 		/*if (snum < stu_lower_)cls_nuit_que_[i].IncreaseStuNum();
 		if (snum > stu_upper_)cls_nuit_que_[i].DecreaseStuNum();*/
 	}
+	ResetStuNum();
 }
 
 void Schedule::GetStuNum() {
@@ -337,4 +338,10 @@ void Schedule::OutPutResult() {
 		cls_nuit_que_[i].OutPutStu(fout);
 	}
 	fout.close();
+}
+
+void Schedule::ResetStuNum() {
+	for (int i = 0; i < cls_nuit_que_.size(); i++) {
+		cls_nuit_que_[i].ResetStuData();
+	}
 }

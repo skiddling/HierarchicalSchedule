@@ -93,7 +93,7 @@ void ClassUnit::Modify(bool tag) {
 			while (itm != its->second.end()) {
 				//psum += itm->second;
 				its->first->DecreaseStuNum(itm->first, itm->second);
-				pat_path_stus_num_[its->first][itm->first] -= itm->second;
+				//pat_path_stus_num_[its->first][itm->first] -= itm->second;
 				itm++;
 			}
 			//patterns_stus_[its->first] -= psum;
@@ -118,6 +118,7 @@ void ClassUnit::GetSelectedStus(int neednum) {
 					if (temp >= neednum)temp = neednum;
 					neednum -= temp;
 					ppsn[itp->first][itm->first] -= temp;
+					//itm->second -= temp;
 					selected_stus_[itp->first][itm->first] = pat_path_stus_num_[itp->first][itm->first] - ppsn[itp->first][itm->first];
 				}
 			}
@@ -174,6 +175,14 @@ void ClassUnit::GetPatStusNum() {
 		}
 		patterns_stus_[itp->first] = sum;
 	}
+}
+
+void ClassUnit::ResetStuData() {
+	if(stu_num_ > 49)cout << unit_id_ << "                                    " << stu_num_ << endl;
+	stu_num_ = 0;
+	patterns_stus_.clear();
+	pat_path_stus_num_.clear();
+	selected_stus_.clear();
 }
 
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {

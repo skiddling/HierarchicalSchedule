@@ -49,6 +49,7 @@ public:
 	void Modify();
 	void GetResult();
 	void OutPutResult();
+	void ResetStuNum();
 
 private:
 	void GetTeaCls();//构造老师的课程指针

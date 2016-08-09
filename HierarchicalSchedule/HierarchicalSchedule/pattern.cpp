@@ -347,6 +347,7 @@ void Pattern::IncreaseStuNum(int pid, int stunum) {
 	for (int i = 0; i < path_[pid].size(); i++) {
 		path_[pid][i]->stu_num_ += stunum;
 		path_[pid][i]->patterns_stus_[this] += stunum;
+		path_[pid][i]->pat_path_stus_num_[this][pid] += stunum;
 	}
 }
 
@@ -368,5 +369,6 @@ void Pattern::DecreaseStuNum(int pid, int stunum) {
 	for (int i = 0; i < path_[pid].size(); i++) {
 		path_[pid][i]->stu_num_ -= stunum;
 		path_[pid][i]->patterns_stus_[this] -= stunum;
+		path_[pid][i]->pat_path_stus_num_[this][pid] -= stunum;
 	}
 }
