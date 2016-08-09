@@ -24,6 +24,7 @@ public:
 	void Modify(bool tag);
 	inline int GetCrash();
 	void OutPutStu(ofstream &fout);
+	void GetPatStusNum();
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);

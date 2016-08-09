@@ -238,13 +238,13 @@ void Schedule::GetAllPath() {
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		pattern_que_[i].GetAllPath(table_);
 	}
-	map<ClassUnit*, vector<vector<int> > > ::iterator it;
+	/*map<ClassUnit*, vector<vector<int> > > ::iterator it;
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		it = pattern_que_[i].notin_path_combos_.begin();
 		for (int j = 0; j < it->second.size(); j++) {
 			if (it->second[j].size() > 1)cout << i << " " << j << endl;
 		}
-	}
+	}*/
 	cout << "end of get not in table" << endl;
 }
 
@@ -306,6 +306,9 @@ void Schedule::Modify() {
 		snum += cls_nuit_que_[i].stu_num_;
 	}
 	cout << snum << endl;
+	for (int i = 0; i < cls_nuit_que_.size(); i++) {
+		cls_nuit_que_[i].GetPatStusNum();
+	}
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
 		snum = cls_nuit_que_[i].stu_num_;
 		if (snum < stu_lower_)cls_nuit_que_[i].Modify(0);

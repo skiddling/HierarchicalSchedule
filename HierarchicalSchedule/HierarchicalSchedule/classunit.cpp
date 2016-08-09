@@ -33,10 +33,12 @@ void ClassUnit::Modify(bool tag) {
 		}
 	}
 	//根据具体的是人数不够还是超过来进行分类讨论
-	vector<int> recodeavl;
+	//1.选出可以供认出的人的去处
 	int temp, avlstusum = 0;
 	for (int i = 0; i < avlpatque.size(); i++) {
 		temp = avlpatque[i]->GetAvlStuNum(this, tag);
+		//如果人数过多，想要移走，也只能把属于该pat的学生都移走
+		if (tag)temp = min(temp, patterns_stus_[avlpatque[i]]);
 		if (temp) {
 			avlinpat[avlpatque[i]] = temp;
 			avlstusum += temp;
@@ -44,6 +46,7 @@ void ClassUnit::Modify(bool tag) {
 	}
 	cout << "end of get avl stu num" << endl;
 	cout << avlstusum << "                      " << neednum << endl;
+	//2.选出哪些学生需要被扔出去
 	//如果供应人数多那么就随机选择需求数量，如果不够就全部都用来满足需求
 	/*if (tag)DecreaseStuNum(neednum, avlstusum, avlstunum, avlnumpat);
 	else IncreaseStuNum(neednum, avlstusum, avlstunum, avlnumpat);*/
@@ -52,11 +55,14 @@ void ClassUnit::Modify(bool tag) {
 	map<Pattern*, int>::iterator ita = avlinpat.begin();
 	map<Pattern*, int> patused;
 	if (avlstusum > neednum) {
+		//要先选中哪些学生需要被换出去
 		if (tag)GetSelectedStus(neednum);
 		while (neednum) {
 			if (ita->second) {
 				temp = rand() % (ita->second + 1);
+				if (temp > neednum)temp = neednum;
 				ita->second -= temp;
+				if (patused.find(ita->first) == patused.end())patused[ita->first] = 0;
 				patused[ita->first] += temp;
 				neednum -= temp;
 			}
@@ -71,10 +77,28 @@ void ClassUnit::Modify(bool tag) {
 		}
 	}
 	cout << "end of get needused" << endl;
+	//3.将扔出去的人进行数据交换
 	//对每个模式进行人员的分配
 	map<Pattern*, int>::iterator itp = patused.begin();
 	for (; itp != patused.end(); itp++) {
-		itp->first->ModifyStuNum(tag, this, itp->second);
+		if(itp->second)itp->first->ModifyStuNum(tag, this, itp->second);
+	}
+	cout << "end of modify stu num" << endl;
+	//如果人数超过还要把当前的人数搬出去
+	if (tag) {
+		map<Pattern*, map<int, int> >::iterator its = selected_stus_.begin();
+		while (its != selected_stus_.end()) {
+			map<int, int>::iterator itm = its->second.begin();
+			//int psum = 0;
+			while (itm != its->second.end()) {
+				//psum += itm->second;
+				its->first->DecreaseStuNum(itm->first, itm->second);
+				pat_path_stus_num_[its->first][itm->first] -= itm->second;
+				itm++;
+			}
+			//patterns_stus_[its->first] -= psum;
+			its++;
+		}
 	}
 	cout << "end of motify stu num" << endl;
 }
@@ -90,8 +114,12 @@ void ClassUnit::GetSelectedStus(int neednum) {
 		while (itm != itp->second.end() && neednum) {
 			if (itm->second) {
 				temp = rand() % (itm->second + 1);
-				neednum -= temp;
-				ppsn[itp->first][itm->second] -= temp;
+				if (temp) {
+					if (temp >= neednum)temp = neednum;
+					neednum -= temp;
+					ppsn[itp->first][itm->first] -= temp;
+					selected_stus_[itp->first][itm->first] = pat_path_stus_num_[itp->first][itm->first] - ppsn[itp->first][itm->first];
+				}
 			}
 			itm++;
 		}	
@@ -134,6 +162,18 @@ void ClassUnit::OutPutStu(ofstream &fout) {
 		fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << "  " << students_[i]->student_id_ << endl;
 	}
 	fout << endl << endl;
+}
+
+void ClassUnit::GetPatStusNum() {
+	map<Pattern*, map<int, int> >::iterator itp = pat_path_stus_num_.begin();
+	for (; itp != pat_path_stus_num_.end(); itp++) {
+		map<int, int>::iterator itm = itp->second.begin();
+		int sum = 0;
+		for (; itm != itp->second.end(); itm++) {
+			sum += itm->second;
+		}
+		patterns_stus_[itp->first] = sum;
+	}
 }
 
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {

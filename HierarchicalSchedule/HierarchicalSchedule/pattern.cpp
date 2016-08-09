@@ -128,7 +128,7 @@ void Pattern::GetEachCombo(ClassUnit* cp, set<ClassUnit* > units, int pos, vecto
 			}
 			que.push_back(pid);
 			//if (comboset.find(que) == comboset.end())comboset.insert(que);
-			GetEachCombo(cp, units, i + 1, que, comboset);
+			GetEachCombo(cp, units, i + 1, que);
 			//tag=false表示当前这个序列并不是最终序列，而是一个子序列
 			tag = false;
 		}
@@ -277,26 +277,31 @@ int Pattern::GetAvlStuNum(ClassUnit* cp, bool tag) {
 		//只有当需要拿出来的时候才会
 		//如果需要减少人数，那么最多就是把该路径当中的人数都搬走
 		if(!tag) temp = min(stu_num_in_que_[pid], temp);
-		avl_num_each_path_[i] = temp;
+		avl_num_each_path_[pid] = temp;
 		//avl_sum_ += temp;
 	}
 	avl_sum_ = GetMaxAvlStus(cp);
 	//if (avl_sum_ == 0)avl_num_each_path_.clear();
 	//如果需要增加人数，那么最多就是把cp当中所有该pat的学生都搬走
-	if (tag)avl_sum_ = min(avl_sum_, cp->patterns_stus_[this]);
-	return avl_sum_;
+	if (tag)temp = min(avl_sum_, cp->patterns_stus_[this]);
+	return temp;
 }
 
 int Pattern::GetMaxAvlStus(ClassUnit * cp) {
 	int csz = notin_path_combos_[cp].size(), qsz;
-	int mx = 0, temp;
+	int mx = 0, temp, pid;
 	for (int i = 0; i < csz; i++) {
 		temp = 0;
 		qsz = notin_path_combos_[cp][i].size();
 		for (int j = 0; j < qsz; j++) {
-			temp += avl_num_each_path_[notin_path_combos_[cp][i][j]];
+			pid = notin_path_combos_[cp][i][j];
+			temp += avl_num_each_path_[pid];
 		}
-		if (temp > mx)mx = temp;
+		if (temp > mx) {
+			mx = temp;
+			//notint当中的第i个combo组合的序号
+			combosid = i;
+		}
 	}
 	return mx;
 }
@@ -304,62 +309,45 @@ int Pattern::GetMaxAvlStus(ClassUnit * cp) {
 void Pattern::ModifyStuNum(bool tag, ClassUnit* cp, int neednum) {
 	//tag=0表示要拿出neednum这些学生到cp当中去
 	//tag=1表示cp要拿出neednum这些学生到当前pat当中来
+	//修改的人数都是只对comboid指向的那个路径组合的班级人数进行修改
 	vector<int> usednum = vector<int>(path_.size(), 0);
-	int i = 0, temp, recode = neednum;
+	int i = 0, temp, recode = neednum, pid;
 	if (avl_sum_ > neednum) {
-		while (neednum) {
-			if (avl_num_each_path_[i]) {
-				temp = rand() % (avl_num_each_path_[i] + 1);
-				if (temp > neednum)temp = neednum;
-				avl_num_each_path_[i] -= temp;
+		while (i < notin_path_combos_[cp][combosid].size() && neednum) {
+			pid = notin_path_combos_[cp][combosid][i];
+			temp = rand() % (avl_num_each_path_[pid] + 1);
+			if (temp >= neednum)temp = neednum;
+			if (temp) {
 				neednum -= temp;
-				usednum[i] += temp;
+				avl_num_each_path_[pid] -= temp;
+				usednum[pid] += temp;
 			}
 			i++;
-			if (i == path_.size())i = 0;
+			if (i == notin_path_combos_[cp][combosid].size())i = 0;
 		}
 	}
 	else {
-		for (; i < path_.size(); i++) {
-			usednum[i] = avl_num_each_path_[i];
+		for (; i < notin_path_combos_[cp][combosid].size(); i++) {
+			pid = notin_path_combos_[cp][combosid][i];
+			usednum[pid] = avl_num_each_path_[pid];
 		}
 	}
 	//进行修改人数
 	for (i = 0; i < path_.size(); i++) {
 		if (usednum[i]) {
-			for (int j = 0; j < path_[i].size(); j++) {
-				if (tag)path_[i][j]->stu_num_ += usednum[i];
-				else path_[i][j]->stu_num_ -= usednum[i];
-			}
-		}
-	}
-	//for (int i = 0; i < not_in_table_[cp].size(); i++) {
-	//	int pid = not_in_table_[cp][i];
-	//	for (int j = 0; j < path_[pid].size(); j++) {
-	//		if (tag)path_[pid][j]->stu_num_ += usednum[i];
-	//		else path_[pid][j]->stu_num_ -= usednum[i];
-	//	}
-	//}
-	while (recode) {
-		for (int i = 0; i < in_unit_table_[cp].size(); i++) {
-			int pid = in_unit_table_[cp][i];
-			temp = rand() % (recode + 1);
-			recode -= temp;
-			if (!temp)continue;
-			if (tag) {
-				for (int j = 0; j < path_[pid].size(); j++) {
-					path_[pid][j]->stu_num_ -= temp;
-				}
-			}
-			else {
-				for (int j = 0; j < path_[pid].size(); j++) {
-					path_[pid][j]->stu_num_ += temp;
-				}
-			}
-			if (!recode)break;
+			if (tag)IncreaseStuNum(i, usednum[i]);
+			else DecreaseStuNum(i, usednum[i]);
 		}
 	}
 	avl_num_each_path_.clear();
+}
+
+void Pattern::IncreaseStuNum(int pid, int stunum) {
+	stu_num_in_que_[pid] += stunum;
+	for (int i = 0; i < path_[pid].size(); i++) {
+		path_[pid][i]->stu_num_ += stunum;
+		path_[pid][i]->patterns_stus_[this] += stunum;
+	}
 }
 
 void Pattern::AssignStuDown2Cls() {
@@ -371,5 +359,14 @@ void Pattern::AssignStuDown2Cls() {
 			}
 			sp += k;
 		}
+	}
+}
+
+void Pattern::DecreaseStuNum(int pid, int stunum) {
+	//将这条线上的学生人数都减少相应的数量
+	stu_num_in_que_[pid] -= stunum;
+	for (int i = 0; i < path_[pid].size(); i++) {
+		path_[pid][i]->stu_num_ -= stunum;
+		path_[pid][i]->patterns_stus_[this] -= stunum;
 	}
 }

@@ -15,7 +15,7 @@ public:
 	vector<Course> course_que_;
 	//vector<int> stu_que_;//该模式下每个学生
 	vector<Student* >stu_que_;
-	vector<vector<ClassUnit*> > avl_units_que_;//该课表下的所有的可以放该模式的班级序列
+	//vector<vector<ClassUnit*> > avl_units_que_;//该课表下的所有的可以放该模式的班级序列
 	//map<ClassUnit*, bool> units_map_;//所有能存放课的表
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
 	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列
@@ -26,7 +26,7 @@ public:
 	vector<bool> chosen_path_tab_;//表示有哪些路径被选中了
 	set<ClassUnit* > unit_set_;//记录所有可能经历过的教室
 	vector<int> avl_num_each_path_;
-	int avl_sum_;
+	int avl_sum_, combosid;
 	//map<pair<int, int>, vector<int> > not_in_table_;//没有经历过的路径形成的表
 
 	Pattern();
@@ -39,6 +39,7 @@ public:
 	int GetAvlStuNum(ClassUnit* cp, bool tag);
 	void ModifyStuNum(bool tag, ClassUnit* cp, int neednum);
 	void AssignStuDown2Cls();
+	void DecreaseStuNum(int pid, int stunum);
 
 	bool operator == (const Pattern &a)const {
 		return course_que_ == a.course_que_;
@@ -63,6 +64,7 @@ private:
 	void GetEachCombo(ClassUnit* cp, set<ClassUnit* > units, int pos, vector<int> que);
 	bool GetIsIn(ClassUnit *cp, set<ClassUnit* > units, int pid);
 	int GetMaxAvlStus(ClassUnit *cp);
+	void IncreaseStuNum(int pid, int stunum);
 };
 
 inline int Pattern::GetRandId(int pos) {
