@@ -262,6 +262,7 @@ void Schedule::CalCrashFitness() {
 		else if (cls_nuit_que_[i].stu_num_ < stu_lower_)crash_ += stu_lower_ - cls_nuit_que_[i].stu_num_;
 	}
 	fitness = 1.0 / static_cast<double>(1 + crash_);
+	cout << "crash is                                                  " << crash_ << "            " << fitness << endl;
 }
 
 void Schedule::Mutate(double mxfit) {
@@ -300,6 +301,7 @@ void Schedule::Cross(double mxfit) {
 }
 
 void Schedule::Modify() {
+	ResetStuNum();
 	GetStuNum();
 	int snum = 0;
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
@@ -316,7 +318,6 @@ void Schedule::Modify() {
 		/*if (snum < stu_lower_)cls_nuit_que_[i].IncreaseStuNum();
 		if (snum > stu_upper_)cls_nuit_que_[i].DecreaseStuNum();*/
 	}
-	ResetStuNum();
 }
 
 void Schedule::GetStuNum() {
@@ -328,15 +329,18 @@ void Schedule::GetStuNum() {
 void Schedule::GetResult() {
 	//让每个pattern当中的学生分配到每个班级当中
 	for (int i = 0; i < pattern_que_.size(); i++) {
-		pattern_que_[i].AssignStuDown2Cls();
+		pattern_que_[i].AssignStuDown2Cls(cls_nuit_que_);
 	}
 }
 
 void Schedule::OutPutResult() {
 	ofstream fout("result.txt");
+	int sum = 0;
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
 		cls_nuit_que_[i].OutPutStu(fout);
+		sum += cls_nuit_que_[i].students_.size();
 	}
+	fout << sum;
 	fout.close();
 }
 

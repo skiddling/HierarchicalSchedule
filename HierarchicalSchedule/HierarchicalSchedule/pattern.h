@@ -38,7 +38,7 @@ public:
 	void PutStuDown2Cls();
 	int GetAvlStuNum(ClassUnit* cp, bool tag);
 	void ModifyStuNum(bool tag, ClassUnit* cp, int neednum);
-	void AssignStuDown2Cls();
+	void AssignStuDown2Cls(vector<ClassUnit> &clsque);
 	void DecreaseStuNum(int pid, int stunum);
 
 	bool operator == (const Pattern &a)const {

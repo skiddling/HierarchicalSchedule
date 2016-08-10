@@ -187,7 +187,8 @@ void Pattern::Mutate(double mp) {
 	if (psz == 1)return;
 	double r;
 	for (int i = 0; i < psz; i++) {
-		if (chosen_path_tab_[i]) {
+		//if (chosen_path_tab_[i]) {
+		if(stu_num_in_que_[i]){
 			r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 			//r = 0;
 			if (r < mp) {
@@ -204,13 +205,15 @@ void Pattern::Cross() {
 	if (path_.size() == 1)return;
 	vector<int> stuin;
 	for (int i = 0; i < path_.size(); i++) {
-		if (chosen_path_tab_[i])stuin.push_back(i);
+		//if (chosen_path_tab_[i])stuin.push_back(i);
+		if (stu_num_in_que_[i])stuin.push_back(i);
 	}
 	int id;
 	GetRandTab(stuin);
 	for (int i = 0; i < stuin.size(); i++) {
 		id = stuin[i];
-		if (chosen_path_tab_[id]) {
+		//if (chosen_path_tab_[id]) {
+		if(stu_num_in_que_[id]){
 			SwapStu(id);
 		}
 	}
@@ -227,14 +230,15 @@ void Pattern::SwapStu(int oid) {
 	else temp[1] = 0;
 	stu_num_in_que_[oid] = stu_num_in_que_[oid] - temp[0] + temp[1];
 	stu_num_in_que_[iid] = stu_num_in_que_[iid] - temp[1] + temp[0];
-	if (!stu_num_in_que_[oid])chosen_path_tab_[oid] = 0;
+	/*if (!stu_num_in_que_[oid])chosen_path_tab_[oid] = 0;
 	if (stu_num_in_que_[iid])chosen_path_tab_[iid] = 1;
-	else stu_num_in_que_[iid] = 0;
+	else chosen_path_tab_[iid] = 0;*/
 }
 
 void Pattern::PutStuDown2Cls() {
 	for (int i = 0; i < path_.size(); i++) {
-		if (chosen_path_tab_[i]) {
+		//if (chosen_path_tab_[i]) {
+		if(stu_num_in_que_[i]){
 			for (int j = 0; j < path_[i].size(); j++) {
 				path_[i][j]->stu_num_ += stu_num_in_que_[i];
 				path_[i][j]->pat_path_stus_num_[this][i] = stu_num_in_que_[i];
@@ -351,14 +355,18 @@ void Pattern::IncreaseStuNum(int pid, int stunum) {
 	}
 }
 
-void Pattern::AssignStuDown2Cls() {
+void Pattern::AssignStuDown2Cls(vector<ClassUnit> &clsque) {
 	int sp = 0;
-	for (int i = 0; i < path_.size(); i++) {
-		for (int k = 0; k < stu_num_in_que_[i]; k++) {
-			for (int j = 0; j < path_[i].size(); j++) {
-				path_[i][j]->students_.push_back(stu_que_[sp + k]);
+	int cid;
+	for (int i = 0; i < stu_num_in_que_.size(); i++) {
+		if (stu_num_in_que_[i]) {
+			for (int j = 0; j < stu_num_in_que_[i]; j++) {
+				for (int k = 0; k < path_[i].size(); k++) {
+					cid = path_[i][k]->unit_id_;
+					clsque[cid].students_.push_back(stu_que_[sp + j]);
+				}
 			}
-			sp += k;
+			sp += stu_num_in_que_[i];
 		}
 	}
 }

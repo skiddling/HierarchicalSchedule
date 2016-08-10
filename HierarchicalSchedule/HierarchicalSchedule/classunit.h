@@ -34,7 +34,7 @@ private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
 	void IncreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
 	void DecreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
-	void GetSelectedStus(int neednum);
+	void GetSelectedStus(map<Pattern*, int> patused);
 };
 
 inline int ClassUnit::GetCrash() {

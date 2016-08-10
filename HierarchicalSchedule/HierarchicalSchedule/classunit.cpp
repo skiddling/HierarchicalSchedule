@@ -56,7 +56,6 @@ void ClassUnit::Modify(bool tag) {
 	map<Pattern*, int> patused;
 	if (avlstusum > neednum) {
 		//要先选中哪些学生需要被换出去
-		if (tag)GetSelectedStus(neednum);
 		while (neednum) {
 			if (ita->second) {
 				temp = rand() % (ita->second + 1);
@@ -69,12 +68,13 @@ void ClassUnit::Modify(bool tag) {
 			ita++;
 			if (ita == avlinpat.end())ita = avlinpat.begin();
 		}
+		if (tag)GetSelectedStus(patused);
 	}
 	else {
-		if (tag)GetSelectedStus(avlstusum);
 		for (; ita != avlinpat.end(); ita++) {
 			patused[ita->first] = ita->second;
 		}
+		if (tag)GetSelectedStus(patused);
 	}
 	cout << "end of get needused" << endl;
 	//3.将扔出去的人进行数据交换
@@ -103,31 +103,28 @@ void ClassUnit::Modify(bool tag) {
 	cout << "end of motify stu num" << endl;
 }
 
-void ClassUnit::GetSelectedStus(int neednum) {
-	//随机选择需要删除的学生选中
+void ClassUnit::GetSelectedStus(map<Pattern*, int> patused) {
+	//随机从要输出的pat当中选出相应人数的学生
 	selected_stus_.clear();
 	map<Pattern*, map<int, int> > ppsn = pat_path_stus_num_;
-	map<Pattern*, map<int, int> >::iterator itp = ppsn.begin();
-	int temp;
-	while (neednum) {
-		map<int, int>::iterator itm = itp->second.begin();
-		while (itm != itp->second.end() && neednum) {
+	map<Pattern*, int>::iterator itp = patused.begin();
+	while (itp != patused.end()) {
+		int neednuminpat = itp->second, temp;
+		map<int, int>::iterator itm = ppsn[itp->first].begin();
+		while (neednuminpat) {
 			if (itm->second) {
 				temp = rand() % (itm->second + 1);
-				if (temp) {
-					if (temp >= neednum)temp = neednum;
-					neednum -= temp;
-					ppsn[itp->first][itm->first] -= temp;
-					//itm->second -= temp;
-					selected_stus_[itp->first][itm->first] = pat_path_stus_num_[itp->first][itm->first] - ppsn[itp->first][itm->first];
-				}
+				if (temp > neednuminpat)temp = neednuminpat;
+				neednuminpat -= temp;
+				ppsn[itp->first][itm->first] -= temp;
+				selected_stus_[itp->first][itm->first] = pat_path_stus_num_[itp->first][itm->first] - ppsn[itp->first][itm->first];
 			}
 			itm++;
-		}	
-		if (!neednum)break;
+			if (itm == ppsn[itp->first].end())itm = ppsn[itp->first].begin();
+		}
 		itp++;
-		if (itp == ppsn.end())itp = ppsn.begin();
 	}
+	
 }
 
 void ClassUnit::IncreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat) {
@@ -158,7 +155,7 @@ void ClassUnit::DecreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> av
 
 void ClassUnit::OutPutStu(ofstream &fout) {
 	fout << course_.course_name_ << string(' ', 11 - course_.course_name_.length()) << teacher_.teacher_name_ << endl;
-	fout << unit_time_.first << "  " << unit_time_.second << endl;
+	fout << unit_time_.first << "  " << unit_time_.second << "    " << students_.size() << endl;
 	for (int i = 0; i < students_.size(); i++) {
 		fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << "  " << students_[i]->student_id_ << endl;
 	}
