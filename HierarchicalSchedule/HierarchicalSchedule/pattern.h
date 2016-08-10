@@ -40,6 +40,8 @@ public:
 	void ModifyStuNum(bool tag, ClassUnit* cp, int neednum);
 	void AssignStuDown2Cls(vector<ClassUnit> &clsque);
 	void DecreaseStuNum(int pid, int stunum);
+	void IncreaseStuNum(int pid, int stunum);
+	pair<int, int> GetMxStuNum(ClassUnit* cp);
 
 	bool operator == (const Pattern &a)const {
 		return course_que_ == a.course_que_;
@@ -64,7 +66,6 @@ private:
 	void GetEachCombo(ClassUnit* cp, set<ClassUnit* > units, int pos, vector<int> que);
 	bool GetIsIn(ClassUnit *cp, set<ClassUnit* > units, int pid);
 	int GetMaxAvlStus(ClassUnit *cp);
-	void IncreaseStuNum(int pid, int stunum);
 };
 
 inline int Pattern::GetRandId(int pos) {

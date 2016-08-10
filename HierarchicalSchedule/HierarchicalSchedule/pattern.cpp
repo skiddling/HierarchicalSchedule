@@ -355,6 +355,28 @@ void Pattern::IncreaseStuNum(int pid, int stunum) {
 	}
 }
 
+pair<int, int> Pattern::GetMxStuNum(ClassUnit* cp) {
+	int mxn = 0, mxp, pid, temp;
+	for (int i = 0; i < in_unit_table_[cp].size(); i++) {
+		pid = in_unit_table_[cp][i];
+		temp = INT_MAX;
+		for (int j = 0; j < path_[pid].size(); j++) {
+			if (path_[pid][j]->stu_num_ > stu_upper_) {
+				temp = 0;
+				break;
+			}
+			else {
+				temp = min(temp, stu_upper_ - path_[pid][j]->stu_num_);
+			}
+		}
+		if (temp > mxn) {
+			mxn = temp;
+			mxp = i;
+		}
+	}
+	return make_pair(mxp, mxn);
+}
+
 void Pattern::AssignStuDown2Cls(vector<ClassUnit> &clsque) {
 	int sp = 0;
 	int cid;

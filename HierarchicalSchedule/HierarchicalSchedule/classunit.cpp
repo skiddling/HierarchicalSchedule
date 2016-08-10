@@ -54,27 +54,35 @@ void ClassUnit::Modify(bool tag) {
 	vector<int> needused = vector<int>(avlpatque.size(), 0);
 	map<Pattern*, int>::iterator ita = avlinpat.begin();
 	map<Pattern*, int> patused;
-	if (avlstusum > neednum) {
-		//要先选中哪些学生需要被换出去
-		while (neednum) {
-			if (ita->second) {
-				temp = rand() % (ita->second + 1);
-				if (temp > neednum)temp = neednum;
-				ita->second -= temp;
-				if (patused.find(ita->first) == patused.end())patused[ita->first] = 0;
-				patused[ita->first] += temp;
-				neednum -= temp;
+	if (tag) {
+		if (avlstusum > neednum) {
+			//要先选中哪些学生需要被换出去
+			while (neednum) {
+				if (ita->second) {
+					temp = rand() % (ita->second + 1);
+					if (temp > neednum)temp = neednum;
+					ita->second -= temp;
+					if (patused.find(ita->first) == patused.end())patused[ita->first] = 0;
+					patused[ita->first] += temp;
+					neednum -= temp;
+				}
+				ita++;
+				if (ita == avlinpat.end())ita = avlinpat.begin();
 			}
-			ita++;
-			if (ita == avlinpat.end())ita = avlinpat.begin();
 		}
-		if (tag)GetSelectedStus(patused);
+		else {
+			for (; ita != avlinpat.end(); ita++) {
+				patused[ita->first] = ita->second;
+			}
+		}
+		GetSelectedStus(patused);
 	}
 	else {
-		for (; ita != avlinpat.end(); ita++) {
-			patused[ita->first] = ita->second;
+		//依然用selected来装每个pat能存放的最大的人员数量
+		map<Pattern*, bool>::iterator itp = patterns_.begin();
+		while (itp != patterns_.end()) {
+			selected_stus_[itp->first].insert(itp->first->GetMxStuNum(this));
 		}
-		if (tag)GetSelectedStus(patused);
 	}
 	cout << "end of get needused" << endl;
 	//3.将扔出去的人进行数据交换
@@ -84,6 +92,8 @@ void ClassUnit::Modify(bool tag) {
 		if(itp->second)itp->first->ModifyStuNum(tag, this, itp->second);
 	}
 	cout << "end of modify stu num" << endl;
+	//如果人数不够就把人数加进来
+	if (!tag)AddStu2Path(patused);
 	//如果人数超过还要把当前的人数搬出去
 	if (tag) {
 		map<Pattern*, map<int, int> >::iterator its = selected_stus_.begin();
@@ -125,6 +135,16 @@ void ClassUnit::GetSelectedStus(map<Pattern*, int> patused) {
 		itp++;
 	}
 	
+}
+
+void ClassUnit::AddStu2Path(map<Pattern*, int> patused) {
+	//指定在现有已经有的pat的路径当中添加相应的人数
+	map<Pattern*, int>::iterator itp = patused.begin();
+	while (itp != patused.end()) {
+		map<int, int>::iterator itm = pat_path_stus_num_[itp->first].begin();
+		itp->first->IncreaseStuNum(itm->first, itp->second);
+		itp++;
+	}
 }
 
 void ClassUnit::IncreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat) {
