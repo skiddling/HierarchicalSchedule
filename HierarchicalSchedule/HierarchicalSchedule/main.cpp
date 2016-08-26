@@ -30,15 +30,19 @@ void StudentsIn() {
 void TeachersIn() {
 	ifstream fin("teachers.txt");
 	string teacherid, teachername, coursename;
-	int coursesnum, coursetimes, k = 0;
+	int coursesnum, coursetimes, k = 0, tid;
 	while (fin >> teacherid) {
+		tid = atoi(teacherid.c_str());
 		fin >> teachername >> coursesnum;
 		map<Course, int> coursestable;
 		vector<Course> courseque = vector<Course> (coursesnum);
 		for (int i = 0; i < coursesnum; i++) {
 			fin >> coursename >> coursetimes;
 			courseque[i] = courses[coursename];
-			coursestable[courseque[i]] = coursetimes;
+			cout << coursestable.size() << "  " << courseque[i].course_name_ << endl;
+			//coursestable[courseque[i]] = coursetimes;
+			coursestable.insert(make_pair(courseque[i], coursetimes));
+			cout << coursestable.size() << endl;
 		}
 		teacherque.push_back(*(new Teacher(groups, teacherid, teachername, courseque ,coursestable)));
 		(teacherque.end() - 1)->teacher_id_ = k++;
@@ -48,12 +52,17 @@ void TeachersIn() {
 
 void BasicInput() {
 	ifstream fin("basic.txt");
-	int cnum, cls;
+	int cnum, cls, notin, temp;
 	fin >> rooms >> groups >> cnum >> stuupper >> stulower;
 	string cname;
 	for(int i = 0; i < cnum; i++){
-		fin >> cname >> cls;
-		couque.push_back(*(new Course(cname, cls, cnum)));
+		fin >> cname >> cls >> stuupper >> notin;
+		set<int> notinset;
+		for (int j = 0; j < notin; j++) {
+			fin >> temp;
+			notinset.insert(temp);
+		}
+		couque.push_back(*(new Course(cname, cls, cnum, stuupper, notinset)));
 		//courses[cname] = *(new Course(cname, cls, cnum));
 	}
 	//确定了每门课的序号

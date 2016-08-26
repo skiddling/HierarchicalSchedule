@@ -39,6 +39,7 @@ private:
 };
 
 inline int ClassUnit::GetCrash() {
-	if (stu_num_ < stu_lower_)return stu_lower_ - stu_num_;
-	if (stu_num_ > stu_upper_)return stu_num_ - stu_upper_;
+	//if (stu_num_ < stu_lower_)return stu_lower_ - stu_num_;
+	//if (stu_num_ > stu_upper_)return stu_num_ - stu_upper_;
+	if (stu_num_ > course_.stu_upper_)return stu_num_ - course_.stu_upper_;
 }

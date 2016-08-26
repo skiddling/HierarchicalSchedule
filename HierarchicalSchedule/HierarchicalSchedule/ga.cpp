@@ -158,12 +158,13 @@ void GA::Modify() {
 
 void GA::Select() {
 	mxfit_ = 0.0;
-	fits[0] = schedules_[0][0].fitness;
+	//fits[0] = schedules_[0][0].fitness;
 	for (int i = 0; i < kScheduleSize_; i++) {
-		fits[i] = schedules_[0][i].fitness + fits[i - 1];
+		//fits[i] = schedules_[0][i].fitness + fits[i - 1];
 		if (mxfit_ < schedules_[0][i].fitness)mxfit_ = schedules_[0][i].fitness;
 		if (schedules_[0][i].crash_ < result_.crash_)result_ = schedules_[0][i];
 	}
+	return;
 	for (int i = 0; i < kScheduleSize_; i++) {
 		fits[i] /= fits.back();
 	}
@@ -191,6 +192,7 @@ bool GA::Init() {
 	schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
 	schedules_[1] = schedules_[0];
 	//result_.Init();
+	cout << "start get the rand table" << endl;
 	for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[0][i].Init();
 	}

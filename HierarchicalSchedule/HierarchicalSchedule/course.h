@@ -22,6 +22,9 @@ public:
 	bool operator < (const GroupUnit &a) const {
 		if (times_ != a.times_)return times_ > a.times_;
 		else return leave_ > a.leave_;
+		//return times_ > a.times_;
+		/*if (times_ != a.times_ && (abs(leave_ - a.leave_) <= 2))return times_ > a.times_;
+		else return leave_ > a.leave_;*/
 	}
 	
 	bool operator == (const GroupUnit &a) const {
@@ -37,9 +40,11 @@ class ClassUnit;
 class Course
 {
 public:
+	int stu_upper_;//具体每个学科的班级人数上限
 	int class_num_;//每个科目下面有多少个班级
 	bool visited_;//用于拓扑排序时候用的，每一个科目相当于是一个结点
 	int course_id_;//将在被全部创建完科目之后才会生成相应的id
+	set<int> not_in_set_;//不能排课的时间段
 	string course_name_;
 	vector<Course* > pre_node_que_;//也是一样用于进行拓扑排序的，标注了该科目前的所有的前面一个科目
 	vector<bool> pre_node_;//用来标记哪些科目是前缀，用于拓扑排序，并且防止重复
@@ -52,13 +57,15 @@ public:
 	//vector<int> units_;//该科目下的所有的课的节次
 
 	Course();
-	Course(string course_name, int cls, int cnum, bool visited = 0);
+	Course(string course_name, int cls, int cnum, int stuupper, set<int>notintset, bool visited = 0);
 	//Course(int course_id, string course_name);
 	bool operator < (const Course a)const {
 		//同一个科目下的学科判班级的数量，不同学科的就判名字
 		if (course_name_.substr(0, course_name_.length() - 1) != a.course_name_.substr(0, a.course_name_.length() - 1))
 			return this->course_name_ < a.course_name_;
-		else return class_num_ < a.class_num_;
+		else if (not_in_set_.size() != a.not_in_set_.size())return not_in_set_.size() > a.not_in_set_.size();
+		//else if(class_num_ != a.class_num_)return class_num_ < a.class_num_;
+		else return course_name_ < a.course_name_;
 	}
 	bool operator == (const Course &a)const {
 		return this->course_name_ == a.course_name_;

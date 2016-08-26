@@ -122,7 +122,7 @@ int Schedule::GetUnitTime(int cid, int uid, vector<vector<int>> avl) {
 	int tid = cou_que_[cid].units_[uid]->teacher_.teacher_id_;
 	for (int i = 0; i < groups_; i++) {
 		//trtimes[i] = tea_que_[tid].avl_time_[i] && table_[i].avl;
-		if (tea_que_[tid].avl_time_[i] && table_[i].avl)
+		if (tea_que_[tid].avl_time_[i] && table_[i].avl && (cou_que_[cid].not_in_set_.find(i) == cou_que_[cid].not_in_set_.end()))
 			trtimes[i] = 1;
 	}
 
@@ -220,11 +220,12 @@ bool Schedule::GetRanTab() {
 			avl = GetAvlTime(i);
 			//获得该节课应该在哪个时间段group被放置
 			pos = GetUnitTime(i, j, avl);
+			cout << pos << "   ";
 			if (pos < 0)return 1;
 			AssignUnit(pos, cou_que_[i].units_[j]);
 		}
 		if (CheckPrefix(i))return 1;
-		//cout << "course  " << i << endl;
+		cout << "course  " << i << endl;
 	}
 	cout << "end of the rand table" << endl;
 	return 0;
@@ -258,8 +259,9 @@ void Schedule::StuAssign() {
 void Schedule::CalCrashFitness() {
 	crash_ = 0;
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
-		if (cls_nuit_que_[i].stu_num_ > stu_upper_)crash_ += cls_nuit_que_[i].stu_num_ - stu_upper_;
-		else if (cls_nuit_que_[i].stu_num_ < stu_lower_)crash_ += stu_lower_ - cls_nuit_que_[i].stu_num_;
+		/*if (cls_nuit_que_[i].stu_num_ > stu_upper_)crash_ += cls_nuit_que_[i].stu_num_ - stu_upper_;
+		else if (cls_nuit_que_[i].stu_num_ < stu_lower_)crash_ += stu_lower_ - cls_nuit_que_[i].stu_num_;*/
+		if (cls_nuit_que_[i].stu_num_ > cls_nuit_que_[i].course_.stu_upper_)crash_ += cls_nuit_que_[i].stu_num_ - cls_nuit_que_[i].course_.stu_upper_;
 	}
 	fitness = 1.0 / static_cast<double>(1 + crash_);
 	cout << "crash is                                                  " << crash_ << "            " << fitness << endl;
@@ -313,8 +315,9 @@ void Schedule::Modify() {
 	}
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
 		snum = cls_nuit_que_[i].stu_num_;
-		if (snum < stu_lower_)cls_nuit_que_[i].Modify(0);
-		if (snum > stu_upper_)cls_nuit_que_[i].Modify(1);
+		//if (snum < stu_lower_)cls_nuit_que_[i].Modify(0);
+		//if (snum > stu_upper_)cls_nuit_que_[i].Modify(1);
+		if (snum > cls_nuit_que_[i].course_.stu_upper_)cls_nuit_que_[i].Modify(1);
 		/*if (snum < stu_lower_)cls_nuit_que_[i].IncreaseStuNum();
 		if (snum > stu_upper_)cls_nuit_que_[i].DecreaseStuNum();*/
 	}

@@ -23,7 +23,8 @@ void ClassUnit::Modify(bool tag) {
 	//1表示人数过多，需要把当前的学生数量放一部分到其他的班级当中
 	//对于每个模式而言，都有一个不在当前的班级的表，只有当该班级在这些模式当中存在可以替换的班级列表才能将这个模式选中
 	cout << unit_id_ << " " << tag << " " << stu_num_ << endl;
-	int neednum = tag ? (stu_num_ - stu_upper_) : (stu_lower_ - stu_num_);
+	//int neednum = tag ? (stu_num_ - stu_upper_) : (stu_lower_ - stu_num_);
+	int neednum = stu_num_ - course_.stu_upper_;
 	vector<Pattern* > avlpatque;
 	map<Pattern*, int> avlinpat;
 	map<Pattern*, bool>::iterator it = patterns_.begin();
@@ -174,10 +175,12 @@ void ClassUnit::DecreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> av
 }
 
 void ClassUnit::OutPutStu(ofstream &fout) {
-	fout << course_.course_name_ << string(' ', 11 - course_.course_name_.length()) << teacher_.teacher_name_ << endl;
+	//fout << course_.course_name_ << string(' ', 11 - course_.course_name_.length()) << teacher_.teacher_name_ << endl;
+	fout << course_.course_name_ << "                     " << teacher_.teacher_name_ << endl;
 	fout << unit_time_.first << "  " << unit_time_.second << "    " << students_.size() << endl;
 	for (int i = 0; i < students_.size(); i++) {
-		fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << "  " << students_[i]->student_id_ << endl;
+		//fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << students_[i]->student_id_ << endl;
+		fout << students_[i]->student_name_ << "                    " << students_[i]->student_id_ << endl;
 	}
 	fout << endl << endl;
 }

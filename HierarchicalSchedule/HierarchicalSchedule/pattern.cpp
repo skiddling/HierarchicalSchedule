@@ -270,8 +270,10 @@ int Pattern::GetAvlStuNum(ClassUnit* cp, bool tag) {
 			}
 			else {
 				//能给出多少空的位置
-				if (path_[pid][j]->stu_num_ < stu_upper_)
-					temp = min(temp, stu_upper_ - path_[pid][j]->stu_num_);
+				/*if (path_[pid][j]->stu_num_ < stu_upper_)
+					temp = min(temp, stu_upper_ - path_[pid][j]->stu_num_);*/
+				if (path_[pid][j]->stu_num_ < path_[pid][j]->course_.stu_upper_)
+					temp = min(temp, path_[pid][j]->course_.stu_upper_ - path_[pid][j]->stu_num_);
 				else {
 					temp = 0;
 					break;
@@ -361,12 +363,14 @@ pair<int, int> Pattern::GetMxStuNum(ClassUnit* cp) {
 		pid = in_unit_table_[cp][i];
 		temp = INT_MAX;
 		for (int j = 0; j < path_[pid].size(); j++) {
-			if (path_[pid][j]->stu_num_ > stu_upper_) {
+			//if (path_[pid][j]->stu_num_ > stu_upper_) {
+			if(path_[pid][j]->stu_num_ > path_[pid][j]->course_.stu_upper_){
 				temp = 0;
 				break;
 			}
 			else {
-				temp = min(temp, stu_upper_ - path_[pid][j]->stu_num_);
+				//temp = min(temp, stu_upper_ - path_[pid][j]->stu_num_);
+				temp = min(temp, path_[pid][j]->course_.stu_upper_ - path_[pid][j]->stu_num_);
 			}
 		}
 		if (temp > mxn) {

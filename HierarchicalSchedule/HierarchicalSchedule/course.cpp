@@ -5,8 +5,8 @@
 Course::Course() {
 }
 
-Course::Course(string course_name, int class_num, int cnum, bool visited):
-	course_name_(course_name), class_num_(class_num), visited_(visited){
+Course::Course(string course_name, int class_num, int cnum, int stuppper, set<int> notinset, bool visited):
+	course_name_(course_name), class_num_(class_num), stu_upper_(stuppper), not_in_set_(notinset), visited_(visited){
 	pre_node_ = vector<bool>(cnum, 0);
 	satis_num_ = 0;
 }
