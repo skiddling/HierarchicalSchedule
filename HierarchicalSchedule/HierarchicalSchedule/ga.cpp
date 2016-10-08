@@ -75,6 +75,12 @@ void GA::GetPrefixes() {
 		if (!cou_que_[i].prefixes_.size()) {
 			cou_que_[i].prefixes_.push_back(0);
 		}
+		else {
+			vector<Course> tcq(1, cou_que_[i]);
+			if (prefix_map_.find(tcq) != prefix_map_.end()) {
+				cou_que_[i].prefixes_.push_back(0);
+			}
+		}
 		cou_que_[i].satisfied_ = vector<bool>(cou_que_[i].prefixes_.size(), 0);
 	}
 	//将这些科目的信息都更新到每个老师当中去
