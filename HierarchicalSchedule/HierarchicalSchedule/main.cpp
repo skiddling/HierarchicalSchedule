@@ -111,18 +111,21 @@ void SetRunTime() {
 	Pattern::stu_upper_ = stuupper;
 }
 
-int main() {
-	srand((unsigned int)time(0));
-	Input();
-	SetRunTime();
-	//OutPut();
-	//return 0;
-	GA ga(stuque, teacherque, couque);
-	if (ga.Generate()) {
-		ga.GetResult();
-		ga.OutPutResult();
-	}
-	else cout << "failed gernerate table" << endl;
+int main(int argc, char* argv[]) {
+	
+	testing::InitGoogleTest(&argc, argv);
+	RUN_ALL_TESTS();
+	//srand((unsigned int)time(0));
+	//Input();
+	//SetRunTime();
+	////OutPut();
+	////return 0;
+	//GA ga(stuque, teacherque, couque);
+	//if (ga.Generate()) {
+	//	ga.GetResult();
+	//	ga.OutPutResult();
+	//}
+	//else cout << "failed gernerate table" << endl;
 	system("PAUSE");
 	return 0;
 }

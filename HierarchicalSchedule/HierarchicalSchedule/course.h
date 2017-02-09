@@ -8,6 +8,7 @@
 #include <fstream>
 #include <ctime>
 #include <cstdlib>
+#include "gtest\gtest.h"
 
 using namespace std;
 
