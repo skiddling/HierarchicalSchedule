@@ -8,6 +8,8 @@
 #include <fstream>
 #include <ctime>
 #include <cstdlib>
+#include <chrono>
+#include <random>
 #include "gtest\gtest.h"
 
 using namespace std;
@@ -41,6 +43,7 @@ class ClassUnit;
 class Course
 {
 public:
+	double points;//科目分数
 	int stu_upper_;//具体每个学科的班级人数上限
 	int class_num_;//每个科目下面有多少个班级
 	bool visited_;//用于拓扑排序时候用的，每一个科目相当于是一个结点

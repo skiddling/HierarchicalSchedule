@@ -3,9 +3,6 @@
 #include "schedule.h"
 #include <thread>
 #include <future>
-#include <iostream>
-#include <chrono>
-#include <random>
 #include <mutex>
 #include <functional>
 
