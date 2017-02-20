@@ -1,4 +1,5 @@
-#include "ga.h"
+//#include "ga.h"
+#include "dbutil.h"
 
 int rooms, groups, stuupper, stulower;
 map<string, Course> courses;
