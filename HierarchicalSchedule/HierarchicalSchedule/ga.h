@@ -1,5 +1,6 @@
 #pragma once
-#include "schedule.h"
+//#include "schedule.h"
+#include "InterruptibleThread.h"
 
 class GA
 {

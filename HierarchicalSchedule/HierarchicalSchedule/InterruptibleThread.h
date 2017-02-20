@@ -1,5 +1,6 @@
 #pragma once
-#include "ga.h"
+//#include "ga.h"
+#include "schedule.h"
 #include <thread>
 #include <future>
 #include <iostream>
