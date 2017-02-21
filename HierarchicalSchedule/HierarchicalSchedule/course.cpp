@@ -9,6 +9,10 @@ Course::Course(string course_name, int class_num, int cnum, int stuppper, set<in
 	course_name_(course_name), class_num_(class_num), stu_upper_(stuppper), not_in_set_(notinset), visited_(visited){
 	pre_node_ = vector<bool>(cnum, 0);
 	satis_num_ = 0;
+	male_stu_num_ = female_stu_num_ = 0;
+	avg_male_stu_num_ = avg_female_stu_num_ = 0.0;
+	dva_female_num_ = 5;
+	dva_male_num_ = 5;
 }
 
 //Course::Course(int course_id, string course_name):

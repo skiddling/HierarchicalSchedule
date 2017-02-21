@@ -8,9 +8,7 @@
 
 //using namespace std;
 
-mutex mut;
-condition_variable cv;
-int tag;
+
 
 class InterruptFlag
 {
@@ -30,7 +28,7 @@ private:
 	bool _set;
 };
 
-thread_local InterruptFlag this_thread_interrupt_flag;
+extern thread_local InterruptFlag this_thread_interrupt_flag;
 
 class InterruptibleThread
 {

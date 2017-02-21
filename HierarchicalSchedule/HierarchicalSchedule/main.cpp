@@ -12,18 +12,23 @@ void StudentsIn() {
 	int stunum;
 	fin >> stunum;
 	stuque = vector<Student>(stunum);
-	string stuname, stuid;
+	string stuname, stuid, sex;
 	int cnum;
 	for (int i = 0; i < stunum; i++) {
-		fin >> stuname >> stuid >> cnum;
+		fin >> stuname >> stuid >> sex >> cnum;
 		vector<string> courseque = vector<string>(cnum);
 		vector<Course> stucourses = vector<Course>(cnum);
 		for (int j = 0; j < cnum; j++) {
 			fin >> courseque[j];
 			stucourses[j] = courses[courseque[j]];
+			fin >> stucourses[j].points_;
 		}
-		stuque[i] = *(new Student(stuid, stuname, stucourses));
+		stuque[i] = *(new Student(stuid, stuname, stucourses, sex));
 		stuque[i].student_no = i;
+		for (auto c : stucourses) {
+			if (sex == "ÄÐ")couque[c.course_id_].male_stu_num_++;
+			else couque[c.course_id_].female_stu_num_++;
+		}
 	}
 	fin.close();
 }
@@ -54,10 +59,12 @@ void TeachersIn() {
 void BasicInput() {
 	ifstream fin("basic.txt");
 	int cnum, cls, notin, temp;
-	fin >> rooms >> groups >> cnum >> stuupper >> stulower;
+	//fin >> rooms >> groups >> cnum >> stuupper >> stulower;
+	fin >> rooms >> groups >> cnum;
 	string cname;
 	for(int i = 0; i < cnum; i++){
-		fin >> cname >> cls >> stuupper >> notin;
+		//fin >> cname >> cls >> stuupper >> notin;
+		fin >> cname >> cls >>  notin;
 		set<int> notinset;
 		for (int j = 0; j < notin; j++) {
 			fin >> temp;
@@ -84,6 +91,16 @@ void Input() {
 	for (int i = 0; i < teacherque.size(); i++) {
 		sort(teacherque[i].courses_.begin(), teacherque[i].courses_.end());
 	}
+	for (auto& c : couque) {
+		c.avg_male_stu_num_ = 1.0 * c.male_stu_num_ / c.class_num_;
+		c.avg_female_stu_num_ = 1.0 * c.female_stu_num_ / c.class_num_;
+		c.stu_sum_ = c.female_stu_num_ + c.male_stu_num_;
+		c.avg_sum_ = 1.0 * c.stu_sum_ / c.class_num_;
+		cout << c.course_name_ << " " << c.class_num_ << " " << c.stu_sum_ << " "
+			<< c.avg_sum_ << " " << c.male_stu_num_ << " " <<  c.avg_male_stu_num_
+			<< " " << c.female_stu_num_ << " " << c.avg_female_stu_num_ << endl;
+	}
+	getchar();
 }
 
 void OutPut() {
@@ -114,10 +131,10 @@ void SetRunTime() {
 
 int main(int argc, char* argv[]) {
 	
-	testing::InitGoogleTest(&argc, argv);
-	RUN_ALL_TESTS();
+	//testing::InitGoogleTest(&argc, argv);
+	//RUN_ALL_TESTS();
 	//srand((unsigned int)time(0));
-	//Input();
+	Input();
 	//SetRunTime();
 	////OutPut();
 	////return 0;

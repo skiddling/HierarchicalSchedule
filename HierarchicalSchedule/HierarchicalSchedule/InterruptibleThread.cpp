@@ -1,9 +1,14 @@
 //#include "foo.h"
 //#include "ga.h"
 #include "InterruptibleThread.h"
-#include <functional>
 
-using std::function;
+//using std::function;
+
+mutex mut;
+condition_variable cv;
+int tag;
+
+thread_local InterruptFlag this_thread_interrupt_flag;
 
 struct thread_interrupted {};
 
