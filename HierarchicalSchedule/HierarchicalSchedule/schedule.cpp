@@ -255,7 +255,9 @@ void Schedule::GetAllPath() {
 
 void Schedule::StuAssign() {
 	for (int i = 0; i < pattern_que_.size(); i++) {
-		pattern_que_[i].StuAssign();
+		//pattern_que_[i].StuAssign();
+		//新版本分配学生不能再用延迟技术故重写分配方法
+		pattern_que_[i].AssignStus();
 	}
 
 }

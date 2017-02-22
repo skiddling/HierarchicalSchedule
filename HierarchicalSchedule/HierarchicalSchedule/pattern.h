@@ -9,6 +9,7 @@ class Group;
 class Pattern
 {
 public:
+	default_random_engine e_;
 	int pattern_id_;//该模式的id
 	int stu_num_;//该模式下所有的学生人数
 	static int stu_upper_, stu_lower_;
@@ -41,6 +42,9 @@ public:
 	void AssignStuDown2Cls(vector<ClassUnit> &clsque);
 	void DecreaseStuNum(int pid, int stunum);
 	void IncreaseStuNum(int pid, int stunum);
+	//new method for new versio：n
+	void AssignStus();
+	void GetRandAry(vector<int>& ary);
 	pair<int, int> GetMxStuNum(ClassUnit* cp);
 
 	bool operator == (const Pattern &a)const {

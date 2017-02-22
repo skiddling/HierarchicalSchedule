@@ -10,6 +10,8 @@ Pattern::Pattern() {
 
 Pattern::Pattern(vector<Course> course_que, int stu_num) :
 	course_que_(course_que), stu_num_(stu_num){
+	e_ = default_random_engine(chrono::system_clock::now());
+
 }
 
 void Pattern::GetAllPath(vector<Group> table) {
@@ -150,10 +152,36 @@ bool Pattern::GetIsIn(ClassUnit * cp, set<ClassUnit*> units, int pid) {
 
 void Pattern::GetRandTab(vector<int>& ary) {
 	int id, asz = ary.size();
+	//u_ = uniform_int_distribution<int>(0, asz - 1);
 	for (int i = 0; i < asz; i++) {
 		id = rand() % asz;
+		//id = u_(e_);
 		if (id != i)swap(ary[i], ary[id]);
 	}
+}
+
+void Pattern::GetRandAry(vector<int>& ary) {
+	int id, sz = ary.size();
+	uniform_int_distribution<int> u(0, sz - 1);
+	for (auto i = 0; i < sz; i++) {
+		id = u(e_);
+		if (id != i)swap(ary[i], ary[id]);
+	}
+}
+
+void Pattern::AssignStus() {
+	//新的分配学生的方法,分配一个学生就对相应的班级做出数据的更新
+	//没有必要去采用延迟操作，因为每一个学生数据的更新最终都会被落实到modify操作中的查询
+	//并不存在有任何可以省略的行为，所以不需要采用延迟
+	int stuleft = stu_num_, temp, id, psz = path_.size() - 1;
+	stu_num_in_que_ = vector<int>(psz + 1, 0);
+	vector<int> ary = vector<int>(path_.size());
+	for (int i = 0; i < ary.size(); i++) {
+		ary[i] = i;
+	}
+	GetRandAry(ary);
+	
+	
 }
 
 void Pattern::StuAssign() {
@@ -166,10 +194,12 @@ void Pattern::StuAssign() {
 		ary[i] = i;
 	}
 	GetRandTab(ary);
+	//u_ = uniform_int_distribution<int>(0, stuleft);
 	chosen_path_tab_ = vector<bool>(path_.size(), false);
 	for (int i = 0; i < psz; i++) {
 		id = ary[i];
 		temp = rand() % (stuleft + 1);
+		//temp = u_(e_);
 		if (temp != 0) {
 			stu_num_in_que_[id] = temp;
 			stuleft -= temp;
@@ -356,6 +386,8 @@ void Pattern::IncreaseStuNum(int pid, int stunum) {
 		path_[pid][i]->pat_path_stus_num_[this][pid] += stunum;
 	}
 }
+
+
 
 pair<int, int> Pattern::GetMxStuNum(ClassUnit* cp) {
 	int mxn = 0, mxp, pid, temp;
