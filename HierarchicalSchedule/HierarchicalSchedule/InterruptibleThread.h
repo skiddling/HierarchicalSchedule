@@ -1,10 +1,7 @@
 #pragma once
 //#include "ga.h"
 #include "schedule.h"
-#include <thread>
-#include <future>
-#include <mutex>
-#include <functional>
+
 
 //using namespace std;
 

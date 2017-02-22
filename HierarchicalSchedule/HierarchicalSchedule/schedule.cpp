@@ -36,15 +36,19 @@ void Schedule::Init() {
 	//1.现生成每一节课
 	GetTeaCls();
 	//2.产生课表，也就是将老师的所有的课都分配到课表当中去
-	int t1 = clock(), t2;
+	//int t1 = clock(), t2;
+	auto t1 = chrono::steady_clock::now(), t2 = t1;
+	//5这个参数是可以修改的，应该当做一个参数传进来，此处暂时设置为5mi：n
+	chrono::duration<int, ratio<60, 1>> dur(5);
 	while (1) {
 		Schedule temps(*this);
 		if (!temps.GetRanTab()) {
 			*this = temps;
 			break;
 		}
-		t2 = clock();
-		if (t2 - t1 > kTableTimeOut) {
+		//t2 = clock();
+		t2 = chrono::steady_clock::now();
+		if (t2 - t1 > dur) {
 			success_falg_ = 0;
 			return;
 		}

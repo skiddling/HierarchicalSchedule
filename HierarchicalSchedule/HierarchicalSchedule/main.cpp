@@ -43,7 +43,7 @@ void TeachersIn() {
 		map<Course, int> coursestable;
 		vector<Course> courseque = vector<Course> (coursesnum);
 		for (int i = 0; i < coursesnum; i++) {
-			fin >> coursename >> coursetimes;
+			fin >> coursetimes >> coursename;
 			courseque[i] = courses[coursename];
 			cout << coursestable.size() << "  " << courseque[i].course_name_ << endl;
 			//coursestable[courseque[i]] = coursetimes;
@@ -100,7 +100,7 @@ void Input() {
 			<< c.avg_sum_ << " " << c.male_stu_num_ << " " <<  c.avg_male_stu_num_
 			<< " " << c.female_stu_num_ << " " << c.avg_female_stu_num_ << endl;
 	}
-	getchar();
+	//getchar();
 }
 
 void OutPut() {
@@ -117,16 +117,16 @@ void OutPut() {
 void SetRunTime() {
 	GA::rooms_ = rooms;
 	GA::groups_ = groups;
-	GA::stu_lower_ = stulower;
-	GA::stu_upper_ = stuupper;
+	//GA::stu_lower_ = stulower;
+	//GA::stu_upper_ = stuupper;
 	Schedule::rooms_ = rooms;
 	Schedule::groups_ = groups;
-	Schedule::stu_lower_ = stulower;
-	Schedule::stu_upper_ = stuupper;
-	ClassUnit::stu_lower_ = stulower;
-	ClassUnit::stu_upper_ = stuupper;
-	Pattern::stu_lower_ = stulower;
-	Pattern::stu_upper_ = stuupper;
+	//Schedule::stu_lower_ = stulower;
+	//Schedule::stu_upper_ = stuupper;
+	//ClassUnit::stu_lower_ = stulower;
+	//ClassUnit::stu_upper_ = stuupper;
+	//Pattern::stu_lower_ = stulower;
+	//Pattern::stu_upper_ = stuupper;
 }
 
 int main(int argc, char* argv[]) {
@@ -135,14 +135,16 @@ int main(int argc, char* argv[]) {
 	//RUN_ALL_TESTS();
 	//srand((unsigned int)time(0));
 	Input();
-	//SetRunTime();
+	SetRunTime();
 	////OutPut();
 	////return 0;
-	//GA ga(stuque, teacherque, couque);
-	//if (ga.Generate()) {
-	//	ga.GetResult();
-	//	ga.OutPutResult();
-	//}
+	cout << "before ga" << endl;
+	GA ga(stuque, teacherque, couque);
+	cout << "after ga" << endl;
+	if (ga.Generate()) {
+		ga.GetResult();
+		//ga.OutPutResult();
+	}
 	//else cout << "failed gernerate table" << endl;
 	system("PAUSE");
 	return 0;

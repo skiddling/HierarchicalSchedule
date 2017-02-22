@@ -18,10 +18,11 @@ GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que)
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
-
+	//cout << "ga 21" << endl;
 	//1.获得所有学生的模式类型
 	GetStuPat();
 	GetPrefixes();
+	//cout << "finish get pre" << endl;
 	//因为已经对科目排序过了，所以不需要再用拓扑排序进行排序
 	//TopoSort();
 }
@@ -195,13 +196,32 @@ bool GA::Init() {
 	//2.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
 	result_ = *(new Schedule(cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
-	schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
-	schedules_[1] = schedules_[0];
+	//schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
+	//此处每个线程生成5个表的课，具体数据可以再修改更新
+	schedules_[0] = vector<Schedule>(kScheduleSize_ * thread::hardware_concurrency(), result_);
+	//schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
+	schedules_[1] = schedules_[0];//拷贝赋值
 	//result_.Init();
 	cout << "start get the rand table" << endl;
-	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[0][i].Init();
+	//利用多线程来生成课表
+	vector<thread> ctablethreads(thread::hardware_concurrency());
+	//vector<thread> ctablethreads(1);
+	for(auto i = 0; i < thread::hardware_concurrency(); i++){
+	//for(auto i = 0; i < 1; i++){
+		ctablethreads[i] = thread{ [&, i]() {
+			for (auto j = 0; j < kScheduleSize_; j++) {
+				cout << "init j " << j << " " << schedules_[0].size() << " " << i * kScheduleSize_ + j << endl;
+				schedules_[0][j + i * kScheduleSize_].Init();
+			}
+		} };
 	}
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for (auto i = 0; i < 1; i++) {
+		ctablethreads[i].join();
+	}
+	/*for (int i = 0; i < kScheduleSize_; i++) {
+		schedules_[0][i].Init();
+	}*/
 	cout << "end of the get rand table" << endl;
 	//OutPutTable();
 	int successnum = 0;
@@ -209,6 +229,7 @@ bool GA::Init() {
 		successnum += schedules_[0][i].success_falg_;
 	}
 	if (successnum == 0)return true;
+	getchar();
 	//开始正式分配学生
 	//cout << successnum << endl;
 	for (int i = 0; i < kScheduleSize_; i++) {

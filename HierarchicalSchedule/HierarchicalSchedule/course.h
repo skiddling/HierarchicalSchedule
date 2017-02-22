@@ -11,6 +11,10 @@
 #include <chrono>
 #include <random>
 #include <functional>
+#include <thread>
+#include <future>
+#include <mutex>
+#include <functional>
 #include "gtest\gtest.h"
 
 using namespace std;

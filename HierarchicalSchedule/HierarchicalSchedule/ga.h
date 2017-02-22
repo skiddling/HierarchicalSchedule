@@ -5,7 +5,8 @@
 class GA
 {
 public:
-	static const int kScheduleSize_ = 20;//定义种群数量
+	//static const int kScheduleSize_ = 20;//定义种群数量
+	static const int kScheduleSize_ = 5;//定义每个线程的种群数量
 	//const int kCheckTimeOut = 1000000;//生成一张具有可行性的课表的时间限制
 	static int rooms_, groups_;
 	static double step;
