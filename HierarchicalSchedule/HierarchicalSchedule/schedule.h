@@ -50,6 +50,8 @@ public:
 	void GetResult();
 	void OutPutResult();
 	void ResetStuNum();
+	//new method for new version
+	void GetAllAvlStus();
 
 private:
 	void GetTeaCls();//构造老师的课程指针

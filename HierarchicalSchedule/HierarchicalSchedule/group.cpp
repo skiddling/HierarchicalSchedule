@@ -13,3 +13,9 @@ void Group::AddUnit(ClassUnit *up) {
 	leave_--;
 	if (leave_ == 0)avl = 0;
 }
+
+void Group::GetAllAvlStus() {
+	for (auto& c : group) {
+		c->GetAllAvlStus();
+	}
+}

@@ -15,6 +15,8 @@ public:
 	Group(int rooms, int leave, bool avl = 1);
 	void AddUnit(ClassUnit *up);
 	inline void GetCouSet(int gid);
+	//new method for new version
+	void GetAllAvlStus();
 
 private:
 	//void GetRandTable(int rows, int cols);
@@ -28,4 +30,7 @@ inline void Group::GetCouSet(int gid) {
 		cou = group[i]->course_;
 		cou_set_[cou].push_back(i);
 	}
+}
+
+inline void Group::GetAllAvlStus() {
 }

@@ -5,13 +5,19 @@ int ClassUnit::stu_upper_ = 0;
 
 ClassUnit::ClassUnit(int unit_id, int stu_num) : unit_id_(unit_id), stu_num_(stu_num){
 	alterable_ = 1;
+	sum_points_in_sex_[male] = sum_points_in_sex_[female] = 0.0;
+	stu_num_in_sex_[male] = stu_num_in_sex_[female] = 0;
 }
 
 ClassUnit::ClassUnit(int unit_id, pair<int, int> unit_time, int stu_num) {
+	sum_points_in_sex_[male] = sum_points_in_sex_[female] = 0.0;
+	stu_num_in_sex_[male] = stu_num_in_sex_[female] = 0;
 }
 
 ClassUnit::ClassUnit(Teacher teacher, Course course, int unit_id, int stu_num):
 	teacher_(teacher), course_(course), unit_id_(unit_id), stu_num_(stu_num){
+	sum_points_in_sex_[male] = sum_points_in_sex_[female] = 0.0;
+	stu_num_in_sex_[male] = stu_num_in_sex_[female] = 0;
 }
 
 void ClassUnit::init() {
@@ -203,6 +209,30 @@ void ClassUnit::ResetStuData() {
 	patterns_stus_.clear();
 	pat_path_stus_num_.clear();
 	selected_stus_.clear();
+}
+
+void ClassUnit::GetAllAvlStus() {
+	//获得所有能够在这个班级的学生
+	for (auto& p : patterns_) {
+		for (auto&s : p.first->stu_que_) {
+			//allavlnotinstus_.push_back(s);
+			//allavlnotinstus_.insert(s);
+			stunotin_.insert(s);
+			stunotinsex_[s->sex_].insert(*s);
+		}
+	}
+}
+
+void ClassUnit::PutStuIntoCls(Student* stu) {
+	//将学生放入到班级当中去
+	//也就是需要修改当前班级当中相关的所有的数据
+	//注意由于不再使用延迟操作，所以不必再去更新学生信息，只需要更新相应进出班级的学生信息即可
+	stunotinsex_[stu->sex_].erase(stu);
+	stunotin_.erase(stu);
+	stu->IntoCls(this);
+	sum_points_in_sex_[stu->sex_] += stu->GetCouPoints(this);
+	stu_num_in_sex_[stu->sex_]++;
+	stu_num_++;
 }
 
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {

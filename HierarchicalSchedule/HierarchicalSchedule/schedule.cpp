@@ -236,6 +236,7 @@ bool Schedule::GetRanTab() {
 }
 
 void Schedule::GetAllPath() {
+	//是将每个课表的具体数据都收集起来，获得每个课表的所有的路径
 	//此处的重点是对每个pattern进行操作
 	for (int i = 0; i < groups_; i++) {
 		table_[i].GetCouSet(i);
@@ -256,8 +257,7 @@ void Schedule::GetAllPath() {
 void Schedule::StuAssign() {
 	for (int i = 0; i < pattern_que_.size(); i++) {
 		//pattern_que_[i].StuAssign();
-		//新版本分配学生不能再用延迟技术故重写分配方法
-		pattern_que_[i].AssignStus();
+		pattern_que_[i].AssignStus();//new method for new version
 	}
 
 }
@@ -356,5 +356,15 @@ void Schedule::OutPutResult() {
 void Schedule::ResetStuNum() {
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
 		cls_nuit_que_[i].ResetStuData();
+	}
+}
+
+void Schedule::GetAllAvlStus() {
+	//让每个班都获得他所有可能能够进入该班级的学生，方便接下去对学生进行分配以及进出的工作
+	/*for (auto i = 0; i < table_.size(); i++) {
+		table_[i].GetAllAvlStus();
+	}*/
+	for (auto& t : table_) {
+		t.GetAllAvlStus();
 	}
 }

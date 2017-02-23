@@ -22,6 +22,13 @@ public:
 	Student(string student_id, string student_name, vector<Course> courses, string sex);
 	void GetCouSort();//让courses变成有序队列
 
+	//new obj or method for new version
+	map<Course, double> points_;//记录学生每个科目的成绩
+	set<ClassUnit*> clsset_;//记录该学生在哪些教学班上课
+	void IntoCls(ClassUnit* clsptr);
+	void OutCls(ClassUnit* clsptr);
+	double GetCouPoints(ClassUnit* cls);
+	
 private:
 
 };

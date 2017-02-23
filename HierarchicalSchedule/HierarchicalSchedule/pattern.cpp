@@ -169,19 +169,45 @@ void Pattern::GetRandAry(vector<int>& ary) {
 	}
 }
 
+void Pattern::PutStuIntoCls(int pid, int sid) {
+	//将学生放到班级当中去
+	for (auto& c : path_[pid]) {
+		c->PutStuIntoCls(stu_que_[sid]);
+	}
+}
+
 void Pattern::AssignStus() {
 	//新的分配学生的方法,分配一个学生就对相应的班级做出数据的更新
 	//没有必要去采用延迟操作，因为每一个学生数据的更新最终都会被落实到modify操作中的查询
 	//并不存在有任何可以省略的行为，所以不需要采用延迟
-	int stuleft = stu_num_, temp, id, psz = path_.size() - 1;
+	int stuleft = stu_num_, temp, pid, psz = path_.size() - 1, sid = 0;
 	stu_num_in_que_ = vector<int>(psz + 1, 0);
 	vector<int> ary = vector<int>(path_.size());
 	for (int i = 0; i < ary.size(); i++) {
 		ary[i] = i;
 	}
 	GetRandAry(ary);
-	
-	
+	uniform_int_distribution<int> u(0, stuleft);
+	chosen_path_tab_ = vector<bool>(path_.size(), false);
+	for (int i = 0; i < psz; i++) {
+		pid = ary[i];
+		//temp = rand() % (stuleft + 1);
+		temp = u(e_);
+		if (temp != 0) {
+			stu_num_in_que_[pid] = temp;
+			stuleft -= temp;
+			chosen_path_tab_[pid] = true;
+			for (int j = 0; j < temp; j++) {
+				PutStuIntoCls(pid, sid++);
+			}
+			if (!stuleft)return;
+		}
+	}
+	stu_num_in_que_[ary[psz]] = stuleft;
+	for (int i = 0; i < stuleft; i++) {
+		PutStuIntoCls(ary[psz], sid++);
+	}
+	chosen_path_tab_[ary[psz]] = true;
 }
 
 void Pattern::StuAssign() {

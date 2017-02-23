@@ -14,16 +14,22 @@ void StudentsIn() {
 	stuque = vector<Student>(stunum);
 	string stuname, stuid, sex;
 	int cnum;
+	double point;
 	for (int i = 0; i < stunum; i++) {
 		fin >> stuname >> stuid >> sex >> cnum;
 		vector<string> courseque = vector<string>(cnum);
 		vector<Course> stucourses = vector<Course>(cnum);
+		map<Course, double> points;
 		for (int j = 0; j < cnum; j++) {
 			fin >> courseque[j];
 			stucourses[j] = courses[courseque[j]];
-			fin >> stucourses[j].points_;
+			//fin >> stucourses[j].points_;
+			fin >> point;
+			points[stucourses[j]] = point;
+			
 		}
 		stuque[i] = *(new Student(stuid, stuname, stucourses, sex));
+		stuque[i].points_ = points;
 		stuque[i].student_no = i;
 		for (auto c : stucourses) {
 			if (sex == "ÄÐ")couque[c.course_id_].male_stu_num_++;

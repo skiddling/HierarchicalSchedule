@@ -236,7 +236,8 @@ bool GA::Init() {
 		if (schedules_[0][i].success_falg_) {
 			schedules_[0][i].GetAllPath();
 			cout << "end of get all path" << endl;
-			schedules_[0][i].StuAssign();
+			schedules_[0][i].GetAllAvlStus();//new method for new versio£ºn
+			schedules_[0][i].StuAssign();//modified for new version
 			schedules_[0][i].CalCrashFitness();
 			if (schedules_[0][i].fitness > mxfit_)mxfit_ = schedules_[0][i].fitness;
 			//cout << i << endl;

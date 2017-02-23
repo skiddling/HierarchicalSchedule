@@ -42,9 +42,11 @@ public:
 	void AssignStuDown2Cls(vector<ClassUnit> &clsque);
 	void DecreaseStuNum(int pid, int stunum);
 	void IncreaseStuNum(int pid, int stunum);
-	//new method for new versio£ºn
+	//new method for new version
 	void AssignStus();
 	void GetRandAry(vector<int>& ary);
+	void PutStuIntoCls(int pid, int sid);
+
 	pair<int, int> GetMxStuNum(ClassUnit* cp);
 
 	bool operator == (const Pattern &a)const {

@@ -29,6 +29,22 @@ public:
 	void OutPutStu(ofstream &fout);
 	void GetPatStusNum();
 	void ResetStuData();
+	//new obj and method for new version
+	//vector<Student*> allavlnotinstus_;//所有能够在这个班级但是目前没有在这个班级的学生
+	set<Student*> stunotin_;//所有能够在这个班级但是目前没有在这个班级的学生
+	map <Sex, set<Student*> > stunotinsex_;
+	set<Student*> stuinit_;//所有在这个教室的学生
+	map<Sex, set<Student*> > stuinitsex_;
+	/*int male_stu_num_;
+	int female_stu_num_;*/
+	map<Sex, int> stu_num_in_sex_;//其实也可以不用
+	/*double avg_male_stu_num_;
+	double avg_female_stu_num_;*/
+	map<Sex, double> sum_points_in_sex_;//记录不同性别总分
+	double avg_sum_;
+
+	void GetAllAvlStus();
+	void PutStuIntoCls(Student* stu);
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);

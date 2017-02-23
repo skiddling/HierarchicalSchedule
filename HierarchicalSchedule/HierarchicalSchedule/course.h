@@ -48,15 +48,9 @@ class ClassUnit;
 class Course
 {
 public:
-	int stu_sum_;
-	int male_stu_num_;
-	int female_stu_num_;
-	double avg_male_stu_num_;
-	double avg_female_stu_num_;
-	double avg_sum_;
-	int dva_male_num_;
+	int dva_male_num_;//男生人数偏差
 	int dva_female_num_;
-	double points_;//科目分数
+	//double points_;//科目分数
 	int stu_upper_;//具体每个学科的班级人数上限
 	int class_num_;//每个科目下面有多少个班级
 	bool visited_;//用于拓扑排序时候用的，每一个科目相当于是一个结点
