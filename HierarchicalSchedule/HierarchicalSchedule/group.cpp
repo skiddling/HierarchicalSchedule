@@ -15,7 +15,8 @@ void Group::AddUnit(ClassUnit *up) {
 }
 
 void Group::GetAllAvlStus() {
-	for (auto& c : group) {
-		c->GetAllAvlStus();
+	//for (auto& c : group) {
+	for(auto i = 0; i < cpos_; i++){
+		group[i]->GetAllAvlStus();
 	}
 }

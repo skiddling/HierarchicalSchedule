@@ -204,10 +204,10 @@ bool GA::Init() {
 	//result_.Init();
 	cout << "start get the rand table" << endl;
 	//利用多线程来生成课表
-	vector<thread> ctablethreads(thread::hardware_concurrency());
-	//vector<thread> ctablethreads(1);
-	for(auto i = 0; i < thread::hardware_concurrency(); i++){
-	//for(auto i = 0; i < 1; i++){
+	//vector<thread> ctablethreads(thread::hardware_concurrency());
+	vector<thread> ctablethreads(1);
+	//for(auto i = 0; i < thread::hardware_concurrency(); i++){
+	for(auto i = 0; i < 1; i++){
 		ctablethreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				cout << "init j " << j << " " << schedules_[0].size() << " " << i * kScheduleSize_ + j << endl;
@@ -215,8 +215,8 @@ bool GA::Init() {
 			}
 		} };
 	}
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	//for(auto i = 0; i < 1; i++){
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for(auto i = 0; i < 1; i++){
 		ctablethreads[i].join();
 	}
 	/*for (int i = 0; i < kScheduleSize_; i++) {
@@ -231,14 +231,18 @@ bool GA::Init() {
 	if (successnum == 0)return true;
 	//开始正式分配学生
 	//cout << successnum << endl;
-	vector<thread> inithreads(thread::hardware_concurrency());
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	//vector<thread> inithreads(thread::hardware_concurrency());
+	vector<thread> inithreads(1);
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for (auto i = 0; i < 1; i++) {
 		inithreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
+				cout << "start mutilthreads" << endl;
 				if (schedules_[0][j + i * kScheduleSize_].success_falg_) {
 					schedules_[0][j + i * kScheduleSize_].GetAllPath();
 					cout << "end of get all path" << endl;
 					schedules_[0][j + i * kScheduleSize_].GetAllAvlStus();//new method for new versio：n
+					cout << "end or get all avl stus" << endl;
 					schedules_[0][j + i * kScheduleSize_].StuAssign();//modified for new version
 					schedules_[0][j + i * kScheduleSize_].CalCrashFitness();
 					if (schedules_[0][j + i * kScheduleSize_].fitness > mxfit_)mxfit_ = schedules_[0][i].fitness;
@@ -247,7 +251,8 @@ bool GA::Init() {
 			}
 		} };
 	}
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for (auto i = 0; i < 1; i++) {
 		inithreads[i].join();
 	}
 	//准备工作完成，开始遗传算法主体部分

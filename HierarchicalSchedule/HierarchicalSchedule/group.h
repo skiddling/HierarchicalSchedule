@@ -25,7 +25,8 @@ private:
 
 inline void Group::GetCouSet(int gid) {
 	Course cou;
-	for (int i = 0; i < group.size(); i++) {
+	//for (int i = 0; i < group.size(); i++) {
+	for(auto i = 0; i < cpos_; i++){
 		group[i]->unit_time_ = make_pair(gid, i);
 		cou = group[i]->course_;
 		cou_set_[cou].push_back(i);
