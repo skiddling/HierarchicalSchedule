@@ -21,6 +21,10 @@ using namespace std;
 
 const double kRndPluRnd = static_cast<double>(RAND_MAX * RAND_MAX);
 
+enum Sex {
+	male, female
+};
+
 class GroupUnit {
 public:
 	int times_;
@@ -48,10 +52,13 @@ class ClassUnit;
 class Course
 {
 public:
+	map<Sex, int>num_of_stus_in_sex_;
+	map<Sex, double> total_scores_in_sex_;
 	int dva_male_num_;//男生人数偏差
 	int dva_female_num_;
 	//double points_;//科目分数
 	int stu_upper_;//具体每个学科的班级人数上限
+	int stu_lower_;//具体每个学科的班级人数下限
 	int class_num_;//每个科目下面有多少个班级
 	bool visited_;//用于拓扑排序时候用的，每一个科目相当于是一个结点
 	int course_id_;//将在被全部创建完科目之后才会生成相应的id
@@ -68,7 +75,7 @@ public:
 	//vector<int> units_;//该科目下的所有的课的节次
 
 	Course();
-	Course(string course_name, int cls, int cnum, int stuupper, set<int>notintset, bool visited = 0);
+	Course(string course_name, int cls, int cnum, int stuupper, int stulower, set<int>notintset, bool visited = 0);
 	//Course(int course_id, string course_name);
 	bool operator < (const Course a)const {
 		//同一个科目下的学科判班级的数量，不同学科的就判名字

@@ -215,8 +215,7 @@ bool GA::Init() {
 			}
 		} };
 	}
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for (auto i = 0; i < 1; i++) {
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
 		ctablethreads[i].join();
 	}
 	/*for (int i = 0; i < kScheduleSize_; i++) {
@@ -229,19 +228,26 @@ bool GA::Init() {
 		successnum += schedules_[0][i].success_falg_;
 	}
 	if (successnum == 0)return true;
-	getchar();
 	//开始正式分配学生
 	//cout << successnum << endl;
-	for (int i = 0; i < kScheduleSize_; i++) {
-		if (schedules_[0][i].success_falg_) {
-			schedules_[0][i].GetAllPath();
-			cout << "end of get all path" << endl;
-			schedules_[0][i].GetAllAvlStus();//new method for new versio：n
-			schedules_[0][i].StuAssign();//modified for new version
-			schedules_[0][i].CalCrashFitness();
-			if (schedules_[0][i].fitness > mxfit_)mxfit_ = schedules_[0][i].fitness;
-			//cout << i << endl;
-		}
+	vector<thread> inithreads(thread::hardware_concurrency());
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+		inithreads[i] = thread{ [&, i]() {
+			for (auto j = 0; j < kScheduleSize_; j++) {
+				if (schedules_[0][j + i * kScheduleSize_].success_falg_) {
+					schedules_[0][j + i * kScheduleSize_].GetAllPath();
+					cout << "end of get all path" << endl;
+					schedules_[0][j + i * kScheduleSize_].GetAllAvlStus();//new method for new versio：n
+					schedules_[0][j + i * kScheduleSize_].StuAssign();//modified for new version
+					schedules_[0][j + i * kScheduleSize_].CalCrashFitness();
+					if (schedules_[0][j + i * kScheduleSize_].fitness > mxfit_)mxfit_ = schedules_[0][i].fitness;
+					//cout << i << endl;
+				}
+			}
+		} };
+	}
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+		inithreads[i].join();
 	}
 	//准备工作完成，开始遗传算法主体部分
 	cout << "start for GA" << endl;

@@ -1,9 +1,10 @@
 #include "classunit.h"
 
-int ClassUnit::stu_lower_ = 0;
-int ClassUnit::stu_upper_ = 0;
+//int ClassUnit::stu_lower_ = 0;
+//int ClassUnit::stu_upper_ = 0;
 
-ClassUnit::ClassUnit(int unit_id, int stu_num) : unit_id_(unit_id), stu_num_(stu_num){
+ClassUnit::ClassUnit(int unit_id, int stu_num) : 
+	unit_id_(unit_id), stu_num_(stu_num){
 	alterable_ = 1;
 	sum_points_in_sex_[male] = sum_points_in_sex_[female] = 0.0;
 	stu_num_in_sex_[male] = stu_num_in_sex_[female] = 0;
@@ -18,6 +19,8 @@ ClassUnit::ClassUnit(Teacher teacher, Course course, int unit_id, int stu_num):
 	teacher_(teacher), course_(course), unit_id_(unit_id), stu_num_(stu_num){
 	sum_points_in_sex_[male] = sum_points_in_sex_[female] = 0.0;
 	stu_num_in_sex_[male] = stu_num_in_sex_[female] = 0;
+	stu_lower_ = course.stu_lower_;
+	stu_upper_ = course.stu_upper_;
 }
 
 void ClassUnit::init() {
@@ -218,7 +221,7 @@ void ClassUnit::GetAllAvlStus() {
 			//allavlnotinstus_.push_back(s);
 			//allavlnotinstus_.insert(s);
 			stunotin_.insert(s);
-			stunotinsex_[s->sex_].insert(*s);
+			stunotinsex_[s->sex_].insert(s);
 		}
 	}
 }

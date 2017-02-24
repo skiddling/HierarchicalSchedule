@@ -10,7 +10,7 @@ Pattern::Pattern() {
 
 Pattern::Pattern(vector<Course> course_que, int stu_num) :
 	course_que_(course_que), stu_num_(stu_num){
-	e_ = default_random_engine(chrono::system_clock::now());
+	e_ = default_random_engine(0);
 
 }
 
@@ -169,9 +169,9 @@ void Pattern::GetRandAry(vector<int>& ary) {
 	}
 }
 
-void Pattern::PutStuIntoCls(int pid, int sid) {
+void Pattern::PutStuIntoCls(int pathid, int sid) {
 	//将学生放到班级当中去
-	for (auto& c : path_[pid]) {
+	for (auto& c : path_[pathid]) {
 		c->PutStuIntoCls(stu_que_[sid]);
 	}
 }

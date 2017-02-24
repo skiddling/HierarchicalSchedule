@@ -7,7 +7,8 @@ public:
 	//int crash_;//该班级的冲突值
 	int stu_num_;//该班级学生数量
 	int unit_id_;
-	static int stu_upper_, stu_lower_;
+	//static int stu_upper_, stu_lower_;
+	int stu_upper_, stu_lower_;
 	bool alterable_;//是否需要进行排课，1代表需要，0代表不需要,不需要安排的班级时间和具体上课学生都被固定
 	pair<int, int> unit_time_;//初始化的时候分配这个教室的具体的上课时间
 	Teacher teacher_;//每个上课教室都会有一个老师，没有就是NULL

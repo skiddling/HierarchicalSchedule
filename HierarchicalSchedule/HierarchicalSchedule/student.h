@@ -2,9 +2,6 @@
 #include "teacher.h"
 
 class Pattern;
-enum Sex {
-	male, female
-};
 
 class Student
 {

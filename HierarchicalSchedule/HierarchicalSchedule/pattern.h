@@ -45,7 +45,7 @@ public:
 	//new method for new version
 	void AssignStus();
 	void GetRandAry(vector<int>& ary);
-	void PutStuIntoCls(int pid, int sid);
+	void PutStuIntoCls(int pathid, int sid);
 
 	pair<int, int> GetMxStuNum(ClassUnit* cp);
 

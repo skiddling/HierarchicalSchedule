@@ -32,8 +32,16 @@ void StudentsIn() {
 		stuque[i].points_ = points;
 		stuque[i].student_no = i;
 		for (auto c : stucourses) {
-			if (sex == "男")couque[c.course_id_].male_stu_num_++;
-			else couque[c.course_id_].female_stu_num_++;
+			/*if (sex == "男")couque[c.course_id_].male_stu_num_++;
+			else couque[c.course_id_].female_stu_num_++;*/
+			if (sex == "男") {
+				couque[c.course_id_].num_of_stus_in_sex_[male]++;
+				couque[c.course_id_].total_scores_in_sex_[male]++;
+			}
+			else {
+				couque[c.course_id_].num_of_stus_in_sex_[female]++;
+				couque[c.course_id_].total_scores_in_sex_[female]++;
+			}
 		}
 	}
 	fin.close();
@@ -64,19 +72,19 @@ void TeachersIn() {
 
 void BasicInput() {
 	ifstream fin("basic.txt");
-	int cnum, cls, notin, temp;
+	int cnum, cls, notin, temp, stuupper, stulower;
 	//fin >> rooms >> groups >> cnum >> stuupper >> stulower;
 	fin >> rooms >> groups >> cnum;
 	string cname;
 	for(int i = 0; i < cnum; i++){
 		//fin >> cname >> cls >> stuupper >> notin;
-		fin >> cname >> cls >>  notin;
+		fin >> cname >> cls >>  notin >> stuupper >> stulower;
 		set<int> notinset;
 		for (int j = 0; j < notin; j++) {
 			fin >> temp;
 			notinset.insert(temp);
 		}
-		couque.push_back(*(new Course(cname, cls, cnum, stuupper, notinset)));
+		couque.push_back(*(new Course(cname, cls, cnum, stuupper, stulower, notinset)));
 		//courses[cname] = *(new Course(cname, cls, cnum));
 	}
 	//确定了每门课的序号
@@ -96,15 +104,6 @@ void Input() {
 		sort(stuque[i].courses_.begin(), stuque[i].courses_.end());
 	for (int i = 0; i < teacherque.size(); i++) {
 		sort(teacherque[i].courses_.begin(), teacherque[i].courses_.end());
-	}
-	for (auto& c : couque) {
-		c.avg_male_stu_num_ = 1.0 * c.male_stu_num_ / c.class_num_;
-		c.avg_female_stu_num_ = 1.0 * c.female_stu_num_ / c.class_num_;
-		c.stu_sum_ = c.female_stu_num_ + c.male_stu_num_;
-		c.avg_sum_ = 1.0 * c.stu_sum_ / c.class_num_;
-		cout << c.course_name_ << " " << c.class_num_ << " " << c.stu_sum_ << " "
-			<< c.avg_sum_ << " " << c.male_stu_num_ << " " <<  c.avg_male_stu_num_
-			<< " " << c.female_stu_num_ << " " << c.avg_female_stu_num_ << endl;
 	}
 	//getchar();
 }

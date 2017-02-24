@@ -32,5 +32,3 @@ inline void Group::GetCouSet(int gid) {
 	}
 }
 
-inline void Group::GetAllAvlStus() {
-}
