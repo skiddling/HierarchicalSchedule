@@ -36,11 +36,11 @@ void StudentsIn() {
 			else couque[c.course_id_].female_stu_num_++;*/
 			if (sex == "ÄÐ") {
 				couque[c.course_id_].num_of_stus_in_sex_[male]++;
-				couque[c.course_id_].total_scores_in_sex_[male]++;
+				couque[c.course_id_].total_scores_in_sex_[male] += stuque[i].points_[c];
 			}
 			else {
 				couque[c.course_id_].num_of_stus_in_sex_[female]++;
-				couque[c.course_id_].total_scores_in_sex_[female]++;
+				couque[c.course_id_].total_scores_in_sex_[female] += stuque[i].points_[c];
 			}
 		}
 	}
