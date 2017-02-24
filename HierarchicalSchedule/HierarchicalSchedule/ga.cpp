@@ -216,6 +216,7 @@ bool GA::Init() {
 		} };
 	}
 	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	//for(auto i = 0; i < 1; i++){
 		ctablethreads[i].join();
 	}
 	/*for (int i = 0; i < kScheduleSize_; i++) {
