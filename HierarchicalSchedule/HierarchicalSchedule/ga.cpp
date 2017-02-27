@@ -266,7 +266,6 @@ bool GA::Init() {
 }
 
 void GA::GAProcess() {
-	//利用一个函数数组来进行相应的操作
 	promise<Schedule> pro;
 	future<Schedule> fut = pro.get_future();
 	vector<InterruptibleThread> threads(thread::hardware_concurrency());
@@ -278,7 +277,7 @@ void GA::GAProcess() {
 
 void GA::GetSchedule(int thid) {
 	for (auto i = 0; i < kScheduleSize_; i++) {
-		//schedules_[0][i + thid * kScheduleSize_]
+		schedules_[0][i + thid * kScheduleSize_].GetSchedule();
 	}
 }
 

@@ -339,6 +339,8 @@ void Schedule::GetStuNum() {
 	}
 }
 
+
+
 void Schedule::GetResult() {
 	//让每个pattern当中的学生分配到每个班级当中
 	for (int i = 0; i < pattern_que_.size(); i++) {
@@ -382,4 +384,39 @@ void Schedule::GetStusAddrs() {
 	for (auto i = 0; i < stu_que_.size(); i++) {
 		pattern_que_[stu_que_[i].patp_].stu_que_.push_back(&stu_que_[i]);
 	}
+}
+
+void Schedule::GetSchedule() {
+	
+}
+
+void Schedule::GetFunctions() {
+	//利用function数组来方便实现代码
+	fncs.push_back([&] {
+			
+	});
+}
+
+void Schedule::ModifySexRatio() {
+
+}
+
+void Schedule::ModifyTotAmount() {
+
+}
+
+void Schedule::ModifyAvgPoints() {
+
+}
+
+void Schedule::CalSexRatio() {
+
+}
+
+void Schedule::CalTotAmount() {
+
+}
+
+void Schedule::CalAvgPoints() {
+
 }

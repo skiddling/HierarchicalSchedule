@@ -53,6 +53,7 @@ public:
 	//new method for new version
 	void GetAllAvlStus();
 	void GetStusAddrs();
+	void GetSchedule();
 
 private:
 	void GetTeaCls();//构造老师的课程指针
@@ -68,7 +69,6 @@ private:
 
 	//new method for new version	
 	vector<function<void()> > fncs;
-	void GetSchedule();
 	void GetFunctions();
 	void ModifySexRatio();
 	void ModifyTotAmount();
