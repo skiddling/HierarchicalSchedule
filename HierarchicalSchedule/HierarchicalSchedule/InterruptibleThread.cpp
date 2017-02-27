@@ -19,35 +19,35 @@ void interruption_point()
 	}
 }
 
-void foo(InterruptibleThread& t)
-{
-	while (true) {
-		int res = t.u_(t.e_);
-		if (res == 7) {
-			if (!tag) {
-				unique_lock<mutex> lk(mut);
-				t.pro_ptr_->set_value(this_thread::get_id());
-				tag = 1;
-			}
-			break;
-		}
-		cout << this_thread::get_id() << " **** " << res << endl;
-		try {
-			interruption_point();
-		}
-		catch (const thread_interrupted& interrupt) {
-			break;
-		}
-	}
-	while (true) {
-		try {
-			interruption_point();
-		}
-		catch (const thread_interrupted& interrupt) {
-			break;
-		}
-	}
-}
+//void foo(InterruptibleThread& t)
+//{
+//	while (true) {
+//		int res = t.u_(t.e_);
+//		if (res == 7) {
+//			if (!tag) {
+//				unique_lock<mutex> lk(mut);
+//				t.pro_ptr_->set_value(this_thread::get_id());
+//				tag = 1;
+//			}
+//			break;
+//		}
+//		cout << this_thread::get_id() << " **** " << res << endl;
+//		try {
+//			interruption_point();
+//		}
+//		catch (const thread_interrupted& interrupt) {
+//			break;
+//		}
+//	}
+//	while (true) {
+//		try {
+//			interruption_point();
+//		}
+//		catch (const thread_interrupted& interrupt) {
+//			break;
+//		}
+//	}
+//}
 
 //
 //int main()

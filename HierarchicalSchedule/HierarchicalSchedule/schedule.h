@@ -65,4 +65,15 @@ private:
 	bool GetTimeList(int tag, map<GroupUnit, vector<int> > &timelist, vector<vector<int> > avl, vector<bool> trtimes);
 	bool CheckPrefix(int cid);
 	void GetStuNum();
+
+	//new method for new version	
+	vector<function<void()> > fncs;
+	void GetSchedule();
+	void GetFunctions();
+	void ModifySexRatio();
+	void ModifyTotAmount();
+	void ModifyAvgPoints();
+	void CalSexRatio();
+	void CalTotAmount();
+	void CalAvgPoints();
 };

@@ -30,18 +30,17 @@ extern thread_local InterruptFlag this_thread_interrupt_flag;
 class InterruptibleThread
 {
 public:
-	default_random_engine e_;
-	uniform_int_distribution<int> u_;
+	//default_random_engine e_;
+	//uniform_int_distribution<int> u_;
 	thread _internal_thread;
-	promise<decltype(this_thread::get_id())>* pro_ptr_;
+	promise<Schedule>* pro_ptr_;
 	template<typename FunctionType>
-	InterruptibleThread(FunctionType f, promise<decltype(this_thread::get_id())>* pro_ptr, uniform_int_distribution<int> u) :
-		pro_ptr_(pro_ptr), u_(u) {
+	InterruptibleThread(FunctionType f, int i){
 		promise<InterruptFlag*> p;
 		_internal_thread = thread([f, &p, this]()
 		{
 			p.set_value(&this_thread_interrupt_flag);
-			f(*this);
+			f();
 		});
 		_interrupt_flag = p.get_future().get();
 	}

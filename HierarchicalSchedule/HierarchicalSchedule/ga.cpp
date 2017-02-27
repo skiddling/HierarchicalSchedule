@@ -265,51 +265,69 @@ bool GA::Init() {
 	return false;
 }
 
+void GA::GAProcess() {
+	//利用一个函数数组来进行相应的操作
+	promise<Schedule> pro;
+	future<Schedule> fut = pro.get_future();
+	vector<InterruptibleThread> threads(thread::hardware_concurrency());
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+		threads[i] = InterruptibleThread(GA::GetSchedule, i);
+		threads[i].pro_ptr_ = &pro;
+	}
+}
+
+void GA::GetSchedule(int thid) {
+	for (auto i = 0; i < kScheduleSize_; i++) {
+		//schedules_[0][i + thid * kScheduleSize_]
+	}
+}
+
 bool GA::Generate() {
 	if (Init()) {
 		cout << "failed to create table" << endl;
 		return false;
 	}
-	//t1表示最开始时间，t2表示当前时间，t3表示上次进展的时间,oncestart是上次一轮的时间
-	int t1 = clock(), t2 = t1, t3 = t1, oncestart = t1;
-	int mxoff = kOnceTimeOut;
-	int precrash = INT_MAX;
-	while (t2 - t1 < kTimeOut) {
-		Mutate(), cout << "end of mutate" << endl;
-		Cross(), cout << "end of cross" << endl;
-		Modify(), cout << "end of modify" << endl;
-		CalCrash();
-		Select();
-		//得到解
-		if (result_.crash_ == 0)break;
-		t2 = clock();
-		//运行时间超规定
-		if (t2 - t1 > kTimeOut)break;
-		//有进一步获得进展，重置概率
-		if (precrash != result_.crash_) {
-			precrash = result_.crash_;
-			Schedule::po_mutate_ = Schedule::con_pmutate;
-			Schedule::po_mutate_gene_ = Schedule::con_pmutate_gene_;
-			t3 = clock();
-		}
-		//陷入局部最优解
-		if (t2 - t3 > kLocTimeOut) {
-			Schedule::po_mutate_ *= GA::step;
-			Schedule::po_mutate_gene_ *= GA::step;
-			Schedule::po_mutate_ = min(Schedule::mx_pmutate_, Schedule::po_mutate_);
-			Schedule::po_mutate_gene_ = min(Schedule::mx_pmutate_gene_, Schedule::po_mutate_gene_);
-			t3 = clock();
-		}
-		//解太糟糕或者超过该轮运行时间，重新生成种群
-		if (t2 - oncestart > kOnceTimeOut) {
-			if (Init()) {
-				cout << "failed to create table" << endl;
-				return false;
-			}
-			oncestart = clock();
-			t3 = oncestart;
-		}
-	}
+	GAProcess();
+	////t1表示最开始时间，t2表示当前时间，t3表示上次进展的时间,oncestart是上次一轮的时间
+	//int t1 = clock(), t2 = t1, t3 = t1, oncestart = t1;
+	//int mxoff = kOnceTimeOut;
+	//int precrash = INT_MAX;
+	//while (t2 - t1 < kTimeOut) {
+	//	Mutate(), cout << "end of mutate" << endl;
+	//	Cross(), cout << "end of cross" << endl;
+	//	Modify(), cout << "end of modify" << endl;
+	//	CalCrash();
+	//	Select();
+	//	//得到解
+	//	if (result_.crash_ == 0)break;
+	//	t2 = clock();
+	//	//运行时间超规定
+	//	if (t2 - t1 > kTimeOut)break;
+	//	//有进一步获得进展，重置概率
+	//	if (precrash != result_.crash_) {
+	//		precrash = result_.crash_;
+	//		Schedule::po_mutate_ = Schedule::con_pmutate;
+	//		Schedule::po_mutate_gene_ = Schedule::con_pmutate_gene_;
+	//		t3 = clock();
+	//	}
+	//	//陷入局部最优解
+	//	if (t2 - t3 > kLocTimeOut) {
+	//		Schedule::po_mutate_ *= GA::step;
+	//		Schedule::po_mutate_gene_ *= GA::step;
+	//		Schedule::po_mutate_ = min(Schedule::mx_pmutate_, Schedule::po_mutate_);
+	//		Schedule::po_mutate_gene_ = min(Schedule::mx_pmutate_gene_, Schedule::po_mutate_gene_);
+	//		t3 = clock();
+	//	}
+	//	//解太糟糕或者超过该轮运行时间，重新生成种群
+	//	if (t2 - oncestart > kOnceTimeOut) {
+	//		if (Init()) {
+	//			cout << "failed to create table" << endl;
+	//			return false;
+	//		}
+	//		oncestart = clock();
+	//		t3 = oncestart;
+	//	}
+	//}
 	return true;
 }
 

@@ -49,4 +49,9 @@ private:
 	void Select();
 	void CalCrash();
 	bool Init();
+	
+	//new method for new version
+	void GAProcess();
+	void GetSchedule(int thid);
+	
 };
