@@ -24,6 +24,7 @@ private:
 };
 
 inline void Group::GetCouSet(int gid) {
+	//获得每组的所有教学班的信息
 	Course cou;
 	//for (int i = 0; i < group.size(); i++) {
 	for(auto i = 0; i < cpos_; i++){

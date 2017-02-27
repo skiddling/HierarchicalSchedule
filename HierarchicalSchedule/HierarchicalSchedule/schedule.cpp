@@ -33,6 +33,10 @@ Schedule::Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teach
 
 //对每个课表都进行相应的初始化工作，重点就是生成课表
 void Schedule::Init() {
+	//new method for new version
+	//get local stus address for pattern
+	GetStusAddrs();
+
 	//1.现生成每一节课
 	GetTeaCls();
 	//2.产生课表，也就是将老师的所有的课都分配到课表当中去
@@ -366,5 +370,16 @@ void Schedule::GetAllAvlStus() {
 	}*/
 	for (auto& t : table_) {
 		t.GetAllAvlStus();
+	}
+}
+
+void Schedule::GetStusAddrs() {
+	//先清空之前的记录
+	for (auto i = 0; i < pattern_que_.size(); i++) {
+		pattern_que_[i].stu_que_.clear();
+	}
+	//再更新当前学生记录
+	for (auto i = 0; i < stu_que_.size(); i++) {
+		pattern_que_[stu_que_[i].patp_].stu_que_.push_back(&stu_que_[i]);
 	}
 }

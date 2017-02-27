@@ -24,7 +24,9 @@ void Pattern::GetAllPath(vector<Group> table) {
 	/*for (int i = 0; i < table.size(); i++) {
 		DFS(i, visited, path, table);
 	}*/
-	DFS(0, visited, path, table);
+	for(auto i = 0; i < table.size(); i++){
+		DFS(i, visited, path, table);
+	}
 	//因为每个pattern必然有一个路径所以dfs必然成功
 	GetNotInTable();
 	//根据notintable来构造路线组合
@@ -187,10 +189,10 @@ void Pattern::AssignStus() {
 		ary[i] = i;
 	}
 	GetRandAry(ary);
-	uniform_int_distribution<int> u(0, stuleft);
 	chosen_path_tab_ = vector<bool>(path_.size(), false);
 	for (int i = 0; i < psz; i++) {
 		pid = ary[i];
+		uniform_int_distribution<int> u(0, stuleft);
 		//temp = rand() % (stuleft + 1);
 		temp = u(e_);
 		if (temp != 0) {

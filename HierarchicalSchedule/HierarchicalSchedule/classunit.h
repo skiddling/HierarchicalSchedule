@@ -13,7 +13,7 @@ public:
 	pair<int, int> unit_time_;//初始化的时候分配这个教室的具体的上课时间
 	Teacher teacher_;//每个上课教室都会有一个老师，没有就是NULL
 	Course course_;//每个上课的教室都会有一个上课的科目，没有就是NULL
-	vector<Student*> students_;//用来保存这个班已经存在的学生
+	vector<Student*> students_;//用来保存这个班已经存在的学生，可能在新版本当中用不太上
 	map<Pattern*, bool> patterns_;//用来存当前班级有多少个patterns，在getallpath的过程中采集到信息
 
 	//以下三个数据是需要在modify之后被清空的，还有顶上的那个stunum

@@ -232,9 +232,12 @@ void ClassUnit::PutStuIntoCls(Student* stu) {
 	//注意由于不再使用延迟操作，所以不必再去更新学生信息，只需要更新相应进出班级的学生信息即可
 	stunotinsex_[stu->sex_].erase(stu);
 	stunotin_.erase(stu);
+
 	stu->IntoCls(this);
+
 	sum_points_in_sex_[stu->sex_] += stu->GetCouPoints(this);
 	stu_num_in_sex_[stu->sex_]++;
+	stuinit_.insert(stu);
 	stu_num_++;
 }
 

@@ -35,14 +35,18 @@ void GA::GetStuPat() {
 			patterns_map_[stu_que_[i].courses_] = patterns_.size() - 1;
 		}
 		else patterns_[patterns_map_[stu_que_[i].courses_]].stu_num_++;
-		stu_que_[i].patp_ = patterns_map_[stu_que_[i].courses_];
+		//stu_que_[i].patp_ = patterns_map_[stu_que_[i].courses_];
 		//patterns_[patterns_map_[stu_que_[i].courses_]].stu_que_.push_back(stu_que_[i].student_no);
 		patterns_[patterns_map_[stu_que_[i].courses_]].stu_que_.push_back(&stu_que_[i]);
 	}
 	//对得到的所有的模式进行排序，以便于进行获得前缀的操作
 	sort(patterns_.begin(), patterns_.end());
-	for (int i = 0; i < patterns_.size(); i++) {
+	for (auto i = 0; i < patterns_.size(); i++) {
+		patterns_map_[patterns_[i].stu_que_[0]->courses_] = i;
 		patterns_[i].pattern_id_ = i;
+		for (auto& sp : patterns_[i].stu_que_) {
+			sp->patp_ = i;
+		}
 	}
 }
 
