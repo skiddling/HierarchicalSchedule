@@ -387,18 +387,34 @@ void Schedule::GetStusAddrs() {
 }
 
 void Schedule::GetSchedule() {
-	
+	auto t1 = chrono::system_clock::now(), t2 = t1;
+	chrono::duration<int, ratio<60, 1> > dur(5);
+	for (auto i = 0; i < modifyfuncs.size(); i++) {
+		while (true) {
+			if (t2 - t1 > dur)return;
+			this->calfitfuncs[i];
+			//Mutate();
+			if (crash_ == 0)break;
+			this->modifyfuncs[i];
+		}
+	}
 }
 
 void Schedule::GetFunctions() {
 	//利用function数组来方便实现代码
-	fncs.push_back([&] {
-			
-	});
+	modifyfuncs.push_back(&Schedule::ModifySexRatio);
+	modifyfuncs.push_back(&Schedule::ModifyTotAmount);
+	modifyfuncs.push_back(&Schedule::ModifyAvgPoints);
+	calfitfuncs.push_back(&Schedule::CalSexRatio);
+	calfitfuncs.push_back(&Schedule::CalTotAmount);
+	calfitfuncs.push_back(&Schedule::CalAvgPoints);
 }
 
 void Schedule::ModifySexRatio() {
-
+	for (auto i = 0; i < cls_nuit_que_.size(); i++) {
+		if (cls_nuit_que_[i].taginsex_[male]|| cls_nuit_que_[i].taginsex_[female])
+			cls_nuit_que_[i].ModifySexRatio();
+	}
 }
 
 void Schedule::ModifyTotAmount() {
@@ -410,7 +426,11 @@ void Schedule::ModifyAvgPoints() {
 }
 
 void Schedule::CalSexRatio() {
-
+	crash_ = 0;
+	for (auto i = 0; i < cls_nuit_que_.size(); i++) {
+		crash_ += cls_nuit_que_[i].GetDvaInSex();
+	}
+	fitness = 1.0 / (1 + crash_);
 }
 
 void Schedule::CalTotAmount() {

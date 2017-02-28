@@ -241,6 +241,46 @@ void ClassUnit::PutStuIntoCls(Student* stu) {
 	stu_num_++;
 }
 
+int ClassUnit::GetDvaInSex() {
+	int res = 0;
+	for (int i = 0; i < 2; i++) {
+		auto s = static_cast<Sex>(i);
+		if (stuinitsex_[s].size() > course_.sex_upper_[s]) {
+			res += stuinitsex_[s].size() - course_.sex_upper_[s];
+			taginsex_[s] = stuinitsex_[s].size() - course_.sex_upper_[s];
+		}
+		else if (stuinitsex_[s].size() < course_.sex_lower_[s]) {
+			res += course_.sex_lower_[s] - stuinitsex_[s].size();
+			taginsex_[s] = stuinitsex_[s].size() - course_.sex_lower_[s];
+		}
+	}
+
+	return res;
+}
+
+void ClassUnit::ModifySexRatio() {
+	for (int i = 0; i < 2; i++) {
+		auto s = static_cast<Sex>(i);
+		if (taginsex_[s]) {
+			if (taginsex_[s] > 0) {
+				//该性别人数过多，逐个查看学生是否能够被调整
+			}
+			else {
+				//该性别人数过少,逐个查看每个学生
+
+			}
+		}
+	}
+}
+
+void ClassUnit::ModifyTotAmount() {
+
+}
+
+void ClassUnit::ModifyAvgPoints() {
+
+}
+
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {
 	map<Pattern*, bool>::iterator it = patterns_.begin();
 	for (; it != patterns_.end(); it++) {

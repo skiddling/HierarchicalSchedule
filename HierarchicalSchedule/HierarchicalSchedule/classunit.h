@@ -36,6 +36,7 @@ public:
 	map <Sex, set<Student*> > stunotinsex_;
 	set<Student*> stuinit_;//所有在这个教室的学生
 	map<Sex, set<Student*> > stuinitsex_;
+	map<Sex, int> taginsex_;//表示是否性别比不对
 	/*int male_stu_num_;
 	int female_stu_num_;*/
 	map<Sex, int> stu_num_in_sex_;//其实也可以不用
@@ -46,6 +47,10 @@ public:
 
 	void GetAllAvlStus();
 	void PutStuIntoCls(Student* stu);
+	int GetDvaInSex();
+	void ModifySexRatio();
+	void ModifyTotAmount();
+	void ModifyAvgPoints();
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);

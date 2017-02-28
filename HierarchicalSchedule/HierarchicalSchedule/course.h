@@ -52,7 +52,9 @@ class ClassUnit;
 class Course
 {
 public:
-	map<Sex, int>num_of_stus_in_sex_;
+	map<Sex, int> num_of_stus_in_sex_;
+	map<Sex, double> sex_upper_;
+	map<Sex, double> sex_lower_;
 	map<Sex, double> total_scores_in_sex_;
 	int dva_male_num_;//ÄĞÉúÈËÊıÆ«²î
 	int dva_female_num_;
@@ -92,4 +94,7 @@ public:
 	bool operator !=(const Course &a)const {
 		return course_name_ != a.course_name_;
 	}
+
+	//new method for new version
+	void GetSexUpLow();
 };

@@ -40,7 +40,7 @@ public:
 		_internal_thread = thread([f, &p, this]()
 		{
 			p.set_value(&this_thread_interrupt_flag);
-			f();
+			f(i);
 		});
 		_interrupt_flag = p.get_future().get();
 	}

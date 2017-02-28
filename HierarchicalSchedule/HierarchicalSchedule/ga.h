@@ -53,5 +53,6 @@ private:
 	//new method for new version
 	void GAProcess();
 	void GetSchedule(int thid);
+	void GetCourseUpdate();
 	
 };

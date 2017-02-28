@@ -68,7 +68,9 @@ private:
 	void GetStuNum();
 
 	//new method for new version	
-	vector<function<void()> > fncs;
+	typedef void(Schedule::*FPtr)();
+	vector<FPtr> modifyfuncs;
+	vector<FPtr> calfitfuncs;
 	void GetFunctions();
 	void ModifySexRatio();
 	void ModifyTotAmount();

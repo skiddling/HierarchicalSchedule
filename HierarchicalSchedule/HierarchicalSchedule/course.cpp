@@ -15,6 +15,13 @@ Course::Course(string course_name, int class_num, int cnum, int stuppper, int st
 	dva_male_num_ = 5;
 }
 
+void Course::GetSexUpLow() {
+	sex_lower_[male] = num_of_stus_in_sex_[male] * 1.0 / class_num_ - dva_male_num_;
+	sex_lower_[female] = num_of_stus_in_sex_[female] * 1.0 / class_num_ - dva_female_num_;
+	sex_upper_[male] = num_of_stus_in_sex_[male] * 1.0 / class_num_ + dva_male_num_;
+	sex_upper_[female] = num_of_stus_in_sex_[female] * 1.0 / class_num_ + dva_female_num_;
+}
+
 //Course::Course(int course_id, string course_name):
 //	course_id_(course_id), course_name_(course_name){
 //}

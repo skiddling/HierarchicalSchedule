@@ -18,6 +18,7 @@ GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que)
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
+	GetCourseUpdate();
 	//cout << "ga 21" << endl;
 	//1.获得所有学生的模式类型
 	GetStuPat();
@@ -278,6 +279,12 @@ void GA::GAProcess() {
 void GA::GetSchedule(int thid) {
 	for (auto i = 0; i < kScheduleSize_; i++) {
 		schedules_[0][i + thid * kScheduleSize_].GetSchedule();
+	}
+}
+
+void GA::GetCourseUpdate() {
+	for (auto i = 0; i < cou_que_.size(); i++) {
+		cou_que_[i].GetSexUpLow();
 	}
 }
 
