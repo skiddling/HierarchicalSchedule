@@ -31,7 +31,7 @@ void Pattern::GetAllPath(vector<Group> table) {
 	GetNotInTable();
 	//根据notintable来构造路线组合
 	GetPathCombination();
-	//cout << "end of get combo" << endl;
+	cout << "end of get combo" << endl;
 }
 
 void Pattern::DFS(int gid, vector<bool> visited, vector<ClassUnit* > path, vector<Group> table) {

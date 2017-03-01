@@ -17,7 +17,7 @@ public:
 	vector<Student* >stu_que_;
 
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
-	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列
+	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列，i是path当中的序号
 	map<ClassUnit*, vector<vector<int> > > notin_path_combos_;//每个combo当中组合的路径，也就是路径当中没有重复的班级的路径之和
 
 	vector<int> stu_num_in_que_;//记载了每条路径当中学生人数,mutate和corss只会修改这个值

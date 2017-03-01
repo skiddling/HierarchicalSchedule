@@ -264,6 +264,7 @@ void ClassUnit::ModifySexRatio() {
 		if (taginsex_[s]) {
 			if (taginsex_[s] > 0) {
 				//该性别人数过多，逐个查看学生是否能够被调整
+				
 			}
 			else {
 				//该性别人数过少,逐个查看每个学生

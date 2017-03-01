@@ -9,6 +9,7 @@ condition_variable cv;
 int tag;
 
 thread_local InterruptFlag this_thread_interrupt_flag;
+//thread_local int sid;
 
 struct thread_interrupted {};
 

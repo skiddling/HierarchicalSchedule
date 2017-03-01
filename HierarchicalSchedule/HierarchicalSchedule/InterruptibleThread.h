@@ -5,7 +5,7 @@
 
 //using namespace std;
 
-
+class GA;
 
 class InterruptFlag
 {
@@ -26,6 +26,9 @@ private:
 };
 
 extern thread_local InterruptFlag this_thread_interrupt_flag;
+//extern thread_local int sid;
+
+//typedef void(GA::*Funcptr)(int);
 
 class InterruptibleThread
 {
@@ -34,13 +37,24 @@ public:
 	//uniform_int_distribution<int> u_;
 	thread _internal_thread;
 	promise<Schedule>* pro_ptr_;
+	//int sid_;
+
+	InterruptibleThread() {};
 	template<typename FunctionType>
-	InterruptibleThread(FunctionType f, int i){
+	//template<Funcptr f>
+	//InterruptibleThread(GA* g, int i){
+	InterruptibleThread(FunctionType f, GA* ga, int i){
+		//f(i);
 		promise<InterruptFlag*> p;
-		_internal_thread = thread([f, &p, this]()
+		//_internal_thread = thread([f, &p, i, &g]()
+		_internal_thread = thread([f, &p, i, &ga]()
 		{
+			//sid_ = sid = i;
 			p.set_value(&this_thread_interrupt_flag);
-			f(i);
+			f(ga, i);
+			//auto nf = bind(f, i);
+			//nf();
+			//((*g).*f)(i);
 		});
 		_interrupt_flag = p.get_future().get();
 	}

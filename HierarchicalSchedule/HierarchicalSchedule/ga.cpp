@@ -266,21 +266,27 @@ bool GA::Init() {
 	return false;
 }
 
+void GetSchedule(GA* ga, int tid) {
+	for (auto i = 0; i < GA::kScheduleSize_; i++) {
+		//schedules_[0][i + thid * kScheduleSize_].GetSchedule();
+		ga->schedules_[0][i + tid * GA::kScheduleSize_].GetSchedule();
+	}
+}
+
 void GA::GAProcess() {
 	promise<Schedule> pro;
 	future<Schedule> fut = pro.get_future();
 	vector<InterruptibleThread> threads(thread::hardware_concurrency());
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-		threads[i] = InterruptibleThread(GA::GetSchedule, i);
+	for (int i = 0; i < thread::hardware_concurrency(); i++) {
+		//threads[i] = InterruptibleThread(&GA::GetSchedule, i);
+		threads[i] = InterruptibleThread(GetSchedule, this, i);
+		//threads[i] = InterruptibleThread<&GA::GetSchedule>(this, i);
 		threads[i].pro_ptr_ = &pro;
 	}
 }
 
-void GA::GetSchedule(int thid) {
-	for (auto i = 0; i < kScheduleSize_; i++) {
-		schedules_[0][i + thid * kScheduleSize_].GetSchedule();
-	}
-}
+//void GA::GetSchedule() {
+
 
 void GA::GetCourseUpdate() {
 	for (auto i = 0; i < cou_que_.size(); i++) {
