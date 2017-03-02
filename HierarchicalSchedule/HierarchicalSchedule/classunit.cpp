@@ -237,8 +237,22 @@ void ClassUnit::PutStuIntoCls(Student* stu) {
 
 	sum_points_in_sex_[stu->sex_] += stu->GetCouPoints(this);
 	stu_num_in_sex_[stu->sex_]++;
+	stuinitsex_[stu->sex_].insert(stu);
 	stuinit_.insert(stu);
 	stu_num_++;
+}
+
+void ClassUnit::GetStuOutCls(Student * stu) {
+	stunotinsex_[stu->sex_].insert(stu);
+	stunotin_.insert(stu);
+
+	stu->OutCls(this);
+
+	sum_points_in_sex_[stu->sex_] -= stu->GetCouPoints(this);
+	stu_num_in_sex_[stu->sex_]--;
+	stuinitsex_[stu->sex_].erase(stu);
+	stuinit_.erase(stu);
+	stu_num_--;
 }
 
 int ClassUnit::GetDvaInSex() {
@@ -258,27 +272,92 @@ int ClassUnit::GetDvaInSex() {
 	return res;
 }
 
-void ClassUnit::ModifySexRatio() {
+void ClassUnit::ModifySexRatio(vector<Pattern> patternque) {
+	//每个学生在进出的时候都会有进出的两个影响值，单个班级有利的+1，有害的-1，无影响的为0
+	//并最终统计所有的班级的进出总分，进出两个都是正的才能进行交换
+	int inpoint, outpoint;
 	for (int i = 0; i < 2; i++) {
 		auto s = static_cast<Sex>(i);
 		if (taginsex_[s]) {
 			if (taginsex_[s] > 0) {
 				//该性别人数过多，逐个查看学生是否能够被调整
-				
+				for (auto& stu : stuinitsex_[s]) {
+					auto val = JudgeStuVal4SexRationIn(stu, patternque);
+					if (val.first > 0) {
+						for (auto c : stu->clsset_) {
+							c->GetStuOutCls(stu);
+						}
+						for (auto c : patternque[stu->patp_].path_[val.second]) {
+							c->PutStuIntoCls(stu);
+						}
+					}
+				}
 			}
 			else {
 				//该性别人数过少,逐个查看每个学生
-
+				for (auto& stu : stunotinsex_[s]) {
+					auto val = JudgeStuVal4SexRationOut(stu, patternque);
+				}
 			}
 		}
 	}
 }
 
-void ClassUnit::ModifyTotAmount() {
+pair<int, int> ClassUnit::JudgeStuVal4SexRationIn(Student* s, vector<Pattern> patternque) {
+	//计算该学生是否值得出这个班级来平衡这个班级的性别
+	int v = 1;
+	for (auto c : s->clsset_) {
+		if (c != this) {
+			v += c->JudgeClsLoseStuInSex(s->sex_);
+		}
+	}
+	int pid = -1, pv = 0, t;
+	//if (v > 0) {
+	//查询哪个路径最适合去放这个学生,如果不存在这样子的路线那返回-1
+	for (auto p : patternque[s->patp_].not_in_table_[this]) {
+		t = 0;
+		for (auto c : patternque[s->patp_].path_[p]) {
+		//for (auto i = 0; i < patternque[s->patp_].path_.size(); i++) {
+			t += c->JudgeClsGetStuInSex(s->sex_);
+			//t += patternque[s->patp_].path_[p][i]->JudgeClsGetStuInSex(s->sex_);
+		}
+		if (t > pv) {
+			pv = t;
+			pid = p;
+		}
+	}
+	//}
+	return pair<int, int>(v + pv, pid);
+}
+
+pair<int, int> ClassUnit::JudgeStuVal4SexRationOut(Student * s, vector<Pattern> patternque) {
+	int v = 1;
+	for (auto c : s->clsset_) {
+		v += c->JudgeClsLoseStuInSex(s->sex_);
+	}
+	
+	int pid = -1, pv = 0, t;
+	return pair<int, int>();
+}
+
+int ClassUnit::JudgeClsLoseStuInSex(Sex sex) {
+	//if (stuinitsex_[sex].size() > course_.stu_upper_)return 1;
+	if (stuinitsex_[sex].size() <= course_.sex_lower_[sex])return -1;
+	else return 1;
+	//return 0;
+}
+
+int ClassUnit::JudgeClsGetStuInSex(Sex sex) {
+	if (stuinitsex_[sex].size() >= course_.sex_upper_[sex])return -1;
+	else return 1;
+	//return 0;
+}
+
+void ClassUnit::ModifyTotAmount(vector<Pattern> patternque) {
 
 }
 
-void ClassUnit::ModifyAvgPoints() {
+void ClassUnit::ModifyAvgPoints(vector<Pattern> patternque) {
 
 }
 

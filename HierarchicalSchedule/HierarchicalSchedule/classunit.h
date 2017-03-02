@@ -47,10 +47,11 @@ public:
 
 	void GetAllAvlStus();
 	void PutStuIntoCls(Student* stu);
+	void GetStuOutCls(Student* stu);
 	int GetDvaInSex();
-	void ModifySexRatio();
-	void ModifyTotAmount();
-	void ModifyAvgPoints();
+	void ModifySexRatio(vector<Pattern> patternque);
+	void ModifyTotAmount(vector<Pattern> patternque);
+	void ModifyAvgPoints(vector<Pattern> patternque);
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
@@ -58,6 +59,11 @@ private:
 	void DecreaseStuNum(int neednum, int avlstusum, map<Pattern*, int> avlstunum, vector<int> avlnumpat);
 	void GetSelectedStus(map<Pattern*, int> patused);
 	void AddStu2Path(map<Pattern*, int> patused);
+	//new method for new version
+	pair<int, int> JudgeStuVal4SexRationIn(Student* s, vector<Pattern> patternque);
+	pair<int, int> JudgeStuVal4SexRationOut(Student* s, vector<Pattern> patternque);
+	int JudgeClsLoseStuInSex(Sex sex);
+	int JudgeClsGetStuInSex(Sex sex);
 };
 
 inline int ClassUnit::GetCrash() {

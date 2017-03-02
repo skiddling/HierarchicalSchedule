@@ -19,7 +19,9 @@ public:
 	map<ClassUnit*, vector<int> > in_unit_table_;//存在于某个班级的所有的序列
 	map<ClassUnit*, vector<int> > not_in_table_;//不放在某个课的所有其他可能的课的序列，i是path当中的序号
 	map<ClassUnit*, vector<vector<int> > > notin_path_combos_;//每个combo当中组合的路径，也就是路径当中没有重复的班级的路径之和
-
+	//这个combo是指由一条或者多条路径的组合，这个表当中记录notin的这个班级的所有的combos，相当于是一个全组合
+	//比如notintable当中有1和2，那么可以出现的combos就存在1，2，1+2这样三种combo，这个是存在于老版本当中的一个技术，新版本当中不再考虑
+	//新版本当中用了更简单但是效率更低的方法，也就是逐个对学生进行考察，每个学生代表了一种pattern，进而再对notintable进行考察
 	vector<int> stu_num_in_que_;//记载了每条路径当中学生人数,mutate和corss只会修改这个值
 	//modify修改完之后其实也就是修改了这个值，而且cls有延迟操作，每次都还要重这里重新读取数据
 

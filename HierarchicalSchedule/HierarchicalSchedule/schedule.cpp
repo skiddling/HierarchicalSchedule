@@ -413,7 +413,7 @@ void Schedule::GetFunctions() {
 void Schedule::ModifySexRatio() {
 	for (auto i = 0; i < cls_nuit_que_.size(); i++) {
 		if (cls_nuit_que_[i].taginsex_[male]|| cls_nuit_que_[i].taginsex_[female])
-			cls_nuit_que_[i].ModifySexRatio();
+			cls_nuit_que_[i].ModifySexRatio(pattern_que_);
 	}
 }
 
