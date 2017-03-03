@@ -44,12 +44,15 @@ public:
 	double avg_female_stu_num_;*/
 	map<Sex, double> sum_points_in_sex_;//记录不同性别总分
 	double avg_sum_;
+	default_random_engine e_;
 
 	void GetAllAvlStus();
 	void PutStuIntoCls(Student* stu);
 	void GetStuOutCls(Student* stu);
 	int GetDvaInSex();
-	void ModifySexRatio(vector<Pattern> patternque);
+	int GetDavInTotAmount();
+	vector<Student*> GetRandStuQue(set<Student*> stuque);
+	void ModifySexRatio(vector<Pattern> patternque, int flag);
 	void ModifyTotAmount(vector<Pattern> patternque);
 	void ModifyAvgPoints(vector<Pattern> patternque);
 
@@ -60,10 +63,12 @@ private:
 	void GetSelectedStus(map<Pattern*, int> patused);
 	void AddStu2Path(map<Pattern*, int> patused);
 	//new method for new version
-	pair<int, int> JudgeStuVal4SexRationIn(Student* s, vector<Pattern> patternque);
-	pair<int, int> JudgeStuVal4SexRationOut(Student* s, vector<Pattern> patternque);
+	pair<int, int> JudgeStuVal4SexRationIn(Student* s, vector<Pattern> patternque, int flag);
+	pair<int, int> JudgeStuVal4SexRationOut(Student* s, vector<Pattern> patternque, int flag);
 	int JudgeClsLoseStuInSex(Sex sex);
 	int JudgeClsGetStuInSex(Sex sex);
+	int JudgeClsLoseStuInTotAmount();
+	int JudgeClsGetStuInTotAmount();
 };
 
 inline int ClassUnit::GetCrash() {
