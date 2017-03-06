@@ -1,5 +1,6 @@
 #pragma once
-#include "course.h"
+//#include "course.h"
+#include "interruptflag.h"
 
 class Prefix
 {

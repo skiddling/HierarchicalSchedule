@@ -1,24 +1,25 @@
 //#include "foo.h"
 //#include "ga.h"
-#include "InterruptibleThread.h"
+#include "interruptiblethread.h"
 
 //using std::function;
 
-mutex mut;
-condition_variable cv;
-int tag;
+//mutex mut;
+//condition_variable cv;
+//int tag;
 
-thread_local InterruptFlag this_thread_interrupt_flag;
+//thread_local InterruptFlag this_thread_interrupt_flag;
+thread_local promise<Schedule>* pro_ptr_;
 //thread_local int sid;
 
-struct thread_interrupted {};
+//struct thread_interrupted {};
 
-void interruption_point()
-{
-	if (this_thread_interrupt_flag.is_set()) {
-		throw thread_interrupted();
-	}
-}
+//void interruption_point()
+//{
+//	if (this_thread_interrupt_flag.is_set()) {
+//		throw thread_interrupted();
+//	}
+//}
 
 //void foo(InterruptibleThread& t)
 //{

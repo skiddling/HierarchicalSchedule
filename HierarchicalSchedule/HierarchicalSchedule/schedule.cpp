@@ -420,7 +420,7 @@ void Schedule::ModifySexRatio() {
 void Schedule::ModifyTotAmount() {
 	//转化成男女性别的平衡
 	for (auto c : cls_nuit_que_) {
-		if (c.stuinit_.size > c.course_.stu_upper_ || c.stuinit_.size() < c.course_.stu_lower_) {
+		if (c.stuinit_.size() > c.course_.stu_upper_ || c.stuinit_.size() < c.course_.stu_lower_) {
 			c.ModifySexRatio(pattern_que_, 1);
 		}
 	}

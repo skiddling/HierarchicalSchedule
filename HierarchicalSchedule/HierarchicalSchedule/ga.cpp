@@ -266,10 +266,11 @@ bool GA::Init() {
 	return false;
 }
 
-void GetSchedule(GA* ga, int tid) {
+void GA::GetSchedule(int thid) {
+//void GetSchedule(GA* ga, int tid) {
 	for (auto i = 0; i < GA::kScheduleSize_; i++) {
-		//schedules_[0][i + thid * kScheduleSize_].GetSchedule();
-		ga->schedules_[0][i + tid * GA::kScheduleSize_].GetSchedule();
+		schedules_[0][i + thid * kScheduleSize_].GetSchedule();
+		//ga->schedules_[0][i + tid * GA::kScheduleSize_].GetSchedule();
 	}
 }
 
@@ -278,14 +279,13 @@ void GA::GAProcess() {
 	future<Schedule> fut = pro.get_future();
 	vector<InterruptibleThread> threads(thread::hardware_concurrency());
 	for (int i = 0; i < thread::hardware_concurrency(); i++) {
-		//threads[i] = InterruptibleThread(&GA::GetSchedule, i);
-		threads[i] = InterruptibleThread(GetSchedule, this, i);
+		threads[i] = InterruptibleThread(*this, &GA::GetSchedule, i, &pro);
+		//threads[i] = InterruptibleThread(GetSchedule, this, i);
 		//threads[i] = InterruptibleThread<&GA::GetSchedule>(this, i);
-		threads[i].pro_ptr_ = &pro;
+		//threads[i].pro_ptr_ = &pro;
 	}
 }
 
-//void GA::GetSchedule() {
 
 
 void GA::GetCourseUpdate() {
