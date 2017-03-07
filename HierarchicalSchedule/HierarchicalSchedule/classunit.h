@@ -37,12 +37,14 @@ public:
 	set<Student*> stuinit_;//所有在这个教室的学生
 	map<Sex, set<Student*> > stuinitsex_;
 	map<Sex, int> taginsex_;//表示是否性别比不对
+	int dvaintot_;//总人数的偏差
 	/*int male_stu_num_;
 	int female_stu_num_;*/
 	map<Sex, int> stu_num_in_sex_;//其实也可以不用
 	/*double avg_male_stu_num_;
 	double avg_female_stu_num_;*/
 	map<Sex, double> sum_points_in_sex_;//记录不同性别总分
+	map<Sex, double> avg_points_in_sex_;
 	double avg_sum_;
 	default_random_engine e_;
 
@@ -51,6 +53,7 @@ public:
 	void GetStuOutCls(Student* stu);
 	int GetDvaInSex();
 	int GetDavInTotAmount();
+	double GetDavInAvgPoints();
 	vector<Student*> GetRandStuQue(set<Student*> stuque);
 	void ModifySexRatio(vector<Pattern> patternque, int flag);
 	void ModifyTotAmount(vector<Pattern> patternque);
@@ -69,6 +72,7 @@ private:
 	int JudgeClsGetStuInSex(Sex sex);
 	int JudgeClsLoseStuInTotAmount();
 	int JudgeClsGetStuInTotAmount();
+	int JudgeInOrOutInSex(Sex s);
 };
 
 inline int ClassUnit::GetCrash() {

@@ -411,15 +411,21 @@ void Schedule::GetFunctions() {
 }
 
 void Schedule::ModifySexRatio() {
-	for (auto i = 0; i < cls_nuit_que_.size(); i++) {
+	/*for (auto i = 0; i < cls_nuit_que_.size(); i++) {
 		if (cls_nuit_que_[i].taginsex_[male]|| cls_nuit_que_[i].taginsex_[female])
 			cls_nuit_que_[i].ModifySexRatio(pattern_que_, 0);
+	}*/
+	for (auto& c : cls_nuit_que_) {
+		c.GetDvaInSex();
+		if (c.taginsex_[male] || c.taginsex_[female])
+			c.ModifySexRatio(pattern_que_, 0);
 	}
 }
 
 void Schedule::ModifyTotAmount() {
 	//转化成男女性别的平衡
-	for (auto c : cls_nuit_que_) {
+	for (auto& c : cls_nuit_que_) {
+		c.GetDavInTotAmount();
 		if (c.stuinit_.size() > c.course_.stu_upper_ || c.stuinit_.size() < c.course_.stu_lower_) {
 			c.ModifySexRatio(pattern_que_, 1);
 		}
@@ -428,25 +434,36 @@ void Schedule::ModifyTotAmount() {
 }
 
 void Schedule::ModifyAvgPoints() {
-
+	for (auto& c : cls_nuit_que_) {
+		c.GetDavInAvgPoints();
+		if (c.dvaintot_) {
+			c.ModifyAvgPoints(pattern_que_);
+		}
+	}
 }
 
 void Schedule::CalSexRatio() {
 	crash_ = 0;
-	for (auto i = 0; i < cls_nuit_que_.size(); i++) {
-		crash_ += cls_nuit_que_[i].GetDvaInSex();
+	//for (auto i = 0; i < cls_nuit_que_.size(); i++) {
+	for(auto& c : cls_nuit_que_){
+		//crash_ += cls_nuit_que_[i].GetDvaInSex();
+		crash_ += c.GetDvaInSex();
 	}
 	fitness = 1.0 / (1 + crash_);
 }
 
 void Schedule::CalTotAmount() {
 	crash_ = 0;
-	for (auto c : cls_nuit_que_) {
+	for (auto& c : cls_nuit_que_) {
 		crash_ += c.GetDavInTotAmount();
 	}
 	fitness = 1.0 / (1 + crash_);
 }
 
 void Schedule::CalAvgPoints() {
-
+	crash_ = 0;
+	for (auto& c : cls_nuit_que_) {
+		crash_ += c.GetDavInAvgPoints();
+	}
+	fitness = 1.0 / (1 + crash_);
 }

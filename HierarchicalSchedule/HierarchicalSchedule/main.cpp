@@ -44,6 +44,15 @@ void StudentsIn() {
 			}
 		}
 	}
+	for (auto& c : couque) {
+		for (int i = 0; i < 2; i++) {
+			auto s = static_cast<Sex>(i);
+			c.avg_scores_in_sex_[s] = c.total_scores_in_sex_[s] / c.num_of_stus_in_sex_[s];
+		}
+		c.tot_avg_points_ = (c.total_scores_in_sex_[male] + c.total_scores_in_sex_[female]) /
+			(c.num_of_stus_in_sex_[male] + c.num_of_stus_in_sex_[female]);
+	}
+
 	fin.close();
 }
 
@@ -72,19 +81,19 @@ void TeachersIn() {
 
 void BasicInput() {
 	ifstream fin("basic.txt");
-	int cnum, cls, notin, temp, stuupper, stulower;
+	int cnum, cls, notin, temp, stuupper, stulower, dvainpoint;
 	//fin >> rooms >> groups >> cnum >> stuupper >> stulower;
 	fin >> rooms >> groups >> cnum;
 	string cname;
 	for(int i = 0; i < cnum; i++){
 		//fin >> cname >> cls >> stuupper >> notin;
-		fin >> cname >> cls >>  notin >> stuupper >> stulower;
+		fin >> cname >> cls >>  notin >> stuupper >> stulower >> dvainpoint;
 		set<int> notinset;
 		for (int j = 0; j < notin; j++) {
 			fin >> temp;
 			notinset.insert(temp);
 		}
-		couque.push_back(*(new Course(cname, cls, cnum, stuupper, stulower, notinset)));
+		couque.push_back(*(new Course(cname, cls, cnum, dvainpoint, stuupper, stulower, notinset)));
 		//courses[cname] = *(new Course(cname, cls, cnum));
 	}
 	//确定了每门课的序号

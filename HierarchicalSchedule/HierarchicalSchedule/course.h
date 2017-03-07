@@ -56,8 +56,11 @@ public:
 	map<Sex, double> sex_upper_;
 	map<Sex, double> sex_lower_;
 	map<Sex, double> total_scores_in_sex_;
+	map<Sex, double> avg_scores_in_sex_;
 	int dva_male_num_;//男生人数偏差
 	int dva_female_num_;
+	double dva_avg_points_;//班级平均分差距
+	double tot_avg_points_;//这个科目的总的平均分
 	//double points_;//科目分数
 	int stu_upper_;//具体每个学科的班级人数上限
 	int stu_lower_;//具体每个学科的班级人数下限
@@ -77,7 +80,7 @@ public:
 	//vector<int> units_;//该科目下的所有的课的节次
 
 	Course();
-	Course(string course_name, int cls, int cnum, int stuupper, int stulower, set<int>notintset, bool visited = 0);
+	Course(string course_name, int cls, int cnum, double dvainpoint, int stuupper, int stulower, set<int>notintset, bool visited = 0);
 	//Course(int course_id, string course_name);
 	bool operator < (const Course a)const {
 		//同一个科目下的学科判班级的数量，不同学科的就判名字

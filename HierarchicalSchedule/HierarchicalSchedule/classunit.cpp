@@ -279,9 +279,25 @@ int ClassUnit::GetDvaInSex() {
 
 int ClassUnit::GetDavInTotAmount() {
 	int res = 0;
-	if (stuinit_.size() > course_.stu_upper_)res += stuinit_.size() - course_.stu_upper_;
-	else if (stuinit_.size() < course_.stu_lower_)res += course_.stu_lower_ - stuinit_.size();
-	return 0;
+	dvaintot_ = 0; 
+	if (stuinit_.size() > course_.stu_upper_) {
+		res += stuinit_.size() - course_.stu_upper_;
+		dvaintot_ = res;
+	}
+	else if (stuinit_.size() < course_.stu_lower_) {
+		res += course_.stu_lower_ - stuinit_.size();
+		dvaintot_ = 0 - res;
+	}
+	return res;
+}
+
+double ClassUnit::GetDavInAvgPoints() {
+	dvaintot_ =  0;
+	double sum = sum_points_in_sex_[male] + sum_points_in_sex_[female], avg = sum / stu_num_;
+	double upper = course_.tot_avg_points_ + course_.dva_avg_points_, lower = course_.tot_avg_points_ - course_.dva_avg_points_;
+	if (avg > upper)dvaintot_ = avg - upper;
+	else if (avg < lower)dvaintot_ = lower - avg;
+	return dvaintot_;
 }
 
 vector<Student*> ClassUnit::GetRandStuQue(set<Student*> stuque) {
@@ -302,12 +318,13 @@ vector<Student*> ClassUnit::GetRandStuQue(set<Student*> stuque) {
 void ClassUnit::ModifySexRatio(vector<Pattern> patternque, int flag) {
 	//每个学生在进出的时候都会有进出的两个影响值，单个班级有利的+1，有害的-1，无影响的为0
 	//并最终统计所有的班级的进出总分，进出两个都是正的才能进行交换
-	int inpoint, outpoint;
+	//int inpoint, outpoint;
 	for (int i = 0; i < 2; i++) {
 		auto s = static_cast<Sex>(i);
-		if (taginsex_[s]) {
-			if (taginsex_[s] > 0) {
+		if (taginsex_[s] || (flag == 1 && dvaintot_)) {
+			if (taginsex_[s] > 0 || (flag == 1 && dvaintot_ > 0)) {
 				int num = taginsex_[s];
+				if (flag == 1)num = min(dvaintot_, num);
 				//该性别人数过多，逐个查看学生是否能够被调整
 				auto randque = GetRandStuQue(stuinitsex_[s]);
 				//for (auto& stu : stuinitsex_[s]) {
@@ -327,6 +344,7 @@ void ClassUnit::ModifySexRatio(vector<Pattern> patternque, int flag) {
 			}
 			else {
 				int num = 0 - taginsex_[s];
+				if (flag == 1) num = min(0 - dvaintot_, num);
 				//该性别人数过少,逐个查看每个学生
 				for (auto& stu : stunotinsex_[s]) {
 					auto val = JudgeStuVal4SexRationOut(stu, patternque, flag);
@@ -442,12 +460,45 @@ int ClassUnit::JudgeClsGetStuInTotAmount() {
 	else return -1;
 }
 
+int ClassUnit::JudgeInOrOutInSex(Sex s) {
+	//判断这个班在这个性别当中应该是选一个进入班级还是出班级，1表示选择进入，0表示选择出去
+	//-1表示不做任何操作
+	int tag = 0;
+	if (stuinit_.size() >= course_.stu_lower_) {
+		if (stuinitsex_[s].size() >= course_.sex_lower_[s])tag += 1;
+	}
+	if (stuinit_.size() <= course_.stu_upper_) {
+		if (stuinitsex_[s].size() <= course_.sex_upper_[s])tag += 2;
+	}
+	if (tag == 3) {
+		uniform_int_distribution<int> u(0, 1);
+		return u(e_);
+	}
+	return tag - 1;
+}
+
 void ClassUnit::ModifyTotAmount(vector<Pattern> patternque) {
 
 }
 
 void ClassUnit::ModifyAvgPoints(vector<Pattern> patternque) {
+	//根据具体是超平均分还是低于平均分啦进行修正，此处不分性别，只判平均分
+	//如果只能减员那就通过减员，如果只能通过加人那就加人，如果既能加也能减那就随机选一个
+	//auto randinque = GetRandStuQue(stuinit_);
+	//auto randoutque = GetRandStuQue(stunotin_);
+	vector<Student*> randque;
+	for (int i = 0; i < 2; i++) {
+		auto s = static_cast<Sex>(i);
+		auto key = JudgeInOrOutInSex(s);
+		if (key == 1) {
+			randque = GetRandStuQue(stunotinsex_[s]);
+			
+		}
+		else if (key == 0) {
+			randque = GetRandStuQue(stuinitsex_[s]);
 
+		}
+	}
 }
 
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {
