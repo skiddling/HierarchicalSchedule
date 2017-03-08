@@ -4,7 +4,7 @@
 class ClassUnit
 {
 public:
-	//int crash_;//该班级的冲突值
+	int crash_;//该班级的冲突值
 	int stu_num_;//该班级学生数量
 	int unit_id_;
 	//static int stu_upper_, stu_lower_;
@@ -58,6 +58,11 @@ public:
 	void ModifySexRatio(vector<Pattern> patternque, int flag);
 	void ModifyTotAmount(vector<Pattern> patternque);
 	void ModifyAvgPoints(vector<Pattern> patternque);
+	//new method for mixed mode version
+	int GetCrashInSexRatio();
+	int GetCrashInTotAmount();
+	int GetCrashInAvgPoints();
+	void ModifyInMixedMode();
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
@@ -73,10 +78,19 @@ private:
 	int JudgeClsLoseStuInTotAmount();
 	int JudgeClsGetStuInTotAmount();
 	int JudgeInOrOutInSex(Sex s);
+	inline int GetTempVal(int flag, int temp);
 };
 
 inline int ClassUnit::GetCrash() {
 	//if (stu_num_ < stu_lower_)return stu_lower_ - stu_num_;
 	//if (stu_num_ > stu_upper_)return stu_num_ - stu_upper_;
 	if (stu_num_ > course_.stu_upper_)return stu_num_ - course_.stu_upper_;
+}
+
+inline int ClassUnit::GetTempVal(int flag, int temp) {
+	if (flag) {
+		if (temp == 2)return 1;
+		else return -1;
+	}
+	else return temp;
 }

@@ -17,7 +17,8 @@ public:
 	static double po_mutate_gene_;//具体运行时基因变异概率
 	static double po_cross_;//具体运行时候的交叉概率
 	static int stu_upper_, stu_lower_;//学生班级人数上限
-	double crash_;//冲突值，用来进行评分
+	//double crash_;//冲突值，用来进行评分
+	int crash_;//冲突值
 	int success_falg_;
 	static int rooms_, groups_;
 
@@ -78,4 +79,8 @@ private:
 	void CalSexRatio();
 	void CalTotAmount();
 	void CalAvgPoints();
+	void CalFitnessInMixedMode();
+	void MutateInMixedMode();
+	void CrossInMixedMode();
+	void ModifyInMixedMode();
 };
