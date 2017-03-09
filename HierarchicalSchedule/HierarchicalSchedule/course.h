@@ -61,6 +61,8 @@ public:
 	int dva_female_num_;
 	double dva_avg_points_;//班级平均分差距
 	double tot_avg_points_;//这个科目的总的平均分
+	double avg_lower_;//平均分下限
+	double avg_upper_;//平均分上限
 	//double points_;//科目分数
 	int stu_upper_;//具体每个学科的班级人数上限
 	int stu_lower_;//具体每个学科的班级人数下限

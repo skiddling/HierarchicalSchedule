@@ -490,15 +490,17 @@ void Schedule::CalFitnessInMixedMode() {
 
 void Schedule::MutateInMixedMode() {
 	
+	
 }
 
 void Schedule::CrossInMixedMode() {
+
 }
 
 void Schedule::ModifyInMixedMode() {
 	//应用混合模型来进行对每个班级进行modify
 	for (auto& c : cls_nuit_que_) {
 		if (c.crash_)
-			c.ModifyInMixedMode();
+			c.ModifyInMixedMode(pattern_que_);
 	}
 }

@@ -45,7 +45,7 @@ public:
 	double avg_female_stu_num_;*/
 	map<Sex, double> sum_points_in_sex_;//记录不同性别总分
 	map<Sex, double> avg_points_in_sex_;
-	double avg_sum_;
+	double avg_sum_, sum_points_;//班级平均分和总分
 	default_random_engine e_;
 
 	void GetAllAvlStus();
@@ -62,7 +62,7 @@ public:
 	int GetCrashInSexRatio();
 	int GetCrashInTotAmount();
 	int GetCrashInAvgPoints();
-	void ModifyInMixedMode();
+	void ModifyInMixedMode(vector<Pattern> patternque);
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
@@ -77,8 +77,14 @@ private:
 	int JudgeClsGetStuInSex(Sex sex);
 	int JudgeClsLoseStuInTotAmount();
 	int JudgeClsGetStuInTotAmount();
+	int JudgeClsGetOrLoseStuInAvgPoints(double points, int tag);
+	//int JudgeClsGetStuInAvgPoints(double points);
 	int JudgeInOrOutInSex(Sex s);
 	inline int GetTempVal(int flag, int temp);
+	//new method for mixed mode
+	pair<int, int> JudgeStuVal4Out(Student* s, Pattern pattern);
+	pair<int, int> JudgeStuVal4In(Student* s, Pattern pattern);
+	vector<Student*> GetAllStuRandQue();
 };
 
 inline int ClassUnit::GetCrash() {

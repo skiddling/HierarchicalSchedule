@@ -458,27 +458,82 @@ pair<int, int> ClassUnit::JudgeStuVal4SexRationOut(Student * s, vector<Pattern> 
 }
 
 int ClassUnit::JudgeClsLoseStuInSex(Sex sex) {
-	//if (stuinitsex_[sex].size() > course_.stu_upper_)return 1;
+	//此处都是用的有限自动机的方式来对结果进行处理
+	if (stuinitsex_[sex].size() > course_.sex_upper_[sex])return 1;
 	if (stuinitsex_[sex].size() <= course_.sex_lower_[sex])return -1;
-	else return 1;
-	//return 0;
+	return 0;
+	
 }
 
 int ClassUnit::JudgeClsGetStuInSex(Sex sex) {
 	if (stuinitsex_[sex].size() >= course_.sex_upper_[sex])return -1;
-	else return 1;
-	//return 0;
+	if (stuinitsex_[sex].size() < course_.sex_lower_[sex])return 1;
+	return 0;
 }
 
 int ClassUnit::JudgeClsLoseStuInTotAmount() {
+	if (stuinit_.size() > course_.stu_upper_)return 1;
 	if (stuinit_.size() <= course_.stu_lower_)return -1;
-	else return 1;
+	else return 0;
 }
 
 int ClassUnit::JudgeClsGetStuInTotAmount() {
 	if (stuinit_.size() >= course_.stu_upper_)return -1;
-	else return -1;
+	if (stuinit_.size() < course_.stu_lower_)return 1;
+	return 0;
 }
+
+int ClassUnit::JudgeClsGetOrLoseStuInAvgPoints(double points, int tag) {
+	double newavg;
+	if(tag == 0)newavg = (sum_points_ - points) / stuinit_.size();
+	else newavg = (sum_points_ + points) / (stuinit_.size() + 1);
+	double newdis = 0, olddis = 0;
+	int ntag = 0, otag = 0;
+	if (newavg > course_.avg_upper_) {
+		newdis = newavg - course_.avg_upper_;
+		ntag = 1;
+	}
+	else if (newavg < course_.avg_lower_) {
+		newdis = course_.avg_lower_ - newavg;
+		ntag = 1;
+	}
+	if (avg_sum_ > course_.avg_upper_) {
+		olddis = avg_sum_ - course_.avg_upper_;
+		otag = 1;
+	}
+	else if (avg_sum_ < course_.avg_lower_) {
+		olddis = course_.avg_lower_ - avg_sum_;
+		otag = 1;
+	}
+	if (ntag + otag == 0)return 0;
+	if (olddis > newdis)return 1;
+	else if (newdis > olddis)return -1;
+}
+
+//int ClassUnit::JudgeClsGetStuInAvgPoints(double points) {
+//	double newavg = (sum_points_ + points) / (stuinit_.size() + 1);
+//	double newdis = 0, olddis = 0;
+//	int ntag = 0, otag = 0;
+//	if (newavg > course_.avg_upper_) {
+//		newdis = newavg - course_.avg_upper_;
+//		ntag = 1;
+//	}
+//	else if (newavg < course_.avg_lower_) {
+//		newdis = course_.avg_lower_ - newavg;
+//		ntag = 1;
+//	}
+//	if (avg_sum_ > course_.avg_upper_) {
+//		olddis = avg_sum_ - course_.avg_upper_;
+//		otag = 1;
+//	}
+//	else if (avg_sum_ < course_.avg_lower_) {
+//		olddis = course_.avg_lower_ - avg_sum_;
+//		otag = 1;
+//	}
+//	if (ntag + otag == 0)return 0;
+//	if (olddis > newdis)return 1;
+//	else if (newdis > olddis)return -1;
+//}
 
 int ClassUnit::JudgeInOrOutInSex(Sex s) {
 	//判断这个班在这个性别当中应该是选一个进入班级还是出班级，1表示选择进入，0表示选择出去
@@ -554,11 +609,133 @@ int ClassUnit::GetCrashInAvgPoints() {
 	return res;
 }
 
-void ClassUnit::ModifyInMixedMode() {
+void ClassUnit::ModifyInMixedMode(vector<Pattern> patternque) {
 	//采用了混合模型来进行对调整操作，分别对应in和out两者的操作
 	//对所有能够进出这个班的所有人进行考察，一直到修正完毕或者是全部考察完毕为止
 	//先对已经在这个班的人进行考察
+	//auto randque = GetRandStuQue(stuinit_);
+	auto randque = GetAllStuRandQue();
+	pair<int, int> val;
+	for (auto& stu : randque) {
+		if (stuinit_.find(stu) != stuinit_.end()) {
+			val = JudgeStuVal4Out(stu, patternque[stu->patp_]);
+		}
+		else {
+			val = JudgeStuVal4In(stu, patternque[stu->patp_]);
+		}
+		if (val.first > 0) {
+			for (auto c : stu->clsset_) {
+				c->GetStuOutCls(stu);
+			}
+			for (auto c : patternque[stu->patp_].path_[val.second]) {
+				c->PutStuIntoCls(stu);
+			}
+		}
+	}
 }
+
+
+pair<int, int> ClassUnit::JudgeStuVal4Out(Student * stu, Pattern pattern) {
+	//这个计算要注意区分当前所在路径和notint当中是否存在同班的情况，同伴相当于不进不出，得0分
+	int mxval = 0, tempval, mxpid = -1;
+	//for (auto path : patternque[s->patp_].not_in_table_[this]) {
+	for(auto path : pattern.not_in_table_[this]){
+		/*vector<bool> intag(s->clsset_.size(), 0);
+		vector<bool> notintag(s->clsset_.size(), 0);*/
+		set<ClassUnit*> samecls;
+		//先做判断是否存在有相同的班级的存在
+		for (auto i = 0; i < stu->clsset_.size(); i++) {
+			//auto cptr = patternque[s->patp_].path_[path][i];
+			auto cptr = pattern.path_[path][i];
+			auto it = stu->clsset_.find(cptr);
+		//for(auto c : stu->clsset_){
+			if (it != stu->clsset_.end()) {
+				//表示找到了存在相同的课
+				samecls.insert(*it);
+			}
+		}
+		//在获得了所有相同课程之后再逐个对所有的班级进行学生的进出的考察
+		//先考察当前的所有的班级
+		tempval = 0;
+		//因为每条将要去尝试的path都可能会和当前这个路径有不同的重复的班级，所以我们只能每次都将这些班级都考察一遍
+		for (auto c : stu->clsset_) {
+			//if (c == this)tempval += 1;
+			//else if (samecls.find(c) == samecls.end()) {
+			if (samecls.find(c) == samecls.end()) {
+				tempval += c->JudgeClsLoseStuInSex(stu->sex_);
+				tempval += c->JudgeClsLoseStuInTotAmount();
+				tempval += c->JudgeClsGetOrLoseStuInAvgPoints(stu->points_[c->course_], 0);
+			}
+		}
+		//for (auto c : patternque[s->patp_].path_[path]) {
+		for(auto c : pattern.path_[path]){
+			if (samecls.find(c) == samecls.end()) {
+				tempval += c->JudgeClsGetStuInSex(stu->sex_);
+				tempval += c->JudgeClsGetStuInTotAmount();
+				tempval += c->JudgeClsGetOrLoseStuInAvgPoints(stu->points_[c->course_], 1);
+			}
+		}
+		if (tempval > mxval) {
+			mxval = tempval;
+			mxpid = path;
+		}
+	}
+	return pair<int, int>(mxval, mxpid);
+}
+
+pair<int, int> ClassUnit::JudgeStuVal4In(Student* stu, Pattern pattern) {
+	//此处也需要对班级进行查重
+	int mxval = 0, tempval, mxpid = -1;
+	for (auto path : pattern.in_unit_table_[this]) {
+		set<ClassUnit*> samecls;
+		for (auto c : pattern.path_[path]) {
+			if (stu->clsset_.find(c) != stu->clsset_.end()) {
+				samecls.insert(c);
+			}
+		}
+		//获得了重复班级之后我们再对所有的班级进行学生分数的考察
+		tempval = 0;
+		for (auto c : stu->clsset_) {
+			if (samecls.find(c) == samecls.end()) {
+				tempval += c->JudgeClsLoseStuInSex(stu->sex_);
+				tempval += c->JudgeClsLoseStuInTotAmount();
+				tempval += c->JudgeClsGetOrLoseStuInAvgPoints(stu->points_[c->course_], 0);
+			}
+		}
+		for (auto c : pattern.path_[path]) {
+			//if (c == this)tempval += 1;
+			//else if (samecls.find(c) == samecls.end()) {
+			if (samecls.find(c) == samecls.end()) {
+				tempval += c->JudgeClsGetStuInSex(stu->sex_);
+				tempval += c->JudgeClsGetStuInTotAmount();
+				tempval += c->JudgeClsGetOrLoseStuInAvgPoints(stu->points_[c->course_], 1);
+			}
+		}
+		if (tempval > mxval) {
+			mxval = tempval;
+			mxpid = path;
+		}
+	}
+	return pair<int, int>(mxval, mxpid);
+}
+
+vector<Student*> ClassUnit::GetAllStuRandQue() {
+	vector<Student*> que;
+	for (auto& stu : stuinit_) {
+		que.push_back(stu);
+	}
+	for (auto& stu : stunotin_) {
+		que.push_back(stu);
+	}
+	uniform_int_distribution<int> u(0, que.size() - 1);
+	int p;
+	for (auto i = 0; i < que.size(); i++) {
+		p = u(e_);
+		if (p != i)swap(que[i], que[p]);
+	}
+	return que;
+}
+
 
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {
 	map<Pattern*, bool>::iterator it = patterns_.begin();
