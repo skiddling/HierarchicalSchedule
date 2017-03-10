@@ -488,6 +488,7 @@ void Schedule::CalFitnessInMixedMode() {
 		crash_ += c.GetCrashInTotAmount();
 		crash_ += c.GetCrashInAvgPoints();
 	}
+	fitness = 1 / crash_;
 }
 
 void Schedule::MutateInMixedMode() {

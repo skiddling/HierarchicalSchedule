@@ -61,7 +61,7 @@ public:
 	//new method for mixed mode version
 	int GetCrashInSexRatio();
 	int GetCrashInTotAmount();
-	int GetCrashInAvgPoints();
+	double GetCrashInAvgPoints();
 	void ModifyInMixedMode(vector<Pattern> patternque);
 	void Mutate(vector<Pattern> patternque);
 	void Cross(vector<Pattern> patternque);

@@ -585,7 +585,7 @@ int ClassUnit::GetCrashInSexRatio() {
 		else if (stuinitsex_[s].size() < course_.sex_lower_[s])
 			res += course_.sex_lower_[s] - stuinitsex_[s].size();
 	}
-	crash_ += res;
+	//crash_ += res;
 	return res;
 }
 
@@ -595,17 +595,19 @@ int ClassUnit::GetCrashInTotAmount() {
 		res += stuinit_.size() - course_.stu_upper_;
 	else if (stuinit_.size() < course_.stu_lower_)
 		res += course_.stu_lower_ - stuinit_.size();
-	crash_ += res;
+	//crash_ += res;
 	return res;
 }
 
-int ClassUnit::GetCrashInAvgPoints() {
+double ClassUnit::GetCrashInAvgPoints() {
 	int res = 0;
-	double avg = (sum_points_in_sex_[male] + sum_points_in_sex_[female]) /
-		(stuinitsex_[male].size() + stuinitsex_[female].size());
-	if (avg > course_.tot_avg_points_ + course_.dva_avg_points_)res += 1;
-	else if (avg < course_.tot_avg_points_ - course_.dva_avg_points_)res += 1;
-	crash_ += res;
+	/*double avg = (sum_points_in_sex_[male] + sum_points_in_sex_[female]) /
+		(stuinitsex_[male].size() + stuinitsex_[female].size());*/
+	//if (avg > course_.tot_avg_points_ + course_.dva_avg_points_)res += 1;
+	//else if (avg < course_.tot_avg_points_ - course_.dva_avg_points_)res += 1;
+	if (avg_sum_ > course_.avg_upper_) res += avg_sum_ - course_.avg_upper_;
+	else if (avg_sum_ < course_.avg_lower_ )res += course_.avg_lower_ - avg_sum_;
+	//crash_ += res;
 	return res;
 }
 
