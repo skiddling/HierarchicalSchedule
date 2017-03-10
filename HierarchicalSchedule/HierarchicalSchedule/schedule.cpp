@@ -21,6 +21,7 @@ const double Schedule::con_pmutate_gene_ = 0.1;
 const int Schedule::kTableTimeOut = 1000000;
 
 Schedule::Schedule() {
+	e_ = default_random_engine(time(NULL));
 }
 
 Schedule::Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que,
@@ -29,6 +30,7 @@ Schedule::Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teach
 	cou_que_(cou_que), stu_que_(stu_que), tea_que_(tea_que), pattern_map_(pattern_map),
 	pattern_que_(pattern_que), prefix_map_(prefix_map), prefixes_(prefixes), topo_sorted_(topo_sorted){
 	table_ = vector<Group>(groups_, *(new Group(rooms_, rooms_)));
+	e_ = default_random_engine(time(NULL));
 }
 
 //对每个课表都进行相应的初始化工作，重点就是生成课表
@@ -489,12 +491,26 @@ void Schedule::CalFitnessInMixedMode() {
 }
 
 void Schedule::MutateInMixedMode() {
-	
+	double mp;
+	uniform_real_distribution<double> u(0.0, 1.0);
+	for (auto& c : cls_nuit_que_) {
+		mp = u(e_);
+		if (mp < mx_pmutate_) {
+			c.Mutate(pattern_que_);
+		}
+	}
 	
 }
 
 void Schedule::CrossInMixedMode() {
-
+	double cp;
+	uniform_real_distribution<double> u(0.0, 1.0);
+	for (auto& c : cls_nuit_que_) {
+		cp = u(e_);
+		if (cp < mx_pcross_) {
+			c.Cross(pattern_que_);
+		}
+	}
 }
 
 void Schedule::ModifyInMixedMode() {

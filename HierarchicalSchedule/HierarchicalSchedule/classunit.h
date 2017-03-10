@@ -63,6 +63,8 @@ public:
 	int GetCrashInTotAmount();
 	int GetCrashInAvgPoints();
 	void ModifyInMixedMode(vector<Pattern> patternque);
+	void Mutate(vector<Pattern> patternque);
+	void Cross(vector<Pattern> patternque);
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
@@ -85,6 +87,8 @@ private:
 	pair<int, int> JudgeStuVal4Out(Student* s, Pattern pattern);
 	pair<int, int> JudgeStuVal4In(Student* s, Pattern pattern);
 	vector<Student*> GetAllStuRandQue();
+	void SelectStuIn2Out(vector<Pattern> patternque);
+	void SelectStuOut2In(vector<Pattern> patternque);
 };
 
 inline int ClassUnit::GetCrash() {

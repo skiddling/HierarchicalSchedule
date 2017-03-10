@@ -83,4 +83,6 @@ private:
 	void MutateInMixedMode();
 	void CrossInMixedMode();
 	void ModifyInMixedMode();
+	//new obj for mixed mode
+	default_random_engine e_;
 };

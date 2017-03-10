@@ -634,6 +634,65 @@ void ClassUnit::ModifyInMixedMode(vector<Pattern> patternque) {
 	}
 }
 
+void ClassUnit::Mutate(vector<Pattern> patternque) {
+	//随机选择一个学生进或者出当前这个班级
+	auto randque = GetAllStuRandQue();
+	uniform_int_distribution<int> uq(0, randque.size() - 1);
+	auto stu = randque[uq(e_)];
+	for (auto c : stu->clsset_) {
+		c->GetStuOutCls(stu);
+	}
+	if (stuinit_.find(stu) != stuinit_.end()) {		
+		//学生不在该班级当中现在要到当前班级来
+		uniform_int_distribution<int> up(0, patternque[stu->patp_].in_unit_table_[this].size() - 1);
+		auto pid = up(e_);
+		for (auto c : patternque[stu->patp_].path_[pid]) {
+			c->PutStuIntoCls(stu);
+		}
+	}
+	else {
+		//学生在当前班级当中，然后要到其他班级当中去
+		uniform_int_distribution<int> up(0, patternque[stu->patp_].not_in_table_[this].size() - 1);
+		auto pid = up(e_);
+		for (auto c : patternque[stu->patp_].path_[pid]) {
+			c->PutStuIntoCls(stu);
+		}
+	}
+}
+
+void ClassUnit::Cross(vector<Pattern> patternque) {
+	//随机选择一个班内的学生和一个班外的学生进行进出
+	SelectStuIn2Out(patternque);
+	SelectStuOut2In(patternque);
+}
+
+void ClassUnit::SelectStuIn2Out(vector<Pattern> patternque) {
+	vector<Student*> randque = GetRandStuQue(stuinit_);
+	uniform_int_distribution<int> us(0, randque.size() - 1);
+	auto stu = randque[us(e_)];
+	for (auto c : stu->clsset_) {
+		c->GetStuOutCls(stu);
+	}
+	uniform_int_distribution<int> up(0, patternque[stu->patp_].not_in_table_[this].size() - 1);
+	auto pid = up(e_);
+	for (auto c : patternque[stu->patp_].path_[pid]) {
+		c->PutStuIntoCls(stu);
+	}
+}
+
+void ClassUnit::SelectStuOut2In(vector<Pattern> patternque) {
+	vector<Student*> randque = GetRandStuQue(stunotin_);
+	uniform_int_distribution<int> us(0, randque.size() - 1);
+	auto stu = randque[us(e_)];
+	for (auto c : stu->clsset_) {
+		c->GetStuOutCls(stu);
+	}
+	uniform_int_distribution<int> up(0, patternque[stu->patp_].in_unit_table_[this].size() - 1);
+	auto pid = up(e_);
+	for (auto c : patternque[stu->patp_].path_[pid]) {
+		c->PutStuIntoCls(stu);
+	}
+}
 
 pair<int, int> ClassUnit::JudgeStuVal4Out(Student * stu, Pattern pattern) {
 	//这个计算要注意区分当前所在路径和notint当中是否存在同班的情况，同伴相当于不进不出，得0分
@@ -735,7 +794,6 @@ vector<Student*> ClassUnit::GetAllStuRandQue() {
 	}
 	return que;
 }
-
 
 void ClassUnit::GetAvlPatQue(vector<Pattern*>& avlpatque) {
 	map<Pattern*, bool>::iterator it = patterns_.begin();
