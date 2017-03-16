@@ -27,7 +27,7 @@
 //};
 //
 extern thread_local InterruptFlag this_thread_interrupt_flag;
-extern thread_local promise<Schedule>* pro_ptr_;
+//extern thread_local promise<Schedule>* pro_ptr_;
 
 //extern thread_local int sid;
 
@@ -39,7 +39,7 @@ public:
 	//default_random_engine e_;
 	//uniform_int_distribution<int> u_;
 	thread _internal_thread;
-	//promise<Schedule>* pro_ptr_;//用来存放结果
+	promise<Schedule>* pro_ptr_;//用来存放结果
 	//int sid_;
 
 	InterruptibleThread() {};
@@ -63,7 +63,7 @@ public:
 			//f(ga, i);
 			//auto nf = bind(f, i);
 			//nf();
-			(obj.*f)(i);
+			(obj.*f)(i, this);
 		});
 		_interrupt_flag = p.get_future().get();
 	}

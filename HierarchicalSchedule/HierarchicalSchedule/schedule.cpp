@@ -1,4 +1,5 @@
 #include "schedule.h"
+#include "interruptiblethread.h"
 
 //在schedule层面上做的操作都是对schedule直接的属性进行更新修改
 const double kMXMP = 0.1;
@@ -388,7 +389,7 @@ void Schedule::GetStusAddrs() {
 	}
 }
 
-void Schedule::GetSchedule() {
+void Schedule::GetSchedule(InterruptibleThread* t) {
 	auto t1 = chrono::system_clock::now(), t2 = t1;
 	chrono::duration<int, ratio<60, 1> > dur(5);
 	//for (auto i = 0; i < modifyfuncs.size(); i++) {
@@ -404,12 +405,21 @@ void Schedule::GetSchedule() {
 	//会导致没有办法求得一个解，如果继续让使用者去调参，很有可能仍然无法继续求得解，所以改为使用
 	//混合型模型，最终一定会起码获得一个近似的解，如果参数设置的够好，会得到一个合理的解
 	while (true){
+		t2 = chrono::system_clock::now();
 		CalFitnessInMixedMode();
 		if (crash_ == 0)break;
+		if (t2 - t1 > dur)return;
+		try {
+				interruption_point();
+		}
+		catch (const thread_interrupted& interrupt) {
+			break;
+		}
 		MutateInMixedMode();
 		CrossInMixedMode();
 		ModifyInMixedMode();
 	}
+	t->pro_ptr_->set_value(*this);
 }
 
 void Schedule::GetFunctions() {

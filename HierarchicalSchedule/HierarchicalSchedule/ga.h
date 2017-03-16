@@ -52,7 +52,7 @@ private:
 	
 	//new method for new version
 	void GAProcess();
-	void GetSchedule(int thid);
+	void GetSchedule(int thid, InterruptibleThread* t);
 	void GetCourseUpdate();
 	
 };

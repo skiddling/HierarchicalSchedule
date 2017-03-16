@@ -156,8 +156,8 @@ int main(int argc, char* argv[]) {
 	GA ga(stuque, teacherque, couque);
 	cout << "after ga" << endl;
 	if (ga.Generate()) {
-		ga.GetResult();
-		//ga.OutPutResult();
+		//ga.GetResult();
+		ga.OutPutResult();
 	}
 	//else cout << "failed gernerate table" << endl;
 	system("PAUSE");

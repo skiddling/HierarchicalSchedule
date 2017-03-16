@@ -190,9 +190,14 @@ void ClassUnit::OutPutStu(ofstream &fout) {
 	//fout << course_.course_name_ << string(' ', 11 - course_.course_name_.length()) << teacher_.teacher_name_ << endl;
 	fout << course_.course_name_ << "                     " << teacher_.teacher_name_ << endl;
 	fout << unit_time_.first << "  " << unit_time_.second << "    " << students_.size() << endl;
-	for (int i = 0; i < students_.size(); i++) {
-		//fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << students_[i]->student_id_ << endl;
-		fout << students_[i]->student_name_ << "                    " << students_[i]->student_id_ << endl;
+	fout << "male " << stuinitsex_[male].size() << " " << "female " << stuinitsex_[female].size() << endl;
+	fout << "avg points " << avg_sum_ << endl;
+	//for (int i = 0; i < students_.size(); i++) {
+	//	//fout << students_[i]->student_name_ << string(' ', 11 - students_[i]->student_name_.length()) << students_[i]->student_id_ << endl;
+	//	fout << students_[i]->student_name_ << "    " << students_[i]->student_id_ << endl;
+	//}
+	for (auto stu : stuinit_) {
+		fout << stu->student_name_ << "    " << stu->sex_ << "    " << stu->points_[this->course_] << endl;
 	}
 	fout << endl << endl;
 }

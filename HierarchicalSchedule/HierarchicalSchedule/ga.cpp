@@ -266,10 +266,10 @@ bool GA::Init() {
 	return false;
 }
 
-void GA::GetSchedule(int thid) {
+void GA::GetSchedule(int thid, InterruptibleThread* t) {
 //void GetSchedule(GA* ga, int tid) {
 	for (auto i = 0; i < GA::kScheduleSize_; i++) {
-		schedules_[0][i + thid * kScheduleSize_].GetSchedule();
+		schedules_[0][i + thid * kScheduleSize_].GetSchedule(t);
 		//ga->schedules_[0][i + tid * GA::kScheduleSize_].GetSchedule();
 	}
 }
@@ -278,11 +278,34 @@ void GA::GAProcess() {
 	promise<Schedule> pro;
 	future<Schedule> fut = pro.get_future();
 	vector<InterruptibleThread> threads(thread::hardware_concurrency());
+	auto t1 = chrono::system_clock::now(), t2 = t1;
+	chrono::duration<int, ratio<60, 1>> dur(5);
 	for (int i = 0; i < thread::hardware_concurrency(); i++) {
 		threads[i] = InterruptibleThread(*this, &GA::GetSchedule, i, &pro);
 		//threads[i] = InterruptibleThread(GetSchedule, this, i);
 		//threads[i] = InterruptibleThread<&GA::GetSchedule>(this, i);
 		//threads[i].pro_ptr_ = &pro;
+	}
+	if (fut.wait_for(dur) == future_status::ready) {
+		//获得了想要的解然后把所有线程都打断并且终止
+		result_ = fut.get();
+		for (auto& t : threads) {
+			t.interrupt();
+			t.join();
+		}
+	}
+	else {
+		//超过时间则将所有线程打断
+		for (auto& t : threads) {
+			t.interrupt();
+			t.join();
+		}
+		//选取所有样本当中最合适的解	
+		result_ = schedules_[0][0];
+		for (auto i = 1; i < thread::hardware_concurrency() * kScheduleSize_; i++) {
+			if (result_.crash_ > schedules_[0][i].crash_)
+				result_ = schedules_[0][i];
+		}
 	}
 }
 

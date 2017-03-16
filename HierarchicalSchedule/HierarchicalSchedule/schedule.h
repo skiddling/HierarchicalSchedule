@@ -1,6 +1,8 @@
 #pragma once
 #include "group.h"
 
+class InterruptibleThread;
+
 class Schedule
 {
 public:
@@ -54,7 +56,7 @@ public:
 	//new method for new version
 	void GetAllAvlStus();
 	void GetStusAddrs();
-	void GetSchedule();
+	void GetSchedule(InterruptibleThread* t);
 
 private:
 	void GetTeaCls();//构造老师的课程指针
