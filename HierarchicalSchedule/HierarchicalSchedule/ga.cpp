@@ -135,12 +135,12 @@ void GA::OutPutTable() {
 	for (int k = 0; k < kScheduleSize_; k++) {
 		for (int i = 0; i < groups_; i++) {
 			for (int j = 0; j < rooms_; j++) {
-				cname = schedules_[0][k].table_[i].group[j]->course_.course_name_;
+				cname = schedules_[k].table_[i].group[j]->course_.course_name_;
 				fout << cname << string(11 - cname.length(), ' ');
 			}
 			fout << endl;
 			for (int j = 0; j < rooms_; j++) {
-				tname = schedules_[0][k].table_[i].group[j]->teacher_.teacher_name_;
+				tname = schedules_[k].table_[i].group[j]->teacher_.teacher_name_;
 				fout << tname << string(11 -  tname.length(), ' ');
 			}
 			fout << endl;
@@ -152,19 +152,19 @@ void GA::OutPutTable() {
 
 void GA::Mutate() {
 	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[0][i].Mutate(mxfit_);
+		schedules_[i].Mutate(mxfit_);
 	}
 }
 
 void GA::Cross() {
 	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[0][i].Cross(mxfit_);
+		schedules_[i].Cross(mxfit_);
 	}
 }
 
 void GA::Modify() {
 	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[0][i].Modify();
+		schedules_[i].Modify();
 	}
 }
 
@@ -173,8 +173,8 @@ void GA::Select() {
 	//fits[0] = schedules_[0][0].fitness;
 	for (int i = 0; i < kScheduleSize_; i++) {
 		//fits[i] = schedules_[0][i].fitness + fits[i - 1];
-		if (mxfit_ < schedules_[0][i].fitness)mxfit_ = schedules_[0][i].fitness;
-		if (schedules_[0][i].crash_ < result_.crash_)result_ = schedules_[0][i];
+		if (mxfit_ < schedules_[i].fitness)mxfit_ = schedules_[i].fitness;
+		if (schedules_[i].crash_ < result_.crash_)result_ = schedules_[i];
 	}
 	return;
 	for (int i = 0; i < kScheduleSize_; i++) {
@@ -185,14 +185,14 @@ void GA::Select() {
 	for (int i = 0; i < kScheduleSize_; i++) {
 		r = static_cast<double>(rand() * rand()) / kRndPluRnd;
 		id = lower_bound(fits.begin(), fits.end(), r) - fits.begin();
-		schedules_[1][i] = schedules_[0][id];
+		schedules_[i] = schedules_[id];
 	}
 	schedules_[0] = schedules_[1];
 }
 
 void GA::CalCrash() {
 	for (int i = 0; i < kScheduleSize_; i++) {
-		schedules_[0][i].CalCrashFitness();
+		schedules_[i].CalCrashFitness();
 	}
 }
 
@@ -203,25 +203,25 @@ bool GA::Init() {
 	result_ = *(new Schedule(cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
 	//schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
 	//此处每个线程生成5个表的课，具体数据可以再修改更新
-	schedules_[0] = vector<Schedule>(kScheduleSize_ * thread::hardware_concurrency(), result_);
+	schedules_ = vector<Schedule>(kScheduleSize_ * thread::hardware_concurrency(), result_);
 	//schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
-	schedules_[1] = schedules_[0];//拷贝赋值
+	//schedules_[1] = schedules_[0];//拷贝赋值
 	//result_.Init();
 	cout << "start get the rand table" << endl;
 	//利用多线程来生成课表
-	//vector<thread> ctablethreads(thread::hardware_concurrency());
-	vector<thread> ctablethreads(1);
-	//for(auto i = 0; i < thread::hardware_concurrency(); i++){
-	for(auto i = 0; i < 1; i++){
+	vector<thread> ctablethreads(thread::hardware_concurrency());
+	//vector<thread> ctablethreads(1);
+	for(auto i = 0; i < thread::hardware_concurrency(); i++){
+	//for(auto i = 0; i < 1; i++){
 		ctablethreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
-				cout << "init j " << j << " " << schedules_[0].size() << " " << i * kScheduleSize_ + j << endl;
-				schedules_[0][j + i * kScheduleSize_].Init();
+				//cout << "init j " << j << " " << schedules_.size() << " " << i * kScheduleSize_ + j << endl;
+				schedules_[j + i * kScheduleSize_].Init();
 			}
 		} };
 	}
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for(auto i = 0; i < 1; i++){
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	//for(auto i = 0; i < 1; i++){
 		ctablethreads[i].join();
 	}
 	/*for (int i = 0; i < kScheduleSize_; i++) {
@@ -230,34 +230,34 @@ bool GA::Init() {
 	cout << "end of the get rand table" << endl;
 	//OutPutTable();
 	int successnum = 0;
-	for (int i = 0; i < kScheduleSize_; i++) {
-		successnum += schedules_[0][i].success_falg_;
+	for (int i = 0; i < kScheduleSize_ * thread::hardware_concurrency(); i++) {
+		successnum += schedules_[i].success_falg_;
 	}
 	if (successnum == 0)return true;
 	//开始正式分配学生
 	//cout << successnum << endl;
-	//vector<thread> inithreads(thread::hardware_concurrency());
-	vector<thread> inithreads(1);
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for (auto i = 0; i < 1; i++) {
+	vector<thread> inithreads(thread::hardware_concurrency());
+	//vector<thread> inithreads(1);
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	//for (auto i = 0; i < 1; i++) {
 		inithreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				cout << "start mutilthreads" << endl;
-				if (schedules_[0][j + i * kScheduleSize_].success_falg_) {
-					schedules_[0][j + i * kScheduleSize_].GetAllPath();
+				if (schedules_[j + i * kScheduleSize_].success_falg_) {
+					schedules_[j + i * kScheduleSize_].GetAllPath();
 					cout << "end of get all path" << endl;
-					schedules_[0][j + i * kScheduleSize_].GetAllAvlStus();//new method for new versio：n
+					schedules_[j + i * kScheduleSize_].GetAllAvlStus();//new method for new versio：n
 					cout << "end or get all avl stus" << endl;
-					schedules_[0][j + i * kScheduleSize_].StuAssign();//modified for new version
-					schedules_[0][j + i * kScheduleSize_].CalCrashFitness();
-					if (schedules_[0][j + i * kScheduleSize_].fitness > mxfit_)mxfit_ = schedules_[0][i].fitness;
+					schedules_[j + i * kScheduleSize_].StuAssign();//modified for new version
+					schedules_[j + i * kScheduleSize_].CalCrashFitness();
+					if (schedules_[j + i * kScheduleSize_].fitness > mxfit_)mxfit_ = schedules_[i].fitness;
 					//cout << i << endl;
 				}
 			}
 		} };
 	}
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for (auto i = 0; i < 1; i++) {
+	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	//for (auto i = 0; i < 1; i++) {
 		inithreads[i].join();
 	}
 	//准备工作完成，开始遗传算法主体部分
@@ -269,7 +269,7 @@ bool GA::Init() {
 void GA::GetSchedule(int thid, InterruptibleThread* t) {
 //void GetSchedule(GA* ga, int tid) {
 	for (auto i = 0; i < GA::kScheduleSize_; i++) {
-		schedules_[0][i + thid * kScheduleSize_].GetSchedule(t);
+		schedules_[i + thid * kScheduleSize_].GetSchedule(t);
 		//ga->schedules_[0][i + tid * GA::kScheduleSize_].GetSchedule();
 	}
 }
@@ -301,10 +301,10 @@ void GA::GAProcess() {
 			t.join();
 		}
 		//选取所有样本当中最合适的解	
-		result_ = schedules_[0][0];
+		result_ = schedules_[0];
 		for (auto i = 1; i < thread::hardware_concurrency() * kScheduleSize_; i++) {
-			if (result_.crash_ > schedules_[0][i].crash_)
-				result_ = schedules_[0][i];
+			if (result_.crash_ > schedules_[i].crash_)
+				result_ = schedules_[i];
 		}
 	}
 }

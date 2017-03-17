@@ -17,7 +17,7 @@ public:
 	vector<Student> stu_que_;
 	vector<Teacher> tea_que_;
 	Schedule result_;//最后结果
-	vector<Schedule> schedules_[2];//每个schedule代表一个个体
+	vector<Schedule> schedules_;//每个schedule代表一个个体
 
 
 	map<vector<Course>, int> patterns_map_;//所有模式的总表，用于模式查询
