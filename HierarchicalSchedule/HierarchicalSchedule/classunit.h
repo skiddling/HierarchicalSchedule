@@ -89,6 +89,8 @@ private:
 	vector<Student*> GetAllStuRandQue();
 	void SelectStuIn2Out(vector<Pattern> patternque);
 	void SelectStuOut2In(vector<Pattern> patternque);
+	void StuIn2Out(vector<Pattern> patternque, Student* stu);
+	void StuOut2In(vector<Pattern> patternque, Student* stu);
 };
 
 inline int ClassUnit::GetCrash() {

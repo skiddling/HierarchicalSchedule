@@ -209,10 +209,10 @@ bool GA::Init() {
 	//result_.Init();
 	cout << "start get the rand table" << endl;
 	//利用多线程来生成课表
-	vector<thread> ctablethreads(thread::hardware_concurrency());
-	//vector<thread> ctablethreads(1);
-	for(auto i = 0; i < thread::hardware_concurrency(); i++){
-	//for(auto i = 0; i < 1; i++){
+	//vector<thread> ctablethreads(thread::hardware_concurrency());
+	vector<thread> ctablethreads(1);
+	//for(auto i = 0; i < thread::hardware_concurrency(); i++){
+	for(auto i = 0; i < 1; i++){
 		ctablethreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				//cout << "init j " << j << " " << schedules_.size() << " " << i * kScheduleSize_ + j << endl;
@@ -220,8 +220,8 @@ bool GA::Init() {
 			}
 		} };
 	}
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	//for(auto i = 0; i < 1; i++){
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for(auto i = 0; i < 1; i++){
 		ctablethreads[i].join();
 	}
 	/*for (int i = 0; i < kScheduleSize_; i++) {
@@ -230,16 +230,17 @@ bool GA::Init() {
 	cout << "end of the get rand table" << endl;
 	//OutPutTable();
 	int successnum = 0;
-	for (int i = 0; i < kScheduleSize_ * thread::hardware_concurrency(); i++) {
+	//for (int i = 0; i < kScheduleSize_ * thread::hardware_concurrency(); i++) {
+	for (auto i = 0; i < kScheduleSize_; i++) {
 		successnum += schedules_[i].success_falg_;
 	}
 	if (successnum == 0)return true;
 	//开始正式分配学生
 	//cout << successnum << endl;
-	vector<thread> inithreads(thread::hardware_concurrency());
-	//vector<thread> inithreads(1);
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	//for (auto i = 0; i < 1; i++) {
+	//vector<thread> inithreads(thread::hardware_concurrency());
+	vector<thread> inithreads(1);
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for (auto i = 0; i < 1; i++) {
 		inithreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				cout << "start mutilthreads" << endl;
@@ -256,8 +257,8 @@ bool GA::Init() {
 			}
 		} };
 	}
-	for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	//for (auto i = 0; i < 1; i++) {
+	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
+	for (auto i = 0; i < 1; i++) {
 		inithreads[i].join();
 	}
 	//准备工作完成，开始遗传算法主体部分
@@ -277,10 +278,12 @@ void GA::GetSchedule(int thid, InterruptibleThread* t) {
 void GA::GAProcess() {
 	promise<Schedule> pro;
 	future<Schedule> fut = pro.get_future();
-	vector<InterruptibleThread> threads(thread::hardware_concurrency());
+	//vector<InterruptibleThread> threads(thread::hardware_concurrency());
+	vector<InterruptibleThread> threads(1);
 	auto t1 = chrono::system_clock::now(), t2 = t1;
 	chrono::duration<int, ratio<60, 1>> dur(5);
-	for (int i = 0; i < thread::hardware_concurrency(); i++) {
+	//for (int i = 0; i < thread::hardware_concurrency(); i++) {
+	for (int i = 0; i < 1; i++) {
 		threads[i] = InterruptibleThread(*this, &GA::GetSchedule, i, &pro);
 		//threads[i] = InterruptibleThread(GetSchedule, this, i);
 		//threads[i] = InterruptibleThread<&GA::GetSchedule>(this, i);
@@ -302,7 +305,8 @@ void GA::GAProcess() {
 		}
 		//选取所有样本当中最合适的解	
 		result_ = schedules_[0];
-		for (auto i = 1; i < thread::hardware_concurrency() * kScheduleSize_; i++) {
+		//for (auto i = 1; i < thread::hardware_concurrency() * kScheduleSize_; i++) {
+		for (auto i = 1; i < kScheduleSize_; i++) {
 			if (result_.crash_ > schedules_[i].crash_)
 				result_ = schedules_[i];
 		}

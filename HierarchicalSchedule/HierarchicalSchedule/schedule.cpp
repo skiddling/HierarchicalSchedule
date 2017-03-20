@@ -392,15 +392,6 @@ void Schedule::GetStusAddrs() {
 void Schedule::GetSchedule(InterruptibleThread* t) {
 	auto t1 = chrono::system_clock::now(), t2 = t1;
 	chrono::duration<int, ratio<60, 1> > dur(5);
-	//for (auto i = 0; i < modifyfuncs.size(); i++) {
-	//	while (true) {
-	//		if (t2 - t1 > dur)return;
-	//		this->calfitfuncs[i];
-	//		//Mutate();
-	//		if (crash_ == 0)break;
-	//		this->modifyfuncs[i];
-	//	}
-	//}
 	//此处更新为使用混合式模型，不再使用渐进式模型求解，因为渐进式模型方案存在先天不足，
 	//会导致没有办法求得一个解，如果继续让使用者去调参，很有可能仍然无法继续求得解，所以改为使用
 	//混合型模型，最终一定会起码获得一个近似的解，如果参数设置的够好，会得到一个合理的解
@@ -410,14 +401,14 @@ void Schedule::GetSchedule(InterruptibleThread* t) {
 		if (crash_ == 0)break;
 		if (t2 - t1 > dur)return;
 		try {
-				interruption_point();
+			interruption_point();
 		}
 		catch (const thread_interrupted& interrupt) {
 			break;
 		}
+		ModifyInMixedMode();
 		MutateInMixedMode();
 		CrossInMixedMode();
-		ModifyInMixedMode();
 	}
 	t->pro_ptr_->set_value(*this);
 }

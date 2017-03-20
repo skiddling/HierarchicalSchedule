@@ -248,7 +248,10 @@ void ClassUnit::PutStuIntoCls(Student* stu) {
 	stuinitsex_[stu->sex_].insert(stu);
 	stuinit_.insert(stu);
 	stu_num_++;
-	GetDvaInSex();
+
+	sum_points_ += stu->GetCouPoints(this);
+	avg_sum_ = sum_points_ / stuinit_.size();
+	//GetDvaInSex();
 }
 
 void ClassUnit::GetStuOutCls(Student * stu) {
@@ -262,7 +265,10 @@ void ClassUnit::GetStuOutCls(Student * stu) {
 	stuinitsex_[stu->sex_].erase(stu);
 	stuinit_.erase(stu);
 	stu_num_--;
-	GetDvaInSex();
+
+	sum_points_ -= stu->GetCouPoints(this);
+	avg_sum_ = sum_points_ / stuinit_.size();
+	//GetDvaInSex();
 }
 
 int ClassUnit::GetDvaInSex() {
@@ -646,24 +652,15 @@ void ClassUnit::Mutate(vector<Pattern> patternque) {
 	auto randque = GetAllStuRandQue();
 	uniform_int_distribution<int> uq(0, randque.size() - 1);
 	auto stu = randque[uq(e_)];
-	for (auto c : stu->clsset_) {
-		c->GetStuOutCls(stu);
-	}
 	if (stuinit_.find(stu) != stuinit_.end()) {		
 		//学生不在该班级当中现在要到当前班级来
-		uniform_int_distribution<int> up(0, patternque[stu->patp_].in_unit_table_[this].size() - 1);
-		auto pid = up(e_);
-		for (auto c : patternque[stu->patp_].path_[pid]) {
-			c->PutStuIntoCls(stu);
-		}
+		//先从之前的班级里去除
+		StuOut2In(patternque, stu);
 	}
 	else {
 		//学生在当前班级当中，然后要到其他班级当中去
-		uniform_int_distribution<int> up(0, patternque[stu->patp_].not_in_table_[this].size() - 1);
-		auto pid = up(e_);
-		for (auto c : patternque[stu->patp_].path_[pid]) {
-			c->PutStuIntoCls(stu);
-		}
+		//先从当前的班级里去除
+		StuIn2Out(patternque, stu);
 	}
 }
 
@@ -677,6 +674,17 @@ void ClassUnit::SelectStuIn2Out(vector<Pattern> patternque) {
 	vector<Student*> randque = GetRandStuQue(stuinit_);
 	uniform_int_distribution<int> us(0, randque.size() - 1);
 	auto stu = randque[us(e_)];
+	StuIn2Out(patternque, stu);
+}
+
+void ClassUnit::SelectStuOut2In(vector<Pattern> patternque) {
+	vector<Student*> randque = GetRandStuQue(stunotin_);
+	uniform_int_distribution<int> us(0, randque.size() - 1);
+	auto stu = randque[us(e_)];
+	StuOut2In(patternque, stu);
+}
+
+void ClassUnit::StuIn2Out(vector<Pattern> patternque, Student* stu) {
 	for (auto c : stu->clsset_) {
 		c->GetStuOutCls(stu);
 	}
@@ -687,10 +695,7 @@ void ClassUnit::SelectStuIn2Out(vector<Pattern> patternque) {
 	}
 }
 
-void ClassUnit::SelectStuOut2In(vector<Pattern> patternque) {
-	vector<Student*> randque = GetRandStuQue(stunotin_);
-	uniform_int_distribution<int> us(0, randque.size() - 1);
-	auto stu = randque[us(e_)];
+void ClassUnit::StuOut2In(vector<Pattern> patternque, Student* stu) {
 	for (auto c : stu->clsset_) {
 		c->GetStuOutCls(stu);
 	}
