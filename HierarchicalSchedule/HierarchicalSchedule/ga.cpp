@@ -197,22 +197,25 @@ void GA::CalCrash() {
 }
 
 bool GA::Init() {
+	//设置线程数量
+	num_of_threads_ = 1;
+	//num_of_threads_ = thread::hardware_concurrency();
 	//公共的内容已经完成，剩下就是对每个schedule进行生成
 	//2.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
 	result_ = *(new Schedule(cou_que_, stu_que_, tea_que_, patterns_map_, patterns_, prefix_map_, prefixes_, topo_sorted_));
 	//schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
 	//此处每个线程生成5个表的课，具体数据可以再修改更新
-	schedules_ = vector<Schedule>(kScheduleSize_ * thread::hardware_concurrency(), result_);
+	schedules_ = vector<Schedule>(kScheduleSize_ * num_of_threads_, result_);
 	//schedules_[0] = vector<Schedule>(kScheduleSize_, result_);
 	//schedules_[1] = schedules_[0];//拷贝赋值
 	//result_.Init();
 	cout << "start get the rand table" << endl;
 	//利用多线程来生成课表
-	//vector<thread> ctablethreads(thread::hardware_concurrency());
-	vector<thread> ctablethreads(1);
-	//for(auto i = 0; i < thread::hardware_concurrency(); i++){
-	for(auto i = 0; i < 1; i++){
+	vector<thread> ctablethreads(num_of_threads_);
+	//vector<thread> ctablethreads(1);
+	for(auto i = 0; i < num_of_threads_; i++){
+	//for(auto i = 0; i < 1; i++){
 		ctablethreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				//cout << "init j " << j << " " << schedules_.size() << " " << i * kScheduleSize_ + j << endl;
@@ -220,8 +223,8 @@ bool GA::Init() {
 			}
 		} };
 	}
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for(auto i = 0; i < 1; i++){
+	for (auto i = 0; i < num_of_threads_; i++) {
+	//for(auto i = 0; i < 1; i++){
 		ctablethreads[i].join();
 	}
 	/*for (int i = 0; i < kScheduleSize_; i++) {
@@ -230,17 +233,17 @@ bool GA::Init() {
 	cout << "end of the get rand table" << endl;
 	//OutPutTable();
 	int successnum = 0;
-	//for (int i = 0; i < kScheduleSize_ * thread::hardware_concurrency(); i++) {
-	for (auto i = 0; i < kScheduleSize_; i++) {
+	for (int i = 0; i < kScheduleSize_ * num_of_threads_; i++) {
+	//for (auto i = 0; i < kScheduleSize_; i++) {
 		successnum += schedules_[i].success_falg_;
 	}
 	if (successnum == 0)return true;
 	//开始正式分配学生
 	//cout << successnum << endl;
-	//vector<thread> inithreads(thread::hardware_concurrency());
-	vector<thread> inithreads(1);
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for (auto i = 0; i < 1; i++) {
+	vector<thread> inithreads(num_of_threads_);
+	//vector<thread> inithreads(1);
+	for (auto i = 0; i < num_of_threads_; i++) {
+	//for (auto i = 0; i < 1; i++) {
 		inithreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				cout << "start mutilthreads" << endl;
@@ -257,8 +260,8 @@ bool GA::Init() {
 			}
 		} };
 	}
-	//for (auto i = 0; i < thread::hardware_concurrency(); i++) {
-	for (auto i = 0; i < 1; i++) {
+	for (auto i = 0; i < num_of_threads_; i++) {
+	//for (auto i = 0; i < 1; i++) {
 		inithreads[i].join();
 	}
 	//准备工作完成，开始遗传算法主体部分
@@ -278,12 +281,12 @@ void GA::GetSchedule(int thid, InterruptibleThread* t) {
 void GA::GAProcess() {
 	promise<Schedule> pro;
 	future<Schedule> fut = pro.get_future();
-	//vector<InterruptibleThread> threads(thread::hardware_concurrency());
-	vector<InterruptibleThread> threads(1);
+	vector<InterruptibleThread> threads(num_of_threads_);
+	//vector<InterruptibleThread> threads(1);
 	auto t1 = chrono::system_clock::now(), t2 = t1;
 	chrono::duration<int, ratio<60, 1>> dur(5);
-	//for (int i = 0; i < thread::hardware_concurrency(); i++) {
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < num_of_threads_; i++) {
+	//for (int i = 0; i < 1; i++) {
 		threads[i] = InterruptibleThread(*this, &GA::GetSchedule, i, &pro);
 		//threads[i] = InterruptibleThread(GetSchedule, this, i);
 		//threads[i] = InterruptibleThread<&GA::GetSchedule>(this, i);
@@ -305,8 +308,8 @@ void GA::GAProcess() {
 		}
 		//选取所有样本当中最合适的解	
 		result_ = schedules_[0];
-		//for (auto i = 1; i < thread::hardware_concurrency() * kScheduleSize_; i++) {
-		for (auto i = 1; i < kScheduleSize_; i++) {
+		for (auto i = 1; i < num_of_threads_ * kScheduleSize_; i++) {
+		//for (auto i = 1; i < kScheduleSize_; i++) {
 			if (result_.crash_ > schedules_[i].crash_)
 				result_ = schedules_[i];
 		}

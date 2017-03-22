@@ -406,9 +406,10 @@ void Schedule::GetSchedule(InterruptibleThread* t) {
 		catch (const thread_interrupted& interrupt) {
 			break;
 		}
-		ModifyInMixedMode();
 		MutateInMixedMode();
 		CrossInMixedMode();
+		CalFitnessInMixedMode();//为了让modify能够顺利进行
+		ModifyInMixedMode();
 	}
 	t->pro_ptr_->set_value(*this);
 }

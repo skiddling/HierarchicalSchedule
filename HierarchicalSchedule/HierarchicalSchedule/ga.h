@@ -5,6 +5,7 @@
 class GA
 {
 public:
+	static int num_of_threads_;//用来设置是进行单线程运行还是多线程运行
 	//static const int kScheduleSize_ = 20;//定义种群数量
 	static const int kScheduleSize_ = 5;//定义每个线程的种群数量
 	//const int kCheckTimeOut = 1000000;//生成一张具有可行性的课表的时间限制

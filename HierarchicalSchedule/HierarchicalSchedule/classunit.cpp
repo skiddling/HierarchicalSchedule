@@ -707,22 +707,21 @@ void ClassUnit::StuOut2In(vector<Pattern> patternque, Student* stu) {
 }
 
 pair<int, int> ClassUnit::JudgeStuVal4Out(Student * stu, Pattern pattern) {
-	//这个计算要注意区分当前所在路径和notint当中是否存在同班的情况，同伴相当于不进不出，得0分
-	int mxval = 0, tempval, mxpid = -1;
+	//这个计算要注意区分当前所在路径和notint当中是否存在同班的情况，同班相当于不进不出，得0分
+	int mxpid = -1;
+	int tempval, mxval = 0;
 	//for (auto path : patternque[s->patp_].not_in_table_[this]) {
 	for(auto path : pattern.not_in_table_[this]){
 		/*vector<bool> intag(s->clsset_.size(), 0);
 		vector<bool> notintag(s->clsset_.size(), 0);*/
 		set<ClassUnit*> samecls;
 		//先做判断是否存在有相同的班级的存在
-		for (auto i = 0; i < stu->clsset_.size(); i++) {
-			//auto cptr = patternque[s->patp_].path_[path][i];
-			auto cptr = pattern.path_[path][i];
-			auto it = stu->clsset_.find(cptr);
-		//for(auto c : stu->clsset_){
-			if (it != stu->clsset_.end()) {
+		//for (auto i = 0; i < stu->clsset_.size(); i++) {
+		//for (auto i = 0; i < pattern.path_[path].size(); i++) {
+		for(auto c : pattern.path_[path]){
+			if (stu->clsset_.find(c) != stu->clsset_.end()) {
 				//表示找到了存在相同的课
-				samecls.insert(*it);
+				samecls.insert(c);
 			}
 		}
 		//在获得了所有相同课程之后再逐个对所有的班级进行学生的进出的考察
