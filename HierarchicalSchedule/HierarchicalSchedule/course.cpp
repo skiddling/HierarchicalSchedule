@@ -12,9 +12,10 @@ Course::Course(string course_name, int class_num, int cnum, double dvainpoint,
 	pre_node_ = vector<bool>(cnum, 0);
 	satis_num_ = 0;
 	num_of_stus_in_sex_[male] = num_of_stus_in_sex_[female] = 0;
-	total_scores_in_sex_[male] = total_scores_in_sex_[female] = 0.0;
+	//total_scores_in_sex_[male] = total_scores_in_sex_[female] = 0.0;
 	dva_female_num_ = 5;
 	dva_male_num_ = 5;
+	
 }
 
 void Course::GetSexUpLow() {

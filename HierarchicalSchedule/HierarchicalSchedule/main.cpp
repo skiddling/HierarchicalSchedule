@@ -45,12 +45,14 @@ void StudentsIn() {
 		}
 	}
 	for (auto& c : couque) {
-		for (int i = 0; i < 2; i++) {
+		/*for (int i = 0; i < 2; i++) {
 			auto s = static_cast<Sex>(i);
 			c.avg_scores_in_sex_[s] = c.total_scores_in_sex_[s] / c.num_of_stus_in_sex_[s];
-		}
+		}*/
 		c.tot_avg_points_ = (c.total_scores_in_sex_[male] + c.total_scores_in_sex_[female]) /
 			(c.num_of_stus_in_sex_[male] + c.num_of_stus_in_sex_[female]);
+		c.avg_lower_ = c.tot_avg_points_ - c.dva_avg_points_;
+		c.avg_upper_ = c.tot_avg_points_ + c.dva_avg_points_;
 	}
 
 	fin.close();
@@ -105,7 +107,18 @@ void BasicInput() {
 	fin.close();
 }
 
+
+void TestInput() {
+	cout << system("DIR") << endl;;
+	ifstream fin("test.txt");
+	string temp;
+	fin >> temp;
+	cout << temp << endl;
+	fin.close();
+}
+
 void Input() {
+	//TestInput();
 	BasicInput();
 	StudentsIn();
 	TeachersIn();

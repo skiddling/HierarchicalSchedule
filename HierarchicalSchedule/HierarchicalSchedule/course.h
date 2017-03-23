@@ -15,7 +15,7 @@
 #include <future>
 #include <mutex>
 #include <functional>
-#include "gtest\gtest.h"
+//#include "gtest\gtest.h"
 
 using namespace std;
 
@@ -56,7 +56,7 @@ public:
 	map<Sex, double> sex_upper_;
 	map<Sex, double> sex_lower_;
 	map<Sex, double> total_scores_in_sex_;
-	map<Sex, double> avg_scores_in_sex_;
+	//map<Sex, double> avg_scores_in_sex_;
 	int dva_male_num_;//男生人数偏差
 	int dva_female_num_;
 	double dva_avg_points_;//班级平均分差距

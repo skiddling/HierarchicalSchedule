@@ -4,7 +4,8 @@
 class ClassUnit
 {
 public:
-	int crash_;//该班级的冲突值
+	//ClassUnit* address_;
+	double crash_;//该班级的冲突值
 	int stu_num_;//该班级学生数量
 	int unit_id_;
 	//static int stu_upper_, stu_lower_;
@@ -62,9 +63,11 @@ public:
 	int GetCrashInSexRatio();
 	int GetCrashInTotAmount();
 	double GetCrashInAvgPoints();
-	void ModifyInMixedMode(vector<Pattern> patternque);
-	void Mutate(vector<Pattern> patternque);
-	void Cross(vector<Pattern> patternque);
+	void ModifyInMixedMode(vector<Pattern>* patternque);
+	void Mutate(vector<Pattern>* patternque);
+	void Cross(vector<Pattern>* patternque);
+	//method for debug
+	void Test();
 
 private:
 	void GetAvlPatQue(vector<Pattern* > &avlpatque);
@@ -84,13 +87,16 @@ private:
 	int JudgeInOrOutInSex(Sex s);
 	inline int GetTempVal(int flag, int temp);
 	//new method for mixed mode
-	pair<int, int> JudgeStuVal4Out(Student* s, Pattern pattern);
-	pair<int, int> JudgeStuVal4In(Student* s, Pattern pattern);
+	pair<int, int> JudgeStuVal4Out(Student* s, Pattern* pattern);
+	pair<int, int> JudgeStuVal4In(Student* s, Pattern* pattern);
 	vector<Student*> GetAllStuRandQue();
-	void SelectStuIn2Out(vector<Pattern> patternque);
-	void SelectStuOut2In(vector<Pattern> patternque);
-	void StuIn2Out(vector<Pattern> patternque, Student* stu);
-	void StuOut2In(vector<Pattern> patternque, Student* stu);
+	void SelectStuIn2Out(vector<Pattern>* patternque);
+	void SelectStuOut2In(vector<Pattern>* patternque);
+	void StuIn2Out(vector<Pattern>* patternque, Student* stu);
+	void StuOut2In(vector<Pattern>* patternque, Student* stu);
+	void MakeStuOutAndIn(vector<Pattern>* patternque, Student* stu, int pid);
+	int GetStuValInAndOut(Student* stu, Pattern* pattern, int path);
+	
 };
 
 inline int ClassUnit::GetCrash() {

@@ -14,12 +14,16 @@ int Schedule::groups_ = 0;
 double Schedule::po_cross_ = 0.2;
 double Schedule::po_mutate_gene_ = 0.1;
 double Schedule::po_mutate_ = 0.01;
+const double Schedule::mx_pcross_ = 0.2;
 const double Schedule::mx_pmutate_ = 0.05;
 const double Schedule::mx_pmutate_gene_ = 0.1;
 const double Schedule::con_pcross_ = 0.2;
 const double Schedule::con_pmutate = 0.01;
 const double Schedule::con_pmutate_gene_ = 0.1;
 const int Schedule::kTableTimeOut = 1000000;
+
+int flag = 1;
+mutex mtx;
 
 Schedule::Schedule() {
 	e_ = default_random_engine(time(NULL));
@@ -88,6 +92,8 @@ void Schedule::GetTeaCls() {
 		cid = cls_nuit_que_[i].course_.course_id_;
 		tea_que_[tid].units_que_.push_back(&cls_nuit_que_[i]);
 		cou_que_[cid].units_.push_back(&cls_nuit_que_[i]);
+		//补充一个成语方便debug
+		//cls_nuit_que_[i].address_ = &cls_nuit_que_[i];
 	}
 	//cout << "end of get units" << endl;
 }
@@ -356,7 +362,8 @@ void Schedule::OutPutResult() {
 	int sum = 0;
 	for (int i = 0; i < cls_nuit_que_.size(); i++) {
 		cls_nuit_que_[i].OutPutStu(fout);
-		sum += cls_nuit_que_[i].students_.size();
+		//sum += cls_nuit_que_[i].students_.size();
+		sum += cls_nuit_que_[i].stuinit_.size();
 	}
 	fout << sum;
 	fout.close();
@@ -389,21 +396,30 @@ void Schedule::GetStusAddrs() {
 	}
 }
 
-void Schedule::GetSchedule(InterruptibleThread* t) {
+void Schedule::GetSchedule(InterruptibleThread* t, future<Schedule>* fut) {
 	auto t1 = chrono::system_clock::now(), t2 = t1;
 	chrono::duration<int, ratio<60, 1> > dur(5);
+	chrono::duration<int, ratio<1, 1000>> wt(1);
+	int tag = -1;
 	//此处更新为使用混合式模型，不再使用渐进式模型求解，因为渐进式模型方案存在先天不足，
 	//会导致没有办法求得一个解，如果继续让使用者去调参，很有可能仍然无法继续求得解，所以改为使用
 	//混合型模型，最终一定会起码获得一个近似的解，如果参数设置的够好，会得到一个合理的解
 	while (true){
 		t2 = chrono::system_clock::now();
 		CalFitnessInMixedMode();
-		if (crash_ == 0)break;
-		if (t2 - t1 > dur)return;
+		if (crash_ == 0) {
+			tag = 2;
+			break;
+		}
+		if (t2 - t1 > dur) {
+			tag = 1;
+			return;
+		}
 		try {
 			interruption_point();
 		}
 		catch (const thread_interrupted& interrupt) {
+			tag = 0;
 			break;
 		}
 		MutateInMixedMode();
@@ -411,7 +427,19 @@ void Schedule::GetSchedule(InterruptibleThread* t) {
 		CalFitnessInMixedMode();//为了让modify能够顺利进行
 		ModifyInMixedMode();
 	}
-	t->pro_ptr_->set_value(*this);
+	//if(tag == 2 && (fut->wait_for(wt) != future_status::ready)) t->pro_ptr_->set_value(*this);
+	if (flag) {
+		mtx.lock();
+		if (flag) {
+			flag = 0;
+			t->pro_ptr_->set_value(*this);
+		}
+		mtx.unlock();
+	}
+}
+
+void Schedule::Test() {
+	cout << &cls_nuit_que_[0] << endl;
 }
 
 void Schedule::GetFunctions() {
@@ -490,16 +518,21 @@ void Schedule::CalFitnessInMixedMode() {
 		crash_ += c.GetCrashInTotAmount();
 		crash_ += c.GetCrashInAvgPoints();
 	}
-	fitness = 1 / crash_;
+	//fitness = 1 / crash_;
 }
 
 void Schedule::MutateInMixedMode() {
 	double mp;
 	uniform_real_distribution<double> u(0.0, 1.0);
 	for (auto& c : cls_nuit_que_) {
+	//for (auto i = 0; i < cls_nuit_que_.size(); i++) {
 		mp = u(e_);
+		//if(mp < 1){
 		if (mp < mx_pmutate_) {
-			c.Mutate(pattern_que_);
+			//cout << &c << endl;
+			//c.Test();
+			c.Mutate(&pattern_que_);
+			//cls_nuit_que_[i].Mutate(&pattern_que_);
 		}
 	}
 	
@@ -511,7 +544,7 @@ void Schedule::CrossInMixedMode() {
 	for (auto& c : cls_nuit_que_) {
 		cp = u(e_);
 		if (cp < mx_pcross_) {
-			c.Cross(pattern_que_);
+			c.Cross(&pattern_que_);
 		}
 	}
 }
@@ -520,6 +553,6 @@ void Schedule::ModifyInMixedMode() {
 	//应用混合模型来进行对每个班级进行modify
 	for (auto& c : cls_nuit_que_) {
 		if (c.crash_)
-			c.ModifyInMixedMode(pattern_que_);
+			c.ModifyInMixedMode(&pattern_que_);
 	}
 }

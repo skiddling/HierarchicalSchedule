@@ -22,7 +22,7 @@ private:
 
 struct thread_interrupted {};
 
-//thread_local InterruptFlag this_thread_interrupt_flag;
+extern thread_local InterruptFlag this_thread_interrupt_flag;
 
 void interruption_point();
 //{

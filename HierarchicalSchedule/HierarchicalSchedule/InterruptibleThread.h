@@ -45,7 +45,7 @@ public:
 	InterruptibleThread() {};
 	template<typename FunctionType, typename ObjType>
 	//template<Funcptr f>
-	InterruptibleThread(ObjType obj, FunctionType f, int i, promise<Schedule>* proptr){
+	InterruptibleThread(ObjType objptr, FunctionType f, int i, promise<Schedule>* proptr, future<Schedule>* fut){
 	//InterruptibleThread(FunctionType f, GA* ga, int i){
 		//f(i);
 		//pro_ptr_ = proptr;
@@ -53,7 +53,7 @@ public:
 		//给threadlocal变量interruptflag赋初值，因为interruptthread具有是否需要中断的这个开关需求（打开之后设置了中断才能表明能被打断，否则不打开即使设置了中断也无法触发中断）
 		//将proprt也设置成threadlocal是因为结果被保存在相应
 		promise<InterruptFlag*> p;//因为这个p只是一个传递真执行线程的this_thread_interrupt_flag的值的一个工具载体，所以其实只需要一个局部变量就行
-		_internal_thread = thread([f, &p, i, &obj, proptr, this]()
+		_internal_thread = thread([f, &p, i, &objptr, proptr, this, &fut]()
 		//_internal_thread = thread([f, &p, i, &ga]()
 		{
 			//sid_ = sid = i;
@@ -63,7 +63,7 @@ public:
 			//f(ga, i);
 			//auto nf = bind(f, i);
 			//nf();
-			(obj.*f)(i, this);
+			((*objptr).*f)(i, this, fut);
 		});
 		_interrupt_flag = p.get_future().get();
 	}

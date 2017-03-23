@@ -56,7 +56,9 @@ public:
 	//new method for new version
 	void GetAllAvlStus();
 	void GetStusAddrs();
-	void GetSchedule(InterruptibleThread* t);
+	void GetSchedule(InterruptibleThread* t, future<Schedule>* fut);
+	//new method for debug
+	void Test();
 
 private:
 	void GetTeaCls();//构造老师的课程指针

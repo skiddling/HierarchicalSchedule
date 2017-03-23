@@ -198,8 +198,8 @@ void GA::CalCrash() {
 
 bool GA::Init() {
 	//设置线程数量
-	num_of_threads_ = 1;
-	//num_of_threads_ = thread::hardware_concurrency();
+	//num_of_threads_ = 1;
+	num_of_threads_ = thread::hardware_concurrency() - 1;//main用掉一个
 	//公共的内容已经完成，剩下就是对每个schedule进行生成
 	//2.先把每一节课初始化，然后生成课表
 	//老师队列已经有了，但是每个老师的课还不存在，所以要生成每个老师的课
@@ -227,6 +227,7 @@ bool GA::Init() {
 	//for(auto i = 0; i < 1; i++){
 		ctablethreads[i].join();
 	}
+	schedules_[0].Test();
 	/*for (int i = 0; i < kScheduleSize_; i++) {
 		schedules_[0][i].Init();
 	}*/
@@ -253,9 +254,9 @@ bool GA::Init() {
 					schedules_[j + i * kScheduleSize_].GetAllAvlStus();//new method for new versio：n
 					cout << "end or get all avl stus" << endl;
 					schedules_[j + i * kScheduleSize_].StuAssign();//modified for new version
-					schedules_[j + i * kScheduleSize_].CalCrashFitness();
-					if (schedules_[j + i * kScheduleSize_].fitness > mxfit_)mxfit_ = schedules_[i].fitness;
-					//cout << i << endl;
+					//schedules_[j + i * kScheduleSize_].CalCrashFitness();
+					//if (schedules_[j + i * kScheduleSize_].fitness > mxfit_)mxfit_ = schedules_[i].fitness;
+					cout << i << endl;
 				}
 			}
 		} };
@@ -264,16 +265,17 @@ bool GA::Init() {
 	//for (auto i = 0; i < 1; i++) {
 		inithreads[i].join();
 	}
+	//schedules_[0].Test();
 	//准备工作完成，开始遗传算法主体部分
 	cout << "start for GA" << endl;
 	result_.crash_ = INT_MAX;
 	return false;
 }
 
-void GA::GetSchedule(int thid, InterruptibleThread* t) {
+void GA::GetSchedule(int thid, InterruptibleThread* t, future<Schedule>* fut) {
 //void GetSchedule(GA* ga, int tid) {
 	for (auto i = 0; i < GA::kScheduleSize_; i++) {
-		schedules_[i + thid * kScheduleSize_].GetSchedule(t);
+		schedules_[i + thid * kScheduleSize_].GetSchedule(t, fut);
 		//ga->schedules_[0][i + tid * GA::kScheduleSize_].GetSchedule();
 	}
 }
@@ -287,7 +289,7 @@ void GA::GAProcess() {
 	chrono::duration<int, ratio<60, 1>> dur(5);
 	for (int i = 0; i < num_of_threads_; i++) {
 	//for (int i = 0; i < 1; i++) {
-		threads[i] = InterruptibleThread(*this, &GA::GetSchedule, i, &pro);
+		threads[i] = InterruptibleThread(this, &GA::GetSchedule, i, &pro, &fut);
 		//threads[i] = InterruptibleThread(GetSchedule, this, i);
 		//threads[i] = InterruptibleThread<&GA::GetSchedule>(this, i);
 		//threads[i].pro_ptr_ = &pro;
