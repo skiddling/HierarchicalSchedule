@@ -52,10 +52,11 @@ class ClassUnit;
 class Course
 {
 public:
-	map<Sex, int> num_of_stus_in_sex_;
+	map<Sex, int> num_of_stus_in_sex_;//某个性别的学生总人数
 	map<Sex, double> sex_upper_;
 	map<Sex, double> sex_lower_;
 	map<Sex, double> total_scores_in_sex_;
+	int dbid_;//这个id用于从数据库当中取出来的时候的id
 	//map<Sex, double> avg_scores_in_sex_;
 	int dva_male_num_;//男生人数偏差
 	int dva_female_num_;
@@ -83,10 +84,13 @@ public:
 
 	Course();
 	Course(string course_name, int cls, int cnum, double dvainpoint, int stuupper, int stulower, set<int>notintset, bool visited = 0);
+	Course(string coursename, int cls, int cnum, int stuupper, int stulower, double classMaxAverage, double classMinAverage,
+		int femaleMaxQty, int femaleMinQty, int maleMaxQty, int maleMinQty, int dbid, bool visited = 0);
 	//Course(int course_id, string course_name);
 	bool operator < (const Course a)const {
 		//同一个科目下的学科判班级的数量，不同学科的就判名字
-		if (course_name_.substr(0, course_name_.length() - 1) != a.course_name_.substr(0, a.course_name_.length() - 1))
+		if (class_num_ != a.class_num_)return class_num_ < a.class_num_;
+		else if (course_name_.substr(0, course_name_.length() - 1) != a.course_name_.substr(0, a.course_name_.length() - 1))
 			return this->course_name_ < a.course_name_;
 		else if (not_in_set_.size() != a.not_in_set_.size())return not_in_set_.size() > a.not_in_set_.size();
 		//else if(class_num_ != a.class_num_)return class_num_ < a.class_num_;

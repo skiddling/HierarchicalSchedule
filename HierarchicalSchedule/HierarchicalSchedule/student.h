@@ -17,6 +17,8 @@ public:
 	map<Course, pair<int, int> > time_table_;//最终的学生的课表,到最后再更新上去
 	Student();
 	Student(string student_id, string student_name, vector<Course> courses, string sex);
+	Student(string student_id, string student_name);
+	Student(string student_id, string student_name, string sex, int student_no);
 	void GetCouSort();//让courses变成有序队列
 
 	//new obj or method for new version

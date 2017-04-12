@@ -18,7 +18,7 @@ GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que)
 	topo_sorted_ = vector<int>(cou_que_.size());
 	prefixes_.push_back(*(new Prefix(groups_)));
 	InitSort();
-	GetCourseUpdate();
+	//GetCourseUpdate();//被数据库当中的直接输入给替代掉了
 	//cout << "ga 21" << endl;
 	//1.获得所有学生的模式类型
 	GetStuPat();

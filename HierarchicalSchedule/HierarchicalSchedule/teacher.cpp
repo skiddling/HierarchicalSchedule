@@ -4,8 +4,15 @@
 Teacher::Teacher() {
 }
 
-Teacher::Teacher(int groups, string teacher_no, string teacher_name, vector<Course> courses, map<Course, int> courses_num) :
-	teacher_no_(teacher_no), teacher_name_(teacher_name), courses_(courses), courses_num_(courses_num){
+//Teacher::Teacher(int groups, string teacher_no, string teacher_name, vector<Course> courses, map<Course, int> courses_num) :
+Teacher::Teacher(int groups, string teacher_name, vector<Course> courses, map<Course, int> courses_num) :
+//	teacher_no_(teacher_no), teacher_name_(teacher_name), courses_(courses), courses_num_(courses_num){
+	teacher_name_(teacher_name), courses_(courses), courses_num_(courses_num){
+	avl_time_ = vector<bool>(groups, 1);
+}
+
+Teacher::Teacher(int groups, int teacherdbid, string teacher_name):
+	teacherdbid_(teacherdbid), teacher_name_(teacher_name){
 	avl_time_ = vector<bool>(groups, 1);
 }
 

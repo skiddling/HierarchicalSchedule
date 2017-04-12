@@ -7,6 +7,39 @@ vector<Course> couque;
 vector<Student> stuque;
 vector<Teacher> teacherque;
 
+void YuErGaoInput() {
+	ifstream fin("students.txt");
+	int recordnum;
+	fin >> recordnum;
+	string stuname, stuid, sex, cname;
+	double point;
+	map<string, int> stumap;
+	for (auto i = 0; i < recordnum; i++) {
+		fin >> stuid >> stuname >> point >> cname;
+		if (stumap.find(stuid) == stumap.end()) {
+			auto stuptr = new Student(stuid, stuname);
+			stuptr->student_no = stuque.size();
+			stuque.push_back(*stuptr);
+			//stuque.push_back(*(new Student(stuid, stuname));
+			//stumap[stuid]->student_no = stuque.size() - 1;
+			stumap.insert(make_pair(stuid, stuptr->student_no));
+		}
+		//stumap[stuid]->courses_.push_back(courses[cname]);
+		//stumap[stuid]->points_[courses[cname]] = point;
+		stuque[stumap[stuid]].courses_.push_back(courses[cname]);
+		stuque[stumap[stuid]].points_[courses[cname]] = point;
+		couque[courses[cname].course_id_].num_of_stus_in_sex_[stuque[stumap[stuid]].sex_]++;
+		couque[courses[cname].course_id_].total_scores_in_sex_[stuque[stumap[stuid]].sex_] += point;
+	}
+	for (auto& c : couque) {
+		c.tot_avg_points_ = (c.total_scores_in_sex_[male] + c.total_scores_in_sex_[female]) /
+			(c.num_of_stus_in_sex_[male] + c.num_of_stus_in_sex_[female]);
+		c.avg_lower_ = c.tot_avg_points_ - c.dva_avg_points_;
+		c.avg_upper_ = c.tot_avg_points_ + c.dva_avg_points_;
+	}
+	fin.close();
+}
+
 void StudentsIn() {
 	ifstream fin("students.txt");
 	int stunum;
@@ -60,10 +93,12 @@ void StudentsIn() {
 
 void TeachersIn() {
 	ifstream fin("teachers.txt");
-	string teacherid, teachername, coursename;
+	//string teacherid, teachername, coursename;
+	string teachername, coursename;
 	int coursesnum, coursetimes, k = 0, tid;
-	while (fin >> teacherid) {
-		tid = atoi(teacherid.c_str());
+	while (fin >> tid) {
+	//while (fin >> teacherid) {
+		//tid = atoi(teacherid.c_str());
 		fin >> teachername >> coursesnum;
 		map<Course, int> coursestable;
 		vector<Course> courseque = vector<Course> (coursesnum);
@@ -75,7 +110,8 @@ void TeachersIn() {
 			coursestable.insert(make_pair(courseque[i], coursetimes));
 			cout << coursestable.size() << endl;
 		}
-		teacherque.push_back(*(new Teacher(groups, teacherid, teachername, courseque ,coursestable)));
+		//teacherque.push_back(*(new Teacher(groups, teacherid, teachername, courseque ,coursestable)));
+		teacherque.push_back(*(new Teacher(groups, teachername, courseque ,coursestable)));
 		(teacherque.end() - 1)->teacher_id_ = k++;
 	}
 	fin.close();
@@ -120,7 +156,8 @@ void TestInput() {
 void Input() {
 	//TestInput();
 	BasicInput();
-	StudentsIn();
+	//StudentsIn();
+	YuErGaoInput();
 	TeachersIn();
 	for (int i = 0; i < stuque.size(); i++)
 		sort(stuque[i].courses_.begin(), stuque[i].courses_.end());
@@ -173,6 +210,6 @@ int main(int argc, char* argv[]) {
 		ga.OutPutResult();
 	}
 	//else cout << "failed gernerate table" << endl;
-	system("PAUSE");
+	//system("PAUSE");
 	return 0;
 }

@@ -10,6 +10,16 @@ Student::Student(string student_id, string student_name, vector<Course> courses,
 	sex_ = (sex == "ÄĞ" ? male : female);
 }
 
+Student::Student(string student_id, string student_name):
+	student_id_(student_id), student_name_(student_name){
+	sex_ = male;
+}
+
+Student::Student(string student_id, string student_name, string sex, int studentno):
+	student_id_(student_id), student_name_(student_name), student_no(studentno){
+	sex_ = (sex == "ÄĞ" ? male : female);
+}
+
 void Student::GetCouSort() {
 	sort(courses_.begin(), courses_.end());
 }
