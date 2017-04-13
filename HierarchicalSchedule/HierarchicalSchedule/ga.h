@@ -5,6 +5,7 @@
 class GA
 {
 public:
+	int outtime_;//运行时间
 	int num_of_threads_;//用来设置是进行单线程运行还是多线程运行
 	//static const int kScheduleSize_ = 20;//定义种群数量
 	static const int kScheduleSize_ = 5;//定义每个线程的种群数量
@@ -32,7 +33,7 @@ public:
 
 	vector<int> topo_sorted_;//将科目进行拓扑排序之后的科目的顺序
 
-	GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_);
+	GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que_, int outtime);
 	bool Generate();//生成课表
 	void OutPutResult();
 	void GetResult();

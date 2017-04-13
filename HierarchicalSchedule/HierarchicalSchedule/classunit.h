@@ -4,6 +4,7 @@
 class ClassUnit
 {
 public:
+	int dbid;//这个是从数据库当中获得的id，输入教学班后获得
 	//ClassUnit* address_;
 	double crash_;//该班级的冲突值
 	int stu_num_;//该班级学生数量

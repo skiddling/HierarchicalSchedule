@@ -7,7 +7,7 @@ class Student
 {
 public:
 	Sex sex_;//学生性别
-	int student_no;//学生序号，自己用
+	int student_no;//学生序号，自己用,也就是数据库的id
 	string student_id_;//学生给的序号,防止名字相同
 	string student_name_;
 	vector<Course> courses_;//要上哪些科目

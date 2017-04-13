@@ -193,23 +193,37 @@ void SetRunTime() {
 	//Pattern::stu_upper_ = stuupper;
 }
 
+void SetRoomsGroups(DButil db) {
+	GA::rooms_ = db.rooms;
+	GA::groups_ = db.groups;
+	Schedule::rooms_ = db.rooms;
+	Schedule::groups_ = db.groups;
+}
+
 int main(int argc, char* argv[]) {
 	
 	//testing::InitGoogleTest(&argc, argv);
 	//RUN_ALL_TESTS();
 	//srand((unsigned int)time(0));
-	Input();
-	SetRunTime();
+	//Input();
+	//SetRunTime();
 	////OutPut();
 	////return 0;
 	cout << "before ga" << endl;
-	GA ga(stuque, teacherque, couque);
+	DButil db;
+	db.StartPk();
+	SetRoomsGroups(db);
+	//int outtime = 5;
+	//GA ga(stuque, teacherque, couque, outtime);
+	GA ga(db.stuque, db.teacherque, db.couque, db.outtime);
 	cout << "after ga" << endl;
 	if (ga.Generate()) {
-		//ga.GetResult();
+		//ga.GetResult();//这个是旧版本的算法，已经抛弃不用
 		ga.OutPutResult();
+		db.result_ = ga.result_;
+		db.OutPutResult();
 	}
-	//else cout << "failed gernerate table" << endl;
+	else cout << "failed gernerate table" << endl;
 	//system("PAUSE");
 	return 0;
 }

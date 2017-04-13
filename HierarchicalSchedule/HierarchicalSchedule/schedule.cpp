@@ -39,7 +39,8 @@ Schedule::Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teach
 }
 
 //对每个课表都进行相应的初始化工作，重点就是生成课表
-void Schedule::Init() {
+void Schedule::Init(int outtime) {
+	outtime_ = outtime;
 	//new method for new version
 	//get local stus address for pattern
 	GetStusAddrs();
@@ -50,7 +51,8 @@ void Schedule::Init() {
 	//int t1 = clock(), t2;
 	auto t1 = chrono::steady_clock::now(), t2 = t1;
 	//5这个参数是可以修改的，应该当做一个参数传进来，此处暂时设置为5mi：n
-	chrono::duration<int, ratio<60, 1>> dur(5);
+	//chrono::duration<int, ratio<60, 1>> dur(5);
+	chrono::duration<int, ratio<60, 1>> dur(outtime_);
 	while (1) {
 		Schedule temps(*this);
 		if (!temps.GetRanTab()) {
@@ -398,8 +400,9 @@ void Schedule::GetStusAddrs() {
 
 void Schedule::GetSchedule(InterruptibleThread* t, future<Schedule>* fut) {
 	auto t1 = chrono::system_clock::now(), t2 = t1;
-	chrono::duration<int, ratio<60, 1> > dur(5);
-	chrono::duration<int, ratio<1, 1000>> wt(1);
+	//chrono::duration<int, ratio<60, 1> > dur(5);
+	chrono::duration<int, ratio<60, 1> > dur(outtime_);
+	//chrono::duration<int, ratio<1, 1000>> wt(1);
 	int tag = -1;
 	//此处更新为使用混合式模型，不再使用渐进式模型求解，因为渐进式模型方案存在先天不足，
 	//会导致没有办法求得一个解，如果继续让使用者去调参，很有可能仍然无法继续求得解，所以改为使用
@@ -436,6 +439,7 @@ void Schedule::GetSchedule(InterruptibleThread* t, future<Schedule>* fut) {
 		}
 		mtx.unlock();
 	}
+	cout << this_thread::get_id() << endl;
 }
 
 void Schedule::Test() {

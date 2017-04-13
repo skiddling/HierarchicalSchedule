@@ -22,7 +22,7 @@ Course::Course(string coursename, int cls, int cnum, int stuupper, int stulower,
 	double classMaxAverage, double classMinAverage, int femaleMaxQty, int femaleMinQty, 
 	int maleMaxQty, int maleMinQty, int dbid, bool visited):
 	course_name_(coursename), class_num_(cls), visited_(visited), stu_upper_(stuupper),
-	stu_lower_(stulower), dbid_(dbid){
+	stu_lower_(stulower), dbid_(dbid), avg_lower_(classMinAverage), avg_upper_(classMaxAverage){
 	pre_node_ = vector<bool>(cnum, 0);
 	satis_num_ = 0;
 	num_of_stus_in_sex_[male] = num_of_stus_in_sex_[female] = 0;

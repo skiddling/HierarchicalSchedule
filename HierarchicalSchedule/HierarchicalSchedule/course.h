@@ -91,6 +91,7 @@ public:
 		//同一个科目下的学科判班级的数量，不同学科的就判名字
 		if (class_num_ != a.class_num_)return class_num_ < a.class_num_;
 		else if (course_name_.substr(0, course_name_.length() - 1) != a.course_name_.substr(0, a.course_name_.length() - 1))
+		//if (course_name_.substr(0, course_name_.length() - 1) != a.course_name_.substr(0, a.course_name_.length() - 1))
 			return this->course_name_ < a.course_name_;
 		else if (not_in_set_.size() != a.not_in_set_.size())return not_in_set_.size() > a.not_in_set_.size();
 		//else if(class_num_ != a.class_num_)return class_num_ < a.class_num_;

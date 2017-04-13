@@ -10,8 +10,8 @@ int GA::stu_lower_ = 0;
 int GA::stu_upper_ = 0;
 double GA::step = 1.3;
 
-GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que) :
-	stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que){
+GA::GA(vector<Student> stu_que, vector<Teacher> tea_que, vector<Course> cou_que, int outtime) :
+	stu_que_(stu_que), tea_que_(tea_que), cou_que_(cou_que), outtime_(outtime){
 
 	mxfit_ = 0.0;
 	fits = vector<double>(kScheduleSize_, 0.0);
@@ -219,7 +219,7 @@ bool GA::Init() {
 		ctablethreads[i] = thread{ [&, i]() {
 			for (auto j = 0; j < kScheduleSize_; j++) {
 				//cout << "init j " << j << " " << schedules_.size() << " " << i * kScheduleSize_ + j << endl;
-				schedules_[j + i * kScheduleSize_].Init();
+				schedules_[j + i * kScheduleSize_].Init(outtime_);
 			}
 		} };
 	}
@@ -286,7 +286,7 @@ void GA::GAProcess() {
 	vector<InterruptibleThread> threads(num_of_threads_);
 	//vector<InterruptibleThread> threads(1);
 	auto t1 = chrono::system_clock::now(), t2 = t1;
-	chrono::duration<int, ratio<60, 1>> dur(5);
+	chrono::duration<int, ratio<60, 1>> dur(outtime_);
 	for (int i = 0; i < num_of_threads_; i++) {
 	//for (int i = 0; i < 1; i++) {
 		threads[i] = InterruptibleThread(this, &GA::GetSchedule, i, &pro, &fut);

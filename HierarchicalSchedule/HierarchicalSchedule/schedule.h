@@ -23,6 +23,7 @@ public:
 	//int crash_;//冲突值
 	int success_falg_;
 	static int rooms_, groups_;
+	int outtime_;//运行时间
 
 	vector<Course> cou_que_;//用于存放所有的科目
 	vector<Student> stu_que_;
@@ -43,7 +44,7 @@ public:
 	Schedule(vector<Course> cou_que, vector<Student> stu_que, vector<Teacher> tea_que, 
 		map<vector<Course>, int> pattern_map, vector<Pattern> pattern_que, 
 		map<vector<Course>, int> prefix_map, vector<Prefix> prefixes, vector<int> topo_sorted);
-	void Init();//生成课表
+	void Init(int outtime);//生成课表
 	void GetAllPath();//获得所有模式的上课路径
 	void StuAssign();//初始化分配学生人数
 	void CalCrashFitness();//计算冲突值

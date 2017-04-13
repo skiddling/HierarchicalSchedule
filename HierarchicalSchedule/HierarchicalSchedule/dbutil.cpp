@@ -6,13 +6,36 @@ string DButil::StartPk(string pktaskid) {
 	pktaskid_ = pktaskid;
 	statement_ = "";
 	GetDBInfo();
-	GetDataFromTable(&Get_T_SPKTask, "T_SPKTask");
-	GetDataFromTable(&Get_T_SPKClassRoom, "T_SPKClassRoom");
-	GetDataFromTable(&Get_T_SPKCourse, "T_SPKCourse");
-	GetDataFromTable(&Get_T_SPKStudent, "T_SPKStudent");
-	GetDataFromTable(&Get_T_SPKStudentCourse, "T_SPKStudentCourse");
-	GetDataFromTable(&Get_T_SPKTeacher, "T_SPKTeacher");
-	GetDataFromTable(&Get_T_SPKTeacherCourseConfig, "T_SPKTeacherCourseConfig");
+	GetDataFromTable(&DButil::Get_T_SPKTask, "T_SPKTask");
+	GetDataFromTable(&DButil::Get_T_SPKClassRoom, "T_SPKClassRoom");
+	GetDataFromTable(&DButil::Get_T_SPKCourse, "T_SPKCourse");
+	GetDataFromTable(&DButil::Get_T_SPKStudent, "T_SPKStudent");
+	GetDataFromTable(&DButil::Get_T_SPKStudentCourse, "T_SPKStudentCourse");
+	GetDataFromTable(&DButil::Get_T_SPKTeacher, "T_SPKTeacher");
+	GetDataFromTable(&DButil::Get_T_SPKTeacherCourseConfig, "T_SPKTeacherCourseConfig");
+	return statement_;
+}
+
+string DButil::StartPk() {
+	//pktaskid_ = pktaskid;
+	pktaskid_ = "2";
+	statement_ = "";
+	GetDBInfo();
+	GetDataFromTable(&DButil::Get_T_SPKTask, "T_SPKTask");
+	GetDataFromTable(&DButil::Get_T_SPKClassRoom, "T_SPKClassRoom");
+	GetDataFromTable(&DButil::Get_T_SPKGroup, "T_SPKGroup");
+	GetDataFromTable(&DButil::Get_T_SPKCourse, "T_SPKCourse");
+	GetDataFromTable(&DButil::Get_T_SPKStudent, "T_SPKStudent");
+	GetDataFromTable(&DButil::Get_T_SPKStudentCourse, "T_SPKStudentCourse");
+	GetDataFromTable(&DButil::Get_T_SPKTeacher, "T_SPKTeacher");
+	GetDataFromTable(&DButil::Get_T_SPKTeacherCourseConfig, "T_SPKTeacherCourseConfig");
+	return statement_;
+}
+
+void DButil::OutPutResult() {
+	GetDataFromTable(&DButil::Post_T_SPKTeacherCourse, "T_SPKTeacherCourse");
+	GetDataFromTable(&DButil::Get_T_SPKTeacherCourse, "T_SPKTeacherCourse");
+	GetDataFromTable(&DButil::Post_T_SPKStudentCourseJXB, "T_SPKStudentCourseJXB");
 }
 
 void DButil::GetDBInfo() {
@@ -67,7 +90,7 @@ void DButil::GetDataFromTable(void(DButil::*funcptr)(_RecordsetPtr& m_pRecordset
 		}
 		try {
 			//string s = "SELECT * FROM T_PKTask where id=" + pktaskid_;
-			string s = "SELECT * FROM " + tablename + " where id=" + pktaskid_;
+			string s = "SELECT * FROM " + tablename + " where spkTaskId=" + pktaskid_;
 			//string s = "SELECT * FROM T_PKTask where id=2";
 			m_pRecordset->Open(s.c_str(), (IDispatch*)sqlSp, adOpenDynamic, adLockOptimistic, adCmdText);//打开数据库，执行SQL语句		
 		}
@@ -75,7 +98,6 @@ void DButil::GetDataFromTable(void(DButil::*funcptr)(_RecordsetPtr& m_pRecordset
 			cerr << static_cast<string>(e.Description());
 		}
 		try {
-			//m_pRecordset->MoveFirst();
 			(this->*funcptr)(m_pRecordset);
 		}
 		catch (_com_error &e) {
@@ -86,6 +108,7 @@ void DButil::GetDataFromTable(void(DButil::*funcptr)(_RecordsetPtr& m_pRecordset
 
 void DButil::Get_T_SPKTask(_RecordsetPtr& m_pRecordset) {
 	//m_pRecordset->MoveFirst();
+	m_pRecordset->MoveFirst();
 	rooms = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("classRoomNum"))->Value);
 	groups = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("maxSectionNum"))->Value);
 	coursenum = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("maxCourseNum"))->Value);
@@ -95,6 +118,7 @@ void DButil::Get_T_SPKTask(_RecordsetPtr& m_pRecordset) {
 }
 
 void DButil::Get_T_SPKCourse(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
 	_variant_t var;
 	string cname;
 	int id, cls, stuupper, stulower, stuMinQty, femaleMaxQty, femaleMinQty, maleMaxQty, maleMinQty;
@@ -125,7 +149,8 @@ void DButil::Get_T_SPKCourse(_RecordsetPtr & m_pRecordset) {
 }
 
 void DButil::Get_T_SPKStudent(_RecordsetPtr & m_pRecordset) {
-	stuque = vector<Student>(stunum);
+	m_pRecordset->MoveFirst();
+	//stuque = vector<Student>(stunum);
 	string stuname, stuno, stuGender;
 	int stuid;
 	_variant_t var;
@@ -138,17 +163,20 @@ void DButil::Get_T_SPKStudent(_RecordsetPtr & m_pRecordset) {
 		stuGender = static_cast<const char*>(static_cast<_bstr_t>(var));
 		stuid = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("studentId"))->Value);
 		sturecord[stuid] = stuque.size();
-		stuque[sturecord.size()] = *(new Student(stuno, stuname, stuGender, stuid));
+		//stuque[sturecord.size() - 1] = *(new Student(stuno, stuname, stuGender, stuid));
+		stuque.push_back(*(new Student(stuno, stuname, stuGender, stuid)));
 		m_pRecordset->MoveNext();
 	}
 }
 
 void DButil::Get_T_SPKStudentCourse(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
 	int spkStudentId, coursedbid;
 	double spkCourseGrades;
 	while (!m_pRecordset->adoEOF) {
-		spkCourseGrades = static_cast<double>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("spkCourseGrades"))->Value);
-		coursedbid = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("coursedbid"))->Value);
+		//spkCourseGrades = static_cast<double>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("spkCourseGrades"))->Value);
+		spkCourseGrades = static_cast<float>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("spkCourseGrades"))->Value);
+		coursedbid = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("spkCourseId"))->Value);
 		spkStudentId = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("spkStudentId"))->Value);
 		stuque[sturecord[spkStudentId]].points_[coursesid[coursedbid]] = spkCourseGrades;
 		stuque[sturecord[spkStudentId]].courses_.push_back(coursesid[coursedbid]);
@@ -157,6 +185,7 @@ void DButil::Get_T_SPKStudentCourse(_RecordsetPtr & m_pRecordset) {
 }
 
 void DButil::Get_T_SPKTeacher(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
 	int teacherId;
 	_variant_t var;
 	string name;
@@ -172,6 +201,7 @@ void DButil::Get_T_SPKTeacher(_RecordsetPtr & m_pRecordset) {
 }
 
 void DButil::Get_T_SPKTeacherCourseConfig(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
 	int teacherId, clazzNum, spkCourse;
 	while (!m_pRecordset->adoEOF) {
 		teacherId = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("spkTeacher"))->Value);
@@ -184,13 +214,119 @@ void DButil::Get_T_SPKTeacherCourseConfig(_RecordsetPtr & m_pRecordset) {
 }
 
 void DButil::Get_T_SPKClassRoom(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
 	string name;
 	_variant_t var;
+	int classRoomId;
 	while (!m_pRecordset->adoEOF) {
 		var = m_pRecordset->Fields->GetItem(static_cast<_variant_t>("name"))->Value;
 		name = static_cast<const char*>(static_cast<_bstr_t>(var));
+		classRoomId = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("classRoomId"))->Value);
+		roomno2id[roomtable.size()] = classRoomId;
 		roomtable.push_back(name);
 		m_pRecordset->MoveNext();
+	}
+}
+
+void DButil::Get_T_SPKGroup(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
+	string name;
+	_variant_t var;
+	int id;
+	while (!m_pRecordset->adoEOF) {
+		var = m_pRecordset->Fields->GetItem(static_cast<_variant_t>("name"))->Value;
+		name = static_cast<const char*>(static_cast<_bstr_t>(var));
+		id = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("id"))->Value);
+		groupno2id[grouptable.size()] = id;
+		grouptable.push_back(name);
+		m_pRecordset->MoveNext();
+	}
+}
+
+void DButil::Post_T_SPKStudentCourseJXB(_RecordsetPtr & m_pRecordset) {
+	_variant_t var;
+	for (auto c : result_.cls_nuit_que_) {
+		for (auto s : c.stuinit_) {
+			m_pRecordset->AddNew();
+			m_pRecordset->PutCollect("schoolId", 1);
+			m_pRecordset->PutCollect("ndelete", 0);
+			var = static_cast<_variant_t>(s->student_name_.c_str());
+			m_pRecordset->PutCollect("spkStudentStuName", var);
+			var = static_cast<_variant_t>(s->student_id_.c_str());
+			m_pRecordset->PutCollect("spkStudentStuNO", var);
+			var = static_cast<_variant_t>(s->student_no);
+			m_pRecordset->PutCollect("spkStudentId", var);
+			var = static_cast<_variant_t>(pktaskid_.c_str());
+			m_pRecordset->PutCollect("spkTaskId", var);
+			var = static_cast<_variant_t>(c.dbid);
+			m_pRecordset->PutCollect("spkTeacherCourseId", var);
+			var = static_cast<_variant_t>(c.course_.course_name_.c_str());
+			m_pRecordset->PutCollect("spkTeacherCourseName", var);
+			var = static_cast<_variant_t>(pktaskid_.c_str());
+			m_pRecordset->PutCollect("spkTask", var);
+			var = static_cast<_variant_t>(s->student_no);
+			m_pRecordset->PutCollect("spkStudent", var);
+			var = static_cast<_variant_t>(c.dbid);
+			m_pRecordset->PutCollect("spkTeacherCourse", var);
+		}
+	}
+	m_pRecordset->Update();
+	m_pRecordset->Close();
+}
+
+void DButil::Post_T_SPKTeacherCourse(_RecordsetPtr & m_pRecordset) {
+	_variant_t var;
+	//char unitid[100];
+	string tmp;
+	for (auto c : result_.cls_nuit_que_) {
+		m_pRecordset->AddNew();
+		m_pRecordset->PutCollect("schoolId", 1);
+		m_pRecordset->PutCollect("ndelete", 0);
+		//sprintf(unitid, "%d", c.unit_id_);
+		tmp = c.teacher_.teacher_name_ + c.course_.course_name_ + roomtable[c.unit_time_.second];
+		var = static_cast<_variant_t>(tmp.c_str());
+		m_pRecordset->PutCollect("name", var);	
+		tmp = c.course_.course_name_.substr(0, c.course_.course_name_.length() - 1);
+		var = static_cast<_variant_t>(tmp.c_str());
+		m_pRecordset->PutCollect("courseType", var);	
+		var = static_cast<_variant_t>(c.course_.course_name_.c_str());
+		m_pRecordset->PutCollect("courseRank", var);	
+		var = static_cast<_variant_t>(c.stuinit_.size());
+		m_pRecordset->PutCollect("stuNum", var);	
+		var = static_cast<_variant_t>(c.course_.dbid_);
+		m_pRecordset->PutCollect("spkCourseId", var);	
+		var = static_cast<_variant_t>(pktaskid_.c_str());
+		m_pRecordset->PutCollect("spkTaskId", var);	
+		var = static_cast<_variant_t>(c.teacher_.teacherdbid_);
+		m_pRecordset->PutCollect("spkTeacherId", var);	
+		var = static_cast<_variant_t>(roomno2id[c.unit_time_.second]);
+		m_pRecordset->PutCollect("spkClassRoomId", var);	
+		var = static_cast<_variant_t>(groupno2id[c.unit_time_.first]);
+		m_pRecordset->PutCollect("spkGroupId", var);	
+		var = static_cast<_variant_t>(pktaskid_.c_str());
+		m_pRecordset->PutCollect("spkTask", var);	
+		var = static_cast<_variant_t>(c.teacher_.teacherdbid_);
+		m_pRecordset->PutCollect("spkTeacher", var);	
+		var = static_cast<_variant_t>(c.course_.dbid_);
+		m_pRecordset->PutCollect("spkCourse", var);	
+		var = static_cast<_variant_t>(roomno2id[c.unit_time_.second]);
+		m_pRecordset->PutCollect("spkClassRoom", var);	
+		var = static_cast<_variant_t>(groupno2id[c.unit_time_.first]);
+		m_pRecordset->PutCollect("spkGroup", var);	
+		var = static_cast<_variant_t>(1);
+		m_pRecordset->PutCollect("nadduser", var);	
+		var = static_cast<_variant_t>(c.avg_sum_);
+		m_pRecordset->PutCollect("averageGrade", var);	
+	}
+	m_pRecordset->Update();
+	m_pRecordset->Close();
+}
+
+void DButil::Get_T_SPKTeacherCourse(_RecordsetPtr & m_pRecordset) {
+	m_pRecordset->MoveFirst();
+	int id = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("id"))->Value);
+	for (auto& c : result_.cls_nuit_que_) {
+		c.dbid = id++;
 	}
 }
 
