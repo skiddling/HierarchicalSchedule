@@ -8,6 +8,7 @@ string DButil::StartPk(string pktaskid) {
 	GetDBInfo();
 	GetDataFromTable(&DButil::Get_T_SPKTask, "T_SPKTask");
 	GetDataFromTable(&DButil::Get_T_SPKClassRoom, "T_SPKClassRoom");
+	GetDataFromTable(&DButil::Get_T_SPKGroup, "T_SPKGroup");
 	GetDataFromTable(&DButil::Get_T_SPKCourse, "T_SPKCourse");
 	GetDataFromTable(&DButil::Get_T_SPKStudent, "T_SPKStudent");
 	GetDataFromTable(&DButil::Get_T_SPKStudentCourse, "T_SPKStudentCourse");

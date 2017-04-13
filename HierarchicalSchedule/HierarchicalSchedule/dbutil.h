@@ -9,6 +9,7 @@ class DButil
 public:
 	int rooms, groups;
 	int outtime;//运行时间
+	string statement_;
 	vector<Course> couque;
 	vector<Student> stuque;
 	vector<Teacher> teacherque;
@@ -22,7 +23,6 @@ public:
 	
 private:
 	string pktaskid_;
-	string statement_;
 	string db_server_;
 	string dbname_;
 	string dbuser_name_;

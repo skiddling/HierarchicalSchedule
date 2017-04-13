@@ -1,5 +1,6 @@
 //#include "ga.h"
 #include "dbutil.h"
+#include "dllapi.h"
 
 int rooms, groups, stuupper, stulower;
 map<string, Course> courses;
@@ -200,7 +201,36 @@ void SetRoomsGroups(DButil db) {
 	Schedule::groups_ = db.groups;
 }
 
-int main(int argc, char* argv[]) {
+//int main(int argc, char* argv[]) {
+//	
+//	//testing::InitGoogleTest(&argc, argv);
+//	//RUN_ALL_TESTS();
+//	//srand((unsigned int)time(0));
+//	//Input();
+//	//SetRunTime();
+//	////OutPut();
+//	////return 0;
+//	cout << "before ga" << endl;
+//	DButil db;
+//	db.StartPk();
+//	SetRoomsGroups(db);
+//	//int outtime = 5;
+//	//GA ga(stuque, teacherque, couque, outtime);
+//	GA ga(db.stuque, db.teacherque, db.couque, db.outtime);
+//	cout << "after ga" << endl;
+//	if (ga.Generate()) {
+//		//ga.GetResult();//这个是旧版本的算法，已经抛弃不用
+//		ga.OutPutResult();
+//		db.result_ = ga.result_;
+//		db.OutPutResult();
+//	}
+//	else cout << "failed gernerate table" << endl;
+//	//system("PAUSE");
+//	return 0;
+//}
+
+//int main(int argc, char* argv[]) {
+string GetSchedule(string s){
 	
 	//testing::InitGoogleTest(&argc, argv);
 	//RUN_ALL_TESTS();
@@ -211,7 +241,8 @@ int main(int argc, char* argv[]) {
 	////return 0;
 	cout << "before ga" << endl;
 	DButil db;
-	db.StartPk();
+	db.StartPk(s);
+	//db.StartPk();
 	SetRoomsGroups(db);
 	//int outtime = 5;
 	//GA ga(stuque, teacherque, couque, outtime);
@@ -225,5 +256,6 @@ int main(int argc, char* argv[]) {
 	}
 	else cout << "failed gernerate table" << endl;
 	//system("PAUSE");
-	return 0;
+	//return 0;
+	return db.statement_;
 }
