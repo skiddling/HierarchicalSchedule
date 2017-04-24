@@ -122,9 +122,10 @@ void DButil::Get_T_SPKCourse(_RecordsetPtr & m_pRecordset) {
 	m_pRecordset->MoveFirst();
 	_variant_t var;
 	string cname;
-	int id, cls, stuupper, stulower, stuMinQty, femaleMaxQty, femaleMinQty, maleMaxQty, maleMinQty;
+	int id, cls, stuupper, stulower, stuMinQty, femaleMaxQty, femaleMinQty, maleMaxQty, maleMinQty, canNotGoCourse;
 	double classMaxAverage, classMinAverage;
 	while (!m_pRecordset->adoEOF) {
+		set<int> notinset;
 		var = m_pRecordset->Fields->GetItem(static_cast<_variant_t>("name"))->Value;
 		cname = static_cast<const char*>(static_cast<_bstr_t>(var));
 		cls = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("classQty"))->Value);
@@ -137,8 +138,12 @@ void DButil::Get_T_SPKCourse(_RecordsetPtr & m_pRecordset) {
 		maleMaxQty = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("maleMaxQty"))->Value);
 		maleMinQty = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("maleMinQty"))->Value);
 		id = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("id"))->Value);
+		canNotGoCourse = static_cast<int>(m_pRecordset->Fields->GetItem(static_cast<_variant_t>("canNotGoCourse"))->Value);
+		for (auto i = 0; i < canNotGoCourse; i++) {
+			notinset.insert(i);
+		}
 		couque.push_back(*(new Course(cname, cls, coursenum, stuupper, stulower, classMaxAverage,
-			classMinAverage, femaleMaxQty, femaleMinQty, maleMaxQty, maleMinQty, id)));
+			classMinAverage, femaleMaxQty, femaleMinQty, maleMaxQty, maleMinQty, id, notinset)));
 		m_pRecordset->MoveNext();
 	}
 	sort(couque.begin(), couque.end());

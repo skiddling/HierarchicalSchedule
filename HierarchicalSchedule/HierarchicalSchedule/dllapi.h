@@ -9,6 +9,6 @@
 #endif // DLLAPI_EXPORTS
 
 extern "C" {
-	DLLAPIEXPORT std::string GetSchedule(std::string s);
+	DLLAPIEXPORT char* GetSchedule(char s[]);
 }
 

@@ -201,36 +201,8 @@ void SetRoomsGroups(DButil db) {
 	Schedule::groups_ = db.groups;
 }
 
-//int main(int argc, char* argv[]) {
-//	
-//	//testing::InitGoogleTest(&argc, argv);
-//	//RUN_ALL_TESTS();
-//	//srand((unsigned int)time(0));
-//	//Input();
-//	//SetRunTime();
-//	////OutPut();
-//	////return 0;
-//	cout << "before ga" << endl;
-//	DButil db;
-//	db.StartPk();
-//	SetRoomsGroups(db);
-//	//int outtime = 5;
-//	//GA ga(stuque, teacherque, couque, outtime);
-//	GA ga(db.stuque, db.teacherque, db.couque, db.outtime);
-//	cout << "after ga" << endl;
-//	if (ga.Generate()) {
-//		//ga.GetResult();//这个是旧版本的算法，已经抛弃不用
-//		ga.OutPutResult();
-//		db.result_ = ga.result_;
-//		db.OutPutResult();
-//	}
-//	else cout << "failed gernerate table" << endl;
-//	//system("PAUSE");
-//	return 0;
-//}
+int main(int argc, char* argv[]) {
 
-//int main(int argc, char* argv[]) {
-string GetSchedule(string s){
 	
 	//testing::InitGoogleTest(&argc, argv);
 	//RUN_ALL_TESTS();
@@ -241,8 +213,8 @@ string GetSchedule(string s){
 	////return 0;
 	cout << "before ga" << endl;
 	DButil db;
-	db.StartPk(s);
 	//db.StartPk();
+	db.StartPk(argv[1]);
 	SetRoomsGroups(db);
 	//int outtime = 5;
 	//GA ga(stuque, teacherque, couque, outtime);
@@ -256,6 +228,39 @@ string GetSchedule(string s){
 	}
 	else cout << "failed gernerate table" << endl;
 	//system("PAUSE");
-	//return 0;
-	return db.statement_;
+	return 0;
 }
+
+//int main(int argc, char* argv[]) {
+//char* GetSchedule(char s[]){
+//	
+//	//testing::InitGoogleTest(&argc, argv);
+//	//RUN_ALL_TESTS();
+//	//srand((unsigned int)time(0));
+//	//Input();
+//	//SetRunTime();
+//	////OutPut();
+//	////return 0;
+//	cout << "before ga" << endl;
+//	DButil db;
+//	db.StartPk(s);
+//	//db.StartPk();
+//	SetRoomsGroups(db);
+//	//int outtime = 5;
+//	//GA ga(stuque, teacherque, couque, outtime);
+//	GA ga(db.stuque, db.teacherque, db.couque, db.outtime);
+//	cout << "after ga" << endl;
+//	if (ga.Generate()) {
+//		//ga.GetResult();//这个是旧版本的算法，已经抛弃不用
+//		ga.OutPutResult();
+//		db.result_ = ga.result_;
+//		db.OutPutResult();
+//	}
+//	else cout << "failed gernerate table" << endl;
+//	//system("PAUSE");
+//	//return 0;
+//	//char res[1000] = db.statement_.c_str();
+//	//auto res = db.statement_.c_str();
+//		//return db.statement_.c_str();
+//	return "";
+//}

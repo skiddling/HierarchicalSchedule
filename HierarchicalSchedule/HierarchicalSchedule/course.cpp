@@ -20,9 +20,10 @@ Course::Course(string course_name, int class_num, int cnum, double dvainpoint,
 
 Course::Course(string coursename, int cls, int cnum, int stuupper, int stulower, 
 	double classMaxAverage, double classMinAverage, int femaleMaxQty, int femaleMinQty, 
-	int maleMaxQty, int maleMinQty, int dbid, bool visited):
+	int maleMaxQty, int maleMinQty, int dbid, set<int>notintset, bool visited):
 	course_name_(coursename), class_num_(cls), visited_(visited), stu_upper_(stuupper),
-	stu_lower_(stulower), dbid_(dbid), avg_lower_(classMinAverage), avg_upper_(classMaxAverage){
+	stu_lower_(stulower), dbid_(dbid), avg_lower_(classMinAverage), avg_upper_(classMaxAverage),
+	not_in_set_(notintset){
 	pre_node_ = vector<bool>(cnum, 0);
 	satis_num_ = 0;
 	num_of_stus_in_sex_[male] = num_of_stus_in_sex_[female] = 0;
